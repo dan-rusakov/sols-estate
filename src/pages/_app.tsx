@@ -12,7 +12,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <div className="max-w-7xl mx-auto min-h-[100vh] flex flex-col px-8">
+        <Component {...pageProps} />
+      </div>
     </SessionProvider>
   );
 };
