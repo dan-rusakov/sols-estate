@@ -8,6 +8,7 @@ import Gear from "~/components/icons/Gear";
 import RegistrationImg from "../assets/images/registration.png";
 import ResearchImg from "../assets/images/platform-research.png";
 import PlacingOrdersImg from "../assets/images/placing-the-orders.png";
+import Header from "~/components/Header";
 
 export default function Home() {
   return (
@@ -16,34 +17,7 @@ export default function Home() {
         <title>Sols estate</title>
         <meta name="description" content="" />
       </Head>
-      <header className="flex items-center justify-between py-4">
-        <p className="text-[28px] font-semibold">Sols estate</p>
-        <nav>
-          <ul className="flex gap-5">
-            <li>
-              <a className="text-base font-medium text-neutral-500" href="#!">
-                Главная
-              </a>
-            </li>
-            <li>
-              <a className="text-base font-medium text-neutral-500" href="#!">
-                Объявления
-              </a>
-            </li>
-            <li>
-              <a className="text-base font-medium text-neutral-500" href="#!">
-                Агенты
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <a
-          className="rounded-md bg-neutral-900 px-4 py-2 text-center text-base font-medium text-white"
-          href="#!"
-        >
-          Войти
-        </a>
-      </header>
+      <Header />
       <section
         className={`${styles.welcomeScreenBg} flex flex-col items-center pb-40 pt-20`}
       >

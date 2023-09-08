@@ -76,15 +76,18 @@ model Declaration {
     location     Location     @relation(fields: [locationId], references: [id])
     locationId   String
     propertyType PropertyType
-    priceMin     Decimal?
-    priceMax     Decimal?
+    priceMin     Float?
+    priceMax     Float?
     checkinDate  DateTime?
     checkoutDate DateTime?
     roomsMin     Int?
     roomsMax     Int?
     commission   Float
+    agent        Agent        @relation(fields: [agentId], references: [id])
+    agentId      String
 
     @@index([locationId])
+    @@index([agentId])
 }
 
 model Location {
@@ -113,9 +116,10 @@ model Agent {
     contactInfoId  String                @unique
     type           AgentType
     agencyInfo     AgencyInfo?           @relation(fields: [agencyInfoId], references: [id])
-    agencyInfoId   String
+    agencyInfoId   String?
     statusedAgents AgentPersonalStatus[] @relation("Initiator")
     personalStatus AgentPersonalStatus[] @relation("Effector")
+    Declaration    Declaration[]
 
     @@index([legalAddressId])
     @@index([agencyInfoId])

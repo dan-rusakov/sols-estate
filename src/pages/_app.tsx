@@ -5,6 +5,10 @@ import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -12,7 +16,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <div className="max-w-7xl mx-auto min-h-[100vh] flex flex-col px-8">
+      <div className="mx-auto flex min-h-[100vh] max-w-7xl flex-col px-8">
         <Component {...pageProps} />
       </div>
     </SessionProvider>
