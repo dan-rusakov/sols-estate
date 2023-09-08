@@ -38,6 +38,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -46,6 +47,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
@@ -64,4 +67,140 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Declaration {
+    id           String       @id @default(cuid())
+    createdAt    DateTime     @default(now())
+    updatedAt    DateTime     @updatedAt
+    location     Location     @relation(fields: [locationId], references: [id])
+    locationId   String
+    propertyType PropertyType
+    priceMin     Decimal?
+    priceMax     Decimal?
+    checkinDate  DateTime?
+    checkoutDate DateTime?
+    roomsMin     Int?
+    roomsMax     Int?
+    commission   Float
+
+    @@index([locationId])
+}
+
+model Location {
+    id          String        @id @default(cuid())
+    district    String
+    city        String
+    region      String
+    Declaration Declaration[]
+
+    @@unique([district, city, region])
+}
+
+enum PropertyType {
+    VILLA
+    APARTMENT
+    TOWNHOUSE
+}
+
+model Agent {
+    id             String                @id @default(cuid())
+    firstName      String
+    lastName       String
+    legalAddress   LegalAddress          @relation(fields: [legalAddressId], references: [id])
+    legalAddressId String
+    contactInfo    ContactInfo           @relation(fields: [contactInfoId], references: [id])
+    contactInfoId  String                @unique
+    type           AgentType
+    agencyInfo     AgencyInfo?           @relation(fields: [agencyInfoId], references: [id])
+    agencyInfoId   String
+    statusedAgents AgentPersonalStatus[] @relation("Initiator")
+    personalStatus AgentPersonalStatus[] @relation("Effector")
+
+    @@index([legalAddressId])
+    @@index([agencyInfoId])
+}
+
+model LegalAddress {
+    id       String  @id @default(cuid())
+    district String
+    city     String
+    region   String
+    Agent    Agent[]
+
+    @@unique([district, city, region])
+}
+
+model ContactInfo {
+    id           String @id @default(cuid())
+    telegramLink String
+    whatsappLink String
+    viberLink    String
+    Agent        Agent?
+}
+
+enum AgentType {
+    PERSONAL
+    AGENCY
+}
+
+model AgencyInfo {
+    id         String  @id @default(cuid())
+    agencyName String  @unique
+    Agent      Agent[]
+}
+
+model AgentPersonalStatus {
+    id          String                  @id @default(cuid())
+    status      AgentPersonalStatusType @default(NONE)
+    initiator   Agent                   @relation("Initiator", fields: [initiatorId], references: [id])
+    effector    Agent                   @relation("Effector", fields: [effectorId], references: [id])
+    initiatorId String
+    effectorId  String
+
+    @@index([initiatorId])
+    @@index([effectorId])
+}
+
+enum AgentPersonalStatusType {
+    FAVOURITE
+    BLOCKED
+    NONE
+}
+
+// Dictionaries
+
+model LocationDistrictDict {
+    id   String @id @default(cuid())
+    name String @unique
+}
+
+model LocationCityDict {
+    id   String @id @default(cuid())
+    name String @unique
+}
+
+model LocationRegionDict {
+    id   String @id @default(cuid())
+    name String @unique
+}
+
+model LegalAddressDistrictDict {
+    id   String @id @default(cuid())
+    name String @unique
+}
+
+model LegalAddressCityDict {
+    id   String @id @default(cuid())
+    name String @unique
+}
+
+model LegalAddressRegionDict {
+    id   String @id @default(cuid())
+    name String @unique
+}
+
+model CommissionRateDict {
+    id    String @id @default(cuid())
+    value Float  @unique
 }
