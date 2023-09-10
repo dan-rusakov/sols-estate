@@ -1,11 +1,27 @@
+import { z } from "zod";
 import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
+import { type Prisma } from '@prisma/client';
+import { FiltersName } from "~/components/DeclarationsFilters/DeclarationsFilters.types";
+
 
 export const declarationsRouter = createTRPCRouter({
-  getAllDeclarations: publicProcedure.query(({ ctx }) => {
+  getAllDeclarations: publicProcedure.input(z.object({ [FiltersName.location]: z.string() })).query(({ ctx, input }) => {
+
+    const filtering: Prisma.DeclarationWhereInput = {};
+
+    if (input[FiltersName.location]) {
+      filtering.location = {
+        district: {
+          equals: input[FiltersName.location],
+        }
+      }
+    }
+
     return ctx.prisma.declaration.findMany({
+      where: filtering,
       select: {
         id: true,
         location: {

@@ -1,5 +1,4 @@
 import { DataGrid, type GridRenderCellParams } from "@mui/x-data-grid";
-import { type RouterOutputs } from "~/utils/api";
 import {
   cellRangeValue,
   formatDateToDateString,
@@ -7,20 +6,23 @@ import {
   propertyTypeDict,
 } from "./utils";
 import ContactLinks from "./ContactLinks";
+import { useSearchParams } from "next/navigation";
+import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
+import { api } from "~/utils/api";
+import { FiltersName } from "../DeclarationsFilters/DeclarationsFilters.types";
 
-type Declarations = RouterOutputs["declarations"]["getAllDeclarations"];
-interface DeclarationsTableProps {
-  declarations?: Declarations;
-}
+export default function DeclarationsTable() {
+  const searchParams = useSearchParams()!;
+  const { location } = getDeclarationsFiltersFromSearchParams(searchParams);
+  const { data: declarations } = api.declarations.getAllDeclarations.useQuery({
+    location,
+  });
 
-export default function DeclarationsTable({
-  declarations,
-}: DeclarationsTableProps) {
   if (!declarations) return <div>404</div>;
 
   const rows = declarations.map((declaration) => ({
     id: declaration.id,
-    location: declaration.location.district,
+    [FiltersName.location]: declaration.location.district,
     propertyType: propertyTypeDict[declaration.propertyType],
     prices: cellRangeValue(
       declaration.priceMin
@@ -51,7 +53,7 @@ export default function DeclarationsTable({
   }));
 
   const columns = [
-    { field: "location", headerName: "Location", flex: 1 },
+    { field: FiltersName.location, headerName: "Location", flex: 1 },
     { field: "propertyType", headerName: "Property type", flex: 1 },
     { field: "prices", headerName: "Price", flex: 1 },
     { field: "livingDates", headerName: "Dates of stay", flex: 1 },
