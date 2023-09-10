@@ -1,4 +1,4 @@
-import { type GetServerSideProps } from "next";
+import { type GetServerSidePropsContext } from "next";
 import DeclarationsFilters from "~/components/DeclarationsFilters/DeclarationsFilters";
 import { getDeclarationsFiltersFromQuery } from "~/components/DeclarationsFilters/utils";
 import DeclarationsTable from "~/components/DeclarationsTable/DeclarationsTable";
@@ -19,10 +19,10 @@ export default function Declarations() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { location } = getDeclarationsFiltersFromQuery(context.query);
   const { page } = getTableParamsFromQuery(context.query);
-  const ssg = await generateSSGHelper(context);
+  const ssg = generateSSGHelper();
 
   await Promise.all([
     ssg.declarations.getAllDeclarations.prefetch({ location, page }),
@@ -34,4 +34,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       trpcState: ssg.dehydrate(),
     },
   };
-};
+}

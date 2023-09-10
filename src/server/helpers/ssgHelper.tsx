@@ -1,18 +1,14 @@
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import superjson from "superjson";
 import { appRouter } from "../api/root";
-import { prisma } from "~/server/db";
-import { getServerAuthSession } from "../auth";
-import { type GetServerSidePropsContext } from "next";
+import { createInnerTRPCContext } from "../api/trpc";
 
-export const generateSSGHelper = async (context: GetServerSidePropsContext) => {
-  const session = await getServerAuthSession({
-    req: context.req,
-    res: context.res,
-  });
+export const generateSSGHelper = () => {
   return createServerSideHelpers({
     router: appRouter,
-    ctx: { prisma, session },
+    ctx: createInnerTRPCContext({
+      session: null,
+    }),
     transformer: superjson, // optional - adds superjson serialization
   });
 };
