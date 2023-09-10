@@ -3,23 +3,20 @@ import {
   type GridPaginationModel,
   type GridRenderCellParams,
 } from "@mui/x-data-grid";
-import {
-  cellRangeValue,
-  formatDateToDateString,
-  formatNumber,
-  propertyTypeDict,
-} from "./utils";
+import { DeclarationsParamsKey, propertyTypeDict } from "./utils";
 import ContactLinks from "./ContactLinks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
 import { api } from "~/utils/api";
-import { FiltersName } from "../DeclarationsFilters/DeclarationsFilters.types";
 import { getNameFromDict } from "~/utils/dictionaries";
 import { createSearchParamsString } from "~/utils/url";
 import {
   TableParamsName,
   TAKE_RECORDS_AMOUNT,
   getTableParamsFromSearchParams,
+  cellRangeValue,
+  formatDateToDateString,
+  formatNumber,
 } from "~/utils/table";
 import { useChangingPage } from "~/hooks/useChangingPage";
 import { Box } from "@mui/material";
@@ -44,7 +41,7 @@ export default function DeclarationsTable() {
 
   const rows = declarations.map((declaration) => ({
     id: declaration.id,
-    [FiltersName.location]: getNameFromDict(
+    [DeclarationsParamsKey.location]: getNameFromDict(
       declaration.location.district,
       districts,
     ),
@@ -78,7 +75,11 @@ export default function DeclarationsTable() {
   }));
 
   const columns = [
-    { field: FiltersName.location, headerName: "Location", width: 100 },
+    {
+      field: DeclarationsParamsKey.location,
+      headerName: "Location",
+      width: 100,
+    },
     { field: "propertyType", headerName: "Property type", width: 120 },
     { field: "prices", headerName: "Price", width: 150 },
     { field: "livingDates", headerName: "Dates of stay", width: 190 },
@@ -152,6 +153,9 @@ export default function DeclarationsTable() {
             },
           }}
           pageSizeOptions={[TAKE_RECORDS_AMOUNT]}
+          onSortModelChange={(newSortModel) => {
+            console.log(newSortModel);
+          }}
         />
       </Box>
     </div>

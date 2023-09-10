@@ -9,10 +9,10 @@ import { useRouter } from "next/router";
 import { memo, useState } from "react";
 import { api } from "~/utils/api";
 import { usePathname, useSearchParams } from "next/navigation";
-import { FiltersName } from "./DeclarationsFilters.types";
 import { createSearchParamsString } from "~/utils/url";
 import { getDeclarationsFiltersFromSearchParams } from "./utils";
 import { TableParamsName } from "~/utils/table";
+import { DeclarationsParamsKey } from "../DeclarationsTable/utils";
 
 export default memo(function DeclarationsFilters() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export default memo(function DeclarationsFilters() {
       pathname +
         "?" +
         createSearchParamsString(searchParams, [
-          { name: FiltersName.location, value: selectedLocations },
+          { name: DeclarationsParamsKey.location, value: selectedLocations },
           { name: TableParamsName.page, value: 0 },
         ]),
     );

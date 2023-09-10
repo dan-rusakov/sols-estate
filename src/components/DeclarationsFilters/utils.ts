@@ -1,13 +1,13 @@
 import { type ParsedUrlQuery } from "querystring";
-import { FiltersName } from "./DeclarationsFilters.types";
 import { getStringsArrayFromUrl } from "~/utils/url";
+import { DeclarationsParamsKey } from "../DeclarationsTable/utils";
 
 export const getDeclarationsFiltersFromQuery = (
     query: ParsedUrlQuery,
 ) => {
     return {
-        [FiltersName.location]: getStringsArrayFromUrl(
-            query[FiltersName.location],
+        [DeclarationsParamsKey.location]: getStringsArrayFromUrl(
+            query[DeclarationsParamsKey.location],
         ),
     };
 };
@@ -16,8 +16,8 @@ export const getDeclarationsFiltersFromSearchParams = (
     searchParams: URLSearchParams,
 ) => {
     return {
-        [FiltersName.location]: getStringsArrayFromUrl(
-            searchParams.getAll(FiltersName.location),
+        [DeclarationsParamsKey.location]: getStringsArrayFromUrl(
+            searchParams.getAll(DeclarationsParamsKey.location),
         ),
     };
 };

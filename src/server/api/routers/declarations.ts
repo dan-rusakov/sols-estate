@@ -4,20 +4,20 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { type Prisma } from '@prisma/client';
-import { FiltersName } from "~/components/DeclarationsFilters/DeclarationsFilters.types";
 import { TAKE_RECORDS_AMOUNT } from "~/utils/table";
+import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
 
 
 export const declarationsRouter = createTRPCRouter({
-  getAllDeclarations: publicProcedure.input(z.object({ [FiltersName.location]: z.array(z.string()), page: z.number() })).query(({ ctx, input }) => {
+  getAllDeclarations: publicProcedure.input(z.object({ [DeclarationsParamsKey.location]: z.array(z.string()), page: z.number() })).query(({ ctx, input }) => {
     const skip = TAKE_RECORDS_AMOUNT * input.page;
 
     const filtering: Prisma.DeclarationWhereInput = {};
 
-    if (input[FiltersName.location].length) {
+    if (input[DeclarationsParamsKey.location].length) {
       filtering.location = {
         district: {
-          in: input[FiltersName.location],
+          in: input[DeclarationsParamsKey.location],
         }
       }
     }
