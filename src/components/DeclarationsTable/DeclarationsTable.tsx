@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
 import { api } from "~/utils/api";
 import { FiltersName } from "../DeclarationsFilters/DeclarationsFilters.types";
+import { getNameFromDict } from "~/utils/dictionaries";
 
 export default function DeclarationsTable() {
   const searchParams = useSearchParams()!;
@@ -17,12 +18,16 @@ export default function DeclarationsTable() {
   const { data: declarations } = api.declarations.getAllDeclarations.useQuery({
     location,
   });
+  const { data: districts } = api.locationDict.getAllDistricts.useQuery();
 
   if (!declarations) return <div>404</div>;
 
   const rows = declarations.map((declaration) => ({
     id: declaration.id,
-    [FiltersName.location]: declaration.location.district,
+    [FiltersName.location]: getNameFromDict(
+      declaration.location.district,
+      districts,
+    ),
     propertyType: propertyTypeDict[declaration.propertyType],
     prices: cellRangeValue(
       declaration.priceMin

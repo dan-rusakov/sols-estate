@@ -50,8 +50,8 @@ export default memo(function DeclarationsFilters() {
         <MenuItem value="">
           <em>None</em>
         </MenuItem>
-        {districts.map(({ id, name }) => (
-          <MenuItem key={id} value={name}>
+        {districts.map(({ name, slug }) => (
+          <MenuItem key={slug} value={slug}>
             {name}
           </MenuItem>
         ))}

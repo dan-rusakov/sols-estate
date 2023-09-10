@@ -140,6 +140,7 @@ model ContactInfo {
     telegramLink String
     whatsappLink String
     viberLink    String
+    lineLink     String
     Agent        Agent?
 }
 
@@ -177,31 +178,37 @@ enum AgentPersonalStatusType {
 model LocationDistrictDict {
     id   String @id @default(cuid())
     name String @unique
+    slug String @unique
 }
 
 model LocationCityDict {
     id   String @id @default(cuid())
     name String @unique
+    slug String @unique
 }
 
 model LocationRegionDict {
     id   String @id @default(cuid())
     name String @unique
+    slug String @unique
 }
 
 model LegalAddressDistrictDict {
     id   String @id @default(cuid())
     name String @unique
+    slug String @unique
 }
 
 model LegalAddressCityDict {
     id   String @id @default(cuid())
     name String @unique
+    slug String @unique
 }
 
 model LegalAddressRegionDict {
     id   String @id @default(cuid())
     name String @unique
+    slug String @unique
 }
 
 model CommissionRateDict {

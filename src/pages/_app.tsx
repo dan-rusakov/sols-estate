@@ -19,7 +19,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <div className="mx-auto flex min-h-[100vh] max-w-7xl flex-col px-8">
         <Component {...pageProps} />
-        {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+        <ReactQueryDevtools initialIsOpen={true} />
       </div>
     </SessionProvider>
   );
