@@ -22,6 +22,7 @@ import {
   getTableParamsFromSearchParams,
 } from "~/utils/table";
 import { useChangingPage } from "~/hooks/useChangingPage";
+import { Box } from "@mui/material";
 
 export default function DeclarationsTable() {
   const router = useRouter();
@@ -77,25 +78,25 @@ export default function DeclarationsTable() {
   }));
 
   const columns = [
-    { field: FiltersName.location, headerName: "Location", flex: 1 },
-    { field: "propertyType", headerName: "Property type", flex: 1 },
-    { field: "prices", headerName: "Price", flex: 1 },
-    { field: "livingDates", headerName: "Dates of stay", flex: 1 },
-    { field: "rooms", headerName: "Rooms amount", flex: 1 },
-    { field: "agentName", headerName: "Agent", flex: 1 },
+    { field: FiltersName.location, headerName: "Location", width: 100 },
+    { field: "propertyType", headerName: "Property type", width: 120 },
+    { field: "prices", headerName: "Price", width: 150 },
+    { field: "livingDates", headerName: "Dates of stay", width: 190 },
+    { field: "rooms", headerName: "Rooms amount", width: 120 },
+    {
+      field: "commission",
+      headerName: "Commission",
+      width: 120,
+    },
+    { field: "agentName", headerName: "Agent", width: 160 },
     {
       field: "contactLinks",
       headerName: "Contacts",
-      flex: 1,
+      width: 160,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       renderCell: (params: GridRenderCellParams<any, JSX.Element>) => (
         <>{params.value}</>
       ),
-    },
-    {
-      field: "commission",
-      headerName: "Commission",
-      flex: 1,
     },
   ];
 
@@ -137,20 +138,22 @@ export default function DeclarationsTable() {
           </div>
         </div>
       )}
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        disableColumnMenu
-        paginationMode="server"
-        rowCount={declarationsCount}
-        onPaginationModelChange={onPageChange}
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: TAKE_RECORDS_AMOUNT, page: 0 },
-          },
-        }}
-        pageSizeOptions={[TAKE_RECORDS_AMOUNT]}
-      />
+      <Box sx={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          disableColumnMenu
+          paginationMode="server"
+          rowCount={declarationsCount}
+          onPaginationModelChange={onPageChange}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: TAKE_RECORDS_AMOUNT, page: 0 },
+            },
+          }}
+          pageSizeOptions={[TAKE_RECORDS_AMOUNT]}
+        />
+      </Box>
     </div>
   );
 }

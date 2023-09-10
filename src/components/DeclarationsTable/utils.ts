@@ -14,7 +14,7 @@ export const cellRangeValue = (min: string | number | null, max: string | number
         return `from ${min}`;
     }
 
-    return `from ${min} to ${max}`;
+    return `${min} — ${max}`;
 }
 
 export type FormatNumberType = 'default' | 'numeric';
