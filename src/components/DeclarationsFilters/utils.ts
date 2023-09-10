@@ -1,12 +1,12 @@
 import { type ParsedUrlQuery } from "querystring";
 import { FiltersName } from "./DeclarationsFilters.types";
-import { getSingleFilterValueFromUrl } from "~/utils/filters";
+import { getSingleStringFromUrl } from "~/utils/url";
 
 export const getDeclarationsFiltersFromQuery = (
     query: ParsedUrlQuery,
-): Record<FiltersName, string> => {
+) => {
     return {
-        [FiltersName.location]: getSingleFilterValueFromUrl(
+        [FiltersName.location]: getSingleStringFromUrl(
             query[FiltersName.location],
         ),
     };
@@ -14,9 +14,9 @@ export const getDeclarationsFiltersFromQuery = (
 
 export const getDeclarationsFiltersFromSearchParams = (
     searchParams: URLSearchParams,
-): Record<FiltersName, string> => {
+) => {
     return {
-        [FiltersName.location]: getSingleFilterValueFromUrl(
+        [FiltersName.location]: getSingleStringFromUrl(
             searchParams.getAll(FiltersName.location),
         ),
     };

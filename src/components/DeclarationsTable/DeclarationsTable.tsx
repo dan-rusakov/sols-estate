@@ -1,4 +1,8 @@
-import { DataGrid, type GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  type GridPaginationModel,
+  type GridRenderCellParams,
+} from "@mui/x-data-grid";
 import {
   cellRangeValue,
   formatDateToDateString,
@@ -6,18 +10,30 @@ import {
   propertyTypeDict,
 } from "./utils";
 import ContactLinks from "./ContactLinks";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
 import { api } from "~/utils/api";
 import { FiltersName } from "../DeclarationsFilters/DeclarationsFilters.types";
 import { getNameFromDict } from "~/utils/dictionaries";
+import { createSearchParamsString } from "~/utils/url";
+import {
+  TableParamsName,
+  TAKE_RECORDS_AMOUNT,
+  getTableParamsFromSearchParams,
+} from "~/utils/table";
 
 export default function DeclarationsTable() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams()!;
   const { location } = getDeclarationsFiltersFromSearchParams(searchParams);
-  const { data: declarations } = api.declarations.getAllDeclarations.useQuery({
-    location,
-  });
+  const { page } = getTableParamsFromSearchParams(searchParams);
+  const { data: declarationsData } =
+    api.declarations.getAllDeclarations.useQuery({
+      location,
+      page,
+    });
+  const [declarationsCount, declarations] = declarationsData ?? [];
   const { data: districts } = api.locationDict.getAllDistricts.useQuery();
 
   if (!declarations) return <div>404</div>;
@@ -80,12 +96,33 @@ export default function DeclarationsTable() {
     },
   ];
 
+  const onPageChange = (model: GridPaginationModel) => {
+    void router.push(
+      pathname +
+        "?" +
+        createSearchParamsString(searchParams, [
+          {
+            name: TableParamsName.page,
+            value: model.page,
+          },
+        ]),
+    );
+  };
+
   return (
     <DataGrid
       rows={rows}
       columns={columns}
       disableColumnMenu
-      pageSizeOptions={[10, 25, 50]}
+      paginationMode="server"
+      rowCount={declarationsCount}
+      onPaginationModelChange={onPageChange}
+      initialState={{
+        pagination: {
+          paginationModel: { pageSize: TAKE_RECORDS_AMOUNT, page: 0 },
+        },
+      }}
+      pageSizeOptions={[TAKE_RECORDS_AMOUNT]}
     />
   );
 }

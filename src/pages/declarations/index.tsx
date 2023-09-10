@@ -4,6 +4,7 @@ import { getDeclarationsFiltersFromQuery } from "~/components/DeclarationsFilter
 import DeclarationsTable from "~/components/DeclarationsTable/DeclarationsTable";
 import Header from "~/components/Header";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { getTableParamsFromQuery } from "~/utils/table";
 
 export default function Declarations() {
   return (
@@ -20,10 +21,11 @@ export default function Declarations() {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { location } = getDeclarationsFiltersFromQuery(context.query);
+  const { page } = getTableParamsFromQuery(context.query);
   const ssg = await generateSSGHelper(context);
 
   await Promise.all([
-    ssg.declarations.getAllDeclarations.prefetch({ location }),
+    ssg.declarations.getAllDeclarations.prefetch({ location, page }),
     ssg.locationDict.getAllDistricts.prefetch(),
   ]);
 

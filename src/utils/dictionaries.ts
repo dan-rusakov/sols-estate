@@ -8,5 +8,5 @@ export const getNameFromDict = (slug: string, dict: BaseDictStructure[] | undefi
         return slug;
     }
 
-    return dict.find(dictValue => dictValue.slug === slug)?.name ?? '';
+    return dict.find(dictValue => dictValue.slug === slug)?.name ?? slug;
 }
