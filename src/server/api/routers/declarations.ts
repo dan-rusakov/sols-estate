@@ -9,16 +9,15 @@ import { TAKE_RECORDS_AMOUNT } from "~/utils/table";
 
 
 export const declarationsRouter = createTRPCRouter({
-  getAllDeclarations: publicProcedure.input(z.object({ [FiltersName.location]: z.string(), page: z.number() })).query(({ ctx, input }) => {
-
+  getAllDeclarations: publicProcedure.input(z.object({ [FiltersName.location]: z.array(z.string()), page: z.number() })).query(({ ctx, input }) => {
     const skip = TAKE_RECORDS_AMOUNT * input.page;
 
     const filtering: Prisma.DeclarationWhereInput = {};
 
-    if (input[FiltersName.location]) {
+    if (input[FiltersName.location].length) {
       filtering.location = {
         district: {
-          equals: input[FiltersName.location],
+          in: input[FiltersName.location],
         }
       }
     }

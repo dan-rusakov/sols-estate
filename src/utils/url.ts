@@ -1,3 +1,4 @@
+// get single value
 export const getSingleStringFromUrl = (value: string | string[] | undefined): string => {
     if (Array.isArray(value)) {
         const FIRST_VALUE_INDEX = 0;
@@ -29,9 +30,22 @@ export const getSingleNumberFromUrl = (value: string | string[] | undefined): nu
     return DEFAULT_NUMBER_VALUE;
 };
 
+// get multi value
+export const getStringsArrayFromUrl = (value: string | string[] | undefined): string[] => {
+    if (Array.isArray(value)) {
+        return value;
+    }
+
+    if (value) {
+        return [value];
+    }
+
+    return [];
+};
+
 interface ValuesForSearchParams {
     name: string;
-    value: string | number;
+    value: string | string[] | number | number[];
 }
 export const createSearchParamsString = (
     searchParams: URLSearchParams,
@@ -42,7 +56,11 @@ export const createSearchParamsString = (
     values.forEach(({ name, value }) => {
         params.delete(name);
 
-        if (value) {
+        if (Array.isArray(value)) {
+            value.forEach((valueItem) => {
+                params.append(name, valueItem.toString());
+            })
+        } else if (value) {
             params.append(name, value.toString());
         }
     });
