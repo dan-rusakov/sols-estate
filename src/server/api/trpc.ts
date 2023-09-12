@@ -28,6 +28,10 @@ interface CreateContextOptions {
   session: Session | null;
 }
 
+export interface InnerTRPCContext extends CreateContextOptions {
+  prisma: typeof prisma;
+}
+
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
  * it from here.
@@ -38,7 +42,7 @@ interface CreateContextOptions {
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-export const createInnerTRPCContext = (opts: CreateContextOptions) => {
+export const createInnerTRPCContext = (opts: CreateContextOptions): InnerTRPCContext => {
   return {
     session: opts.session,
     prisma,

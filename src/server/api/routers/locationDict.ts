@@ -2,14 +2,8 @@ import {
     createTRPCRouter,
     publicProcedure,
 } from "~/server/api/trpc";
+import { findAllDistrictsHandler } from "../controllers/locationDict";
 
 export const locationDictRouter = createTRPCRouter({
-    getAllDistricts: publicProcedure.query(({ ctx }) => {
-        return ctx.prisma.locationDistrictDict.findMany({
-            select: {
-                name: true,
-                slug: true,
-            }
-        });
-    })
+    getAllDistricts: publicProcedure.query(({ ctx }) => findAllDistrictsHandler(ctx))
 });

@@ -25,14 +25,17 @@ export default function DeclarationsTable() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
-  const { location } = getDeclarationsFiltersFromSearchParams(searchParams);
+  const { location, priceMin, priceMax } =
+    getDeclarationsFiltersFromSearchParams(searchParams);
   const { page } = getTableParamsFromSearchParams(searchParams);
   const { data: declarationsData } =
     api.declarations.getAllDeclarations.useQuery({
       location,
       page,
+      priceMin,
+      priceMax,
     });
-  const [declarationsCount, declarations] = declarationsData ?? [];
+  const [declarationsCount, declarations] = declarationsData?.data ?? [];
   const { data: districts } = api.locationDict.getAllDistricts.useQuery();
 
   const tableUpdating = useChangingPage();
@@ -43,7 +46,7 @@ export default function DeclarationsTable() {
     id: declaration.id,
     [DeclarationsParamsKey.location]: getNameFromDict(
       declaration.location.district,
-      districts,
+      districts?.data,
     ),
     propertyType: propertyTypeDict[declaration.propertyType],
     prices: cellRangeValue(
@@ -147,14 +150,11 @@ export default function DeclarationsTable() {
           paginationMode="server"
           rowCount={declarationsCount}
           onPaginationModelChange={onPageChange}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: TAKE_RECORDS_AMOUNT, page: 0 },
-            },
-          }}
           pageSizeOptions={[TAKE_RECORDS_AMOUNT]}
-          onSortModelChange={(newSortModel) => {
-            console.log(newSortModel);
+          paginationModel={{
+            pageSize: TAKE_RECORDS_AMOUNT,
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            page: page || 0,
           }}
         />
       </Box>

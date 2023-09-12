@@ -10,8 +10,7 @@ export default function Declarations() {
   return (
     <>
       <Header />
-      <div className="mb-12">
-        <p>Filters</p>
+      <div className="mb-12 mt-12">
         <DeclarationsFilters />
       </div>
       <DeclarationsTable />
@@ -20,12 +19,19 @@ export default function Declarations() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { location } = getDeclarationsFiltersFromQuery(context.query);
+  const { location, priceMin, priceMax } = getDeclarationsFiltersFromQuery(
+    context.query,
+  );
   const { page } = getTableParamsFromQuery(context.query);
   const ssg = generateSSGHelper();
 
   await Promise.all([
-    ssg.declarations.getAllDeclarations.prefetch({ location, page }),
+    ssg.declarations.getAllDeclarations.prefetch({
+      location,
+      page,
+      priceMin,
+      priceMax,
+    }),
     ssg.locationDict.getAllDistricts.prefetch(),
   ]);
 

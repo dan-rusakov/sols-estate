@@ -1,7 +1,9 @@
 import { $Enums } from "@prisma/client";
 
 export enum DeclarationsParamsKey {
-    location = 'location'
+    location = 'location',
+    priceMin = 'priceMin',
+    priceMax = 'priceMax',
 }
 
 export const propertyTypeDict: Record<$Enums.PropertyType, string> = {
