@@ -6,6 +6,7 @@ export enum DeclarationsParamsKey {
     priceMax = 'priceMax',
     roomsMin = 'roomsMin',
     roomsMax = 'roomsMax',
+    propertyType = 'propertyType',
 }
 
 export const propertyTypeDict: Record<$Enums.PropertyType, string> = {

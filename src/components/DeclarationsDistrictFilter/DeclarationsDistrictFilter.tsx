@@ -1,4 +1,5 @@
 import {
+  FormControl,
   InputLabel,
   MenuItem,
   Select,
@@ -42,7 +43,7 @@ export default function DeclarationsDistrictFilter() {
   if (!districts?.data) return <div>404</div>;
 
   return (
-    <>
+    <FormControl className="w-44">
       <InputLabel id="location-filter-label">Location</InputLabel>
       <Select<string[]>
         labelId="location-filter-label"
@@ -52,7 +53,6 @@ export default function DeclarationsDistrictFilter() {
         onChange={onDistrictChange}
         onClose={onDistrictClose}
         multiple
-        className="w-44"
       >
         {districts.data.map(({ name, slug }) => (
           <MenuItem key={slug} value={slug}>
@@ -60,6 +60,6 @@ export default function DeclarationsDistrictFilter() {
           </MenuItem>
         ))}
       </Select>
-    </>
+    </FormControl>
   );
 }

@@ -1,3 +1,4 @@
+import { $Enums } from "@prisma/client";
 import { type TypeOf, object, z } from "zod";
 import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
 import { TableParamsName } from "~/utils/table";
@@ -9,6 +10,7 @@ export const findAllDeclarationsSchema = object({
     [DeclarationsParamsKey.priceMax]: z.number().or(z.null()),
     [DeclarationsParamsKey.roomsMin]: z.number().or(z.null()),
     [DeclarationsParamsKey.roomsMax]: z.number().or(z.null()),
+    [DeclarationsParamsKey.propertyType]: z.array(z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE])).or(z.null()),
 });
 
 export type findAllDeclarationsInput = TypeOf<typeof findAllDeclarationsSchema>;

@@ -44,6 +44,7 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
         const priceMax = input[DeclarationsParamsKey.priceMax];
         const roomsMin = input[DeclarationsParamsKey.roomsMin];
         const roomsMax = input[DeclarationsParamsKey.roomsMax];
+        const propertyType = input[DeclarationsParamsKey.propertyType];
 
         if (priceMin && priceMax && priceMin > priceMax) {
             throw new TRPCError({
@@ -144,6 +145,14 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
                     },
                 ],
             });
+        }
+
+        if (propertyType?.length) {
+            filtering.AND.push({
+                propertyType: {
+                    in: propertyType
+                }
+            })
         }
 
         const declarations = await findAllDeclarations(ctx, filtering, findAllDeclarationsArgs.select, input.page);

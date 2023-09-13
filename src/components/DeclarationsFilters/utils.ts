@@ -1,6 +1,17 @@
 import { type ParsedUrlQuery } from "querystring";
 import { getSingleNumberFromUrl, getStringsArrayFromUrl } from "~/utils/url";
 import { DeclarationsParamsKey } from "../DeclarationsTable/utils";
+import { $Enums } from "@prisma/client";
+
+export const getPropertyTypeFromUrl = (value: string | string[] | undefined): (keyof typeof $Enums.PropertyType)[] | null => {
+    const stringsArrayFromUrl = getStringsArrayFromUrl(value);
+
+    if (stringsArrayFromUrl?.every(stringValue => Object.keys($Enums.PropertyType).includes(stringValue))) {
+        return stringsArrayFromUrl as (keyof typeof $Enums.PropertyType)[];
+    }
+
+    return null;
+};
 
 export const getDeclarationsFiltersFromQuery = (
     query: ParsedUrlQuery,
@@ -20,6 +31,9 @@ export const getDeclarationsFiltersFromQuery = (
         ),
         [DeclarationsParamsKey.roomsMax]: getSingleNumberFromUrl(
             query[DeclarationsParamsKey.roomsMax],
+        ),
+        [DeclarationsParamsKey.propertyType]: getPropertyTypeFromUrl(
+            query[DeclarationsParamsKey.propertyType],
         ),
     };
 };
@@ -42,6 +56,9 @@ export const getDeclarationsFiltersFromSearchParams = (
         ),
         [DeclarationsParamsKey.roomsMax]: getSingleNumberFromUrl(
             searchParams.getAll(DeclarationsParamsKey.roomsMax),
+        ),
+        [DeclarationsParamsKey.propertyType]: getPropertyTypeFromUrl(
+            searchParams.getAll(DeclarationsParamsKey.propertyType),
         ),
     };
 };
