@@ -19,9 +19,8 @@ export default function Declarations() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { location, priceMin, priceMax } = getDeclarationsFiltersFromQuery(
-    context.query,
-  );
+  const { location, priceMin, priceMax, roomsMin, roomsMax } =
+    getDeclarationsFiltersFromQuery(context.query);
   const { page } = getTableParamsFromQuery(context.query);
   const ssg = generateSSGHelper();
 
@@ -31,6 +30,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       page,
       priceMin,
       priceMax,
+      roomsMin,
+      roomsMax,
     }),
     ssg.locationDict.getAllDistricts.prefetch(),
   ]);

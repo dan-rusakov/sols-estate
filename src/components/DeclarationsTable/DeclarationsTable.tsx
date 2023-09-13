@@ -25,7 +25,7 @@ export default function DeclarationsTable() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
-  const { location, priceMin, priceMax } =
+  const { location, priceMin, priceMax, roomsMin, roomsMax } =
     getDeclarationsFiltersFromSearchParams(searchParams);
   const { page } = getTableParamsFromSearchParams(searchParams);
   const { data: declarationsData } =
@@ -34,6 +34,8 @@ export default function DeclarationsTable() {
       page,
       priceMin,
       priceMax,
+      roomsMin,
+      roomsMax,
     });
   const [declarationsCount, declarations] = declarationsData?.data ?? [];
   const { data: districts } = api.locationDict.getAllDistricts.useQuery();

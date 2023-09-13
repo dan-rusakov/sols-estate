@@ -42,6 +42,8 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
         const location = input[DeclarationsParamsKey.location];
         const priceMin = input[DeclarationsParamsKey.priceMin];
         const priceMax = input[DeclarationsParamsKey.priceMax];
+        const roomsMin = input[DeclarationsParamsKey.roomsMin];
+        const roomsMax = input[DeclarationsParamsKey.roomsMax];
 
         if (priceMin && priceMax && priceMin > priceMax) {
             throw new TRPCError({
@@ -50,19 +52,32 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
             });
         }
 
-        let filtering: Prisma.DeclarationWhereInput = {};
+        if (roomsMin && roomsMax && roomsMin > roomsMax) {
+            throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Min rooms amount must be less or equal to max rooms amount',
+            });
+        }
+
+        interface BaseFiltering {
+            AND: Prisma.DeclarationWhereInput[],
+        }
+        const filtering: BaseFiltering = {
+            AND: []
+        };
 
         if (location?.length) {
-            filtering.location = {
-                district: {
-                    in: location,
+            filtering.AND.push({
+                location: {
+                    district: {
+                        in: location,
+                    }
                 }
-            }
+            })
         }
 
         if (priceMin !== null || priceMax !== null) {
-            filtering = {
-                ...filtering,
+            filtering.AND.push({
                 OR: [
                     {
                         priceMin: {
@@ -93,7 +108,42 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
                         }
                     },
                 ],
-            }
+            })
+        }
+
+        if (roomsMin !== null || roomsMax !== null) {
+            filtering.AND.push({
+                OR: [
+                    {
+                        roomsMin: {
+                            lte: roomsMax ?? undefined,
+                            gte: roomsMin ?? undefined
+                        },
+                        roomsMax: {
+                            equals: null,
+                        }
+                    },
+                    {
+                        roomsMin: {
+                            equals: null,
+                        },
+                        roomsMax: {
+                            lte: roomsMax ?? undefined,
+                            gte: roomsMin ?? undefined,
+                        }
+                    },
+                    {
+                        roomsMin: {
+                            lte: roomsMax ?? undefined,
+                            gte: roomsMin ?? undefined,
+                        },
+                        roomsMax: {
+                            lte: roomsMax ?? undefined,
+                            gte: roomsMin ?? undefined,
+                        }
+                    },
+                ],
+            });
         }
 
         const declarations = await findAllDeclarations(ctx, filtering, findAllDeclarationsArgs.select, input.page);

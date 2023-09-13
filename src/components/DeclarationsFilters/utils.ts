@@ -15,6 +15,12 @@ export const getDeclarationsFiltersFromQuery = (
         [DeclarationsParamsKey.priceMax]: getSingleNumberFromUrl(
             query[DeclarationsParamsKey.priceMax],
         ),
+        [DeclarationsParamsKey.roomsMin]: getSingleNumberFromUrl(
+            query[DeclarationsParamsKey.roomsMin],
+        ),
+        [DeclarationsParamsKey.roomsMax]: getSingleNumberFromUrl(
+            query[DeclarationsParamsKey.roomsMax],
+        ),
     };
 };
 
@@ -30,6 +36,12 @@ export const getDeclarationsFiltersFromSearchParams = (
         ),
         [DeclarationsParamsKey.priceMax]: getSingleNumberFromUrl(
             searchParams.getAll(DeclarationsParamsKey.priceMax),
+        ),
+        [DeclarationsParamsKey.roomsMin]: getSingleNumberFromUrl(
+            searchParams.getAll(DeclarationsParamsKey.roomsMin),
+        ),
+        [DeclarationsParamsKey.roomsMax]: getSingleNumberFromUrl(
+            searchParams.getAll(DeclarationsParamsKey.roomsMax),
         ),
     };
 };

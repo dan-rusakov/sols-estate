@@ -7,6 +7,8 @@ export const findAllDeclarationsSchema = object({
     [TableParamsName.page]: z.number().or(z.null()),
     [DeclarationsParamsKey.priceMin]: z.number().or(z.null()),
     [DeclarationsParamsKey.priceMax]: z.number().or(z.null()),
+    [DeclarationsParamsKey.roomsMin]: z.number().or(z.null()),
+    [DeclarationsParamsKey.roomsMax]: z.number().or(z.null()),
 });
 
 export type findAllDeclarationsInput = TypeOf<typeof findAllDeclarationsSchema>;
