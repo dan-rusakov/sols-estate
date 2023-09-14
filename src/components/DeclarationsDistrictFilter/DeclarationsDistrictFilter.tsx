@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -22,7 +23,8 @@ export default function DeclarationsDistrictFilter() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>(
     location ?? [],
   );
-  const { data: districts } = api.locationDict.getAllDistricts.useQuery();
+  const { data: districts, isLoading } =
+    api.locationDict.getAllDistricts.useQuery();
 
   const onDistrictChange = (event: SelectChangeEvent<string[]>) => {
     const newSelectedDistrict = event.target.value as string[];
@@ -40,11 +42,16 @@ export default function DeclarationsDistrictFilter() {
     );
   };
 
-  if (!districts?.data) return <div>404</div>;
-
   return (
     <FormControl className="w-44">
-      <InputLabel id="location-filter-label">Location</InputLabel>
+      <InputLabel id="location-filter-label" className="flex items-center">
+        Location{" "}
+        {isLoading && (
+          <div className="ml-3 flex">
+            <CircularProgress size={16} />
+          </div>
+        )}
+      </InputLabel>
       <Select<string[]>
         labelId="location-filter-label"
         id="location-filter"
@@ -53,8 +60,9 @@ export default function DeclarationsDistrictFilter() {
         onChange={onDistrictChange}
         onClose={onDistrictClose}
         multiple
+        disabled={isLoading}
       >
-        {districts.data.map(({ name, slug }) => (
+        {districts?.data.map(({ name, slug }) => (
           <MenuItem key={slug} value={slug}>
             {name}
           </MenuItem>

@@ -18,28 +18,28 @@ export default function Declarations() {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { location, priceMin, priceMax, roomsMin, roomsMax, propertyType } =
-    getDeclarationsFiltersFromQuery(context.query);
-  const { page } = getTableParamsFromQuery(context.query);
-  const ssg = generateSSGHelper();
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
+//   const { location, priceMin, priceMax, roomsMin, roomsMax, propertyType } =
+//     getDeclarationsFiltersFromQuery(context.query);
+//   const { page } = getTableParamsFromQuery(context.query);
+//   const ssg = generateSSGHelper();
 
-  await Promise.all([
-    ssg.declarations.getAllDeclarations.prefetch({
-      location,
-      page,
-      priceMin,
-      priceMax,
-      roomsMin,
-      roomsMax,
-      propertyType,
-    }),
-    ssg.locationDict.getAllDistricts.prefetch(),
-  ]);
+//   await Promise.all([
+//     ssg.declarations.getAllDeclarations.prefetch({
+//       location,
+//       page,
+//       priceMin,
+//       priceMax,
+//       roomsMin,
+//       roomsMax,
+//       propertyType,
+//     }),
+//     ssg.locationDict.getAllDistricts.prefetch(),
+//   ]);
 
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-    },
-  };
-}
+//   return {
+//     props: {
+//       trpcState: ssg.dehydrate(),
+//     },
+//   };
+// }
