@@ -1,10 +1,6 @@
-import { type GetServerSidePropsContext } from "next";
 import DeclarationsFilters from "~/components/DeclarationsFilters/DeclarationsFilters";
-import { getDeclarationsFiltersFromQuery } from "~/components/DeclarationsFilters/utils";
 import DeclarationsTable from "~/components/DeclarationsTable/DeclarationsTable";
 import Header from "~/components/Header";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import { getTableParamsFromQuery } from "~/utils/table";
 
 export default function Declarations() {
   return (
@@ -17,29 +13,3 @@ export default function Declarations() {
     </>
   );
 }
-
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   const { location, priceMin, priceMax, roomsMin, roomsMax, propertyType } =
-//     getDeclarationsFiltersFromQuery(context.query);
-//   const { page } = getTableParamsFromQuery(context.query);
-//   const ssg = generateSSGHelper();
-
-//   await Promise.all([
-//     ssg.declarations.getAllDeclarations.prefetch({
-//       location,
-//       page,
-//       priceMin,
-//       priceMax,
-//       roomsMin,
-//       roomsMax,
-//       propertyType,
-//     }),
-//     ssg.locationDict.getAllDistricts.prefetch(),
-//   ]);
-
-//   return {
-//     props: {
-//       trpcState: ssg.dehydrate(),
-//     },
-//   };
-// }

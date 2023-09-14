@@ -1,4 +1,3 @@
-import { type ParsedUrlQuery } from "querystring";
 import { getSingleNumberFromUrl, getStringsArrayFromUrl } from "~/utils/url";
 import { DeclarationsParamsKey } from "../DeclarationsTable/utils";
 import { $Enums } from "@prisma/client";
@@ -11,31 +10,6 @@ export const getPropertyTypeFromUrl = (value: string | string[] | undefined): (k
     }
 
     return null;
-};
-
-export const getDeclarationsFiltersFromQuery = (
-    query: ParsedUrlQuery,
-) => {
-    return {
-        [DeclarationsParamsKey.location]: getStringsArrayFromUrl(
-            query[DeclarationsParamsKey.location],
-        ),
-        [DeclarationsParamsKey.priceMin]: getSingleNumberFromUrl(
-            query[DeclarationsParamsKey.priceMin],
-        ),
-        [DeclarationsParamsKey.priceMax]: getSingleNumberFromUrl(
-            query[DeclarationsParamsKey.priceMax],
-        ),
-        [DeclarationsParamsKey.roomsMin]: getSingleNumberFromUrl(
-            query[DeclarationsParamsKey.roomsMin],
-        ),
-        [DeclarationsParamsKey.roomsMax]: getSingleNumberFromUrl(
-            query[DeclarationsParamsKey.roomsMax],
-        ),
-        [DeclarationsParamsKey.propertyType]: getPropertyTypeFromUrl(
-            query[DeclarationsParamsKey.propertyType],
-        ),
-    };
 };
 
 export const getDeclarationsFiltersFromSearchParams = (

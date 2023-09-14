@@ -108,6 +108,8 @@ enum PropertyType {
 
 model Agent {
     id             String                @id @default(cuid())
+    createdAt      DateTime              @default(now())
+    updatedAt      DateTime              @updatedAt
     firstName      String
     lastName       String
     legalAddress   LegalAddress          @relation(fields: [legalAddressId], references: [id])

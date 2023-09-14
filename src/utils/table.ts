@@ -1,4 +1,3 @@
-import { type ParsedUrlQuery } from "querystring";
 import { getSingleNumberFromUrl } from "./url";
 import dayjs from "dayjs";
 
@@ -7,16 +6,6 @@ export const TAKE_RECORDS_AMOUNT = 1;
 export enum TableParamsName {
     page = 'page'
 }
-
-export const getTableParamsFromQuery = (
-    query: ParsedUrlQuery,
-) => {
-    return {
-        [TableParamsName.page]: getSingleNumberFromUrl(
-            query[TableParamsName.page],
-        ),
-    };
-};
 
 export const getTableParamsFromSearchParams = (
     searchParams: URLSearchParams,
