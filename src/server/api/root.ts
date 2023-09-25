@@ -3,6 +3,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { declarationsRouter } from "./routers/declarations";
 import { locationDictRouter } from "./routers/locationDict";
 import { agentsRouter } from "./routers/agents";
+import { legalAddressDictRouter } from "./routers/legalAddressDict";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   declarations: declarationsRouter,
   locationDict: locationDictRouter,
   agents: agentsRouter,
+  legalAddressDict: legalAddressDictRouter,
 });
 
 // export type definition of API

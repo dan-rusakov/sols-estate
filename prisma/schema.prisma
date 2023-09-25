@@ -52,13 +52,20 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    status        UserStatus @default(NEW)
+    Agent         Agent?
+}
+
+enum UserStatus {
+    NEW
+    ACTIVE
 }
 
 model VerificationToken {
@@ -110,12 +117,14 @@ model Agent {
     id             String                @id @default(cuid())
     createdAt      DateTime              @default(now())
     updatedAt      DateTime              @updatedAt
+    user           User                  @relation(fields: [userId], references: [id])
+    userId         String                @unique
     firstName      String
     lastName       String
     legalAddress   LegalAddress          @relation(fields: [legalAddressId], references: [id])
     legalAddressId String
-    contactInfo    ContactInfo           @relation(fields: [contactInfoId], references: [id])
-    contactInfoId  String                @unique
+    contactInfo    ContactInfo?          @relation(fields: [contactInfoId], references: [id])
+    contactInfoId  String?               @unique
     type           AgentType
     agencyInfo     AgencyInfo?           @relation(fields: [agencyInfoId], references: [id])
     agencyInfoId   String?
@@ -138,11 +147,11 @@ model LegalAddress {
 }
 
 model ContactInfo {
-    id           String @id @default(cuid())
-    telegramLink String
-    whatsappLink String
-    viberLink    String
-    lineLink     String
+    id           String  @id @default(cuid())
+    telegramLink String?
+    whatsappLink String?
+    viberLink    String?
+    lineLink     String?
     Agent        Agent?
 }
 

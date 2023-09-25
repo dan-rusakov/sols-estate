@@ -8,18 +8,22 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "~/muiTheme";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <SessionProvider session={session}>
-      <div className="mx-auto flex min-h-[100vh] max-w-7xl flex-col px-8">
-        <Component {...pageProps} />
-        <ReactQueryDevtools initialIsOpen={true} />
-      </div>
-    </SessionProvider>
+    <ThemeProvider theme={theme}>
+      <SessionProvider session={session}>
+        <div className="mx-auto flex min-h-[100vh] max-w-7xl flex-col px-8">
+          <Component {...pageProps} />
+          <ReactQueryDevtools initialIsOpen={true} />
+        </div>
+      </SessionProvider>
+    </ThemeProvider>
   );
 };
 

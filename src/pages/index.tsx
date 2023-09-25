@@ -9,6 +9,8 @@ import RegistrationImg from "../assets/images/registration.png";
 import ResearchImg from "../assets/images/platform-research.png";
 import PlacingOrdersImg from "../assets/images/placing-the-orders.png";
 import Header from "~/components/Header";
+import { type GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
 
 export default function Home() {
   return (
@@ -183,4 +185,14 @@ export default function Home() {
       </footer>
     </>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+
+  return {
+    props: {
+      session,
+    },
+  };
 }

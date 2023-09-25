@@ -1,34 +1,27 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { type $Enums } from "@prisma/client";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-
-import { env } from "~/env.mjs";
+import EmailProvider from "next-auth/providers/email";
+import nodemailer from "nodemailer";
 import { prisma } from "~/server/db";
+import html from "~/templates/newsletters/login";
 
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
-      // ...other properties
-      // role: UserRole;
+      status: $Enums.UserStatus;
     };
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    status: $Enums.UserStatus;
+  }
 }
 
 /**
@@ -43,24 +36,54 @@ export const authOptions: NextAuthOptions = {
       user: {
         ...session.user,
         id: user.id,
+        status: user.status,
       },
     }),
+    // jwt: ({ token, user }) => {
+    //   console.log('jwt', token);
+    //   return token;
+    // },
+  },
+  pages: {
+    signIn: '/auth/signin',
+    // signOut: '/auth/signout',
+    //error: '/auth/error', // Error code passed in query string as ?error=
+    verifyRequest: '/auth/verify-request', // (used for check email message)
+    newUser: '/auth/create-agent' // New users will be directed here on first sign in (leave the property out if not of interest)
   },
   adapter: PrismaAdapter(prisma),
+  // session: {
+  //   strategy: 'jwt',
+  // },
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD
+        }
+      },
+      from: process.env.EMAIL_FROM,
+      async sendVerificationRequest({
+        identifier: email,
+        url,
+        provider: { server, from },
+      }) {
+        const { host } = new URL(url);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument
+        const transport = nodemailer.createTransport(server);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        await transport.sendMail({
+          to: email,
+          from,
+          subject: `Log in to ${host}`,
+          text: `Log in to ${host}\n${url}\n\n`,
+          html: html({ url }),
+        })
+      }
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
 };
 
