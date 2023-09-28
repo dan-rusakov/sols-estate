@@ -47,7 +47,7 @@ export default function DeclarationsDistrictFilter() {
       <InputLabel id="location-filter-label" className="flex items-center">
         Location{" "}
         {isLoading && (
-          <div className="ml-3 flex">
+          <div className="ml-3 inline-flex">
             <CircularProgress size={16} />
           </div>
         )}

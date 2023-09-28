@@ -216,13 +216,9 @@ export default function CreateAgent() {
             size="large"
             disableElevation
             disabled={isCreatingAgent}
+            endIcon={isCreatingAgent && <CircularProgress size={16} />}
           >
-            Save{" "}
-            {isCreatingAgent && (
-              <div className="ml-3 flex">
-                <CircularProgress size={16} />
-              </div>
-            )}
+            Save
           </Button>
           {createAgentError && (
             <Alert severity="error">{createAgentError.message}</Alert>

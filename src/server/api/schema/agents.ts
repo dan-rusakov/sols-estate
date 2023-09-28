@@ -22,3 +22,17 @@ export const createAgentSchema = object({
     'lineLink': z.string().or(z.null()),
 });
 export type createAgentInput = TypeOf<typeof createAgentSchema>;
+
+export const findAgentSchema = object({
+    'agentId': z.string(),
+});
+export type findAgentInput = TypeOf<typeof findAgentSchema>;
+
+export const updateAgentSchema = object({
+    'agentId': z.string(),
+    'telegramLink': z.string().or(z.null()),
+    'whatsappLink': z.string().or(z.null()),
+    'viberLink': z.string().or(z.null()),
+    'lineLink': z.string().or(z.null()),
+});
+export type updateAgentInput = TypeOf<typeof updateAgentSchema>;

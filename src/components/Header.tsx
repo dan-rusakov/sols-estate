@@ -43,9 +43,9 @@ export default function Header() {
       {!!session && (
         <Link
           className="rounded-md bg-neutral-900 px-4 py-2 text-center text-base font-medium text-white"
-          href="/account"
+          href="/profile"
         >
-          Account
+          Profile
         </Link>
       )}
     </header>

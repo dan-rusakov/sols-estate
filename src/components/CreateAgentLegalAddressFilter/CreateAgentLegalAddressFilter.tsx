@@ -59,7 +59,7 @@ export default function CreateAgentLegalAddressFilter({
         <InputLabel id="region-filter-label" className="flex items-center">
           Region{" "}
           {isRegionsLoading && (
-            <div className="ml-3 flex">
+            <div className="ml-3 inline-flex">
               <CircularProgress size={16} />
             </div>
           )}
@@ -85,7 +85,7 @@ export default function CreateAgentLegalAddressFilter({
         <InputLabel id="city-filter-label" className="flex items-center">
           City{" "}
           {isCitiesLoading && (
-            <div className="ml-3 flex">
+            <div className="ml-3 inline-flex">
               <CircularProgress size={16} />
             </div>
           )}
@@ -111,7 +111,7 @@ export default function CreateAgentLegalAddressFilter({
         <InputLabel id="district-filter-label" className="flex items-center">
           District{" "}
           {isDistrictsLoading && (
-            <div className="ml-3 flex">
+            <div className="ml-3 inline-flex">
               <CircularProgress size={16} />
             </div>
           )}

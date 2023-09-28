@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
-import { createAgent, findAllAgents } from "../services/agents";
+import { createAgent, findAgent, findAllAgents, updateAgent } from "../services/agents";
 import { type InnerTRPCContext } from "../trpc";
-import { type createAgentInput, type findAllAgentsInput } from "../schema/agents";
+import { type findAgentInput, type createAgentInput, type findAllAgentsInput, type updateAgentInput } from "../schema/agents";
 import { TRPCError } from "@trpc/server";
 import { updateUser } from "../services/users";
 
@@ -116,6 +116,72 @@ export const createAgentHandler = async (ctx: InnerTRPCContext, input: createAge
         }, {
             status: 'ACTIVE',
         });
+
+        return {
+            status: 'success',
+            data: agent,
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const findAgentArgs = Prisma.validator<Prisma.AgentDefaultArgs>()({
+    select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        type: true,
+        user: {
+            select: {
+                email: true,
+            },
+        },
+        contactInfo: {
+            select: {
+                telegramLink: true,
+                whatsappLink: true,
+                viberLink: true,
+                lineLink: true,
+            }
+        },
+    }
+});
+export const findAgentHandler = async (ctx: InnerTRPCContext, input: findAgentInput) => {
+
+    const fintAgentWhere: Prisma.AgentWhereUniqueInput = {
+        userId: input.agentId,
+    }
+
+    try {
+        const agent = await findAgent(ctx, fintAgentWhere, findAgentArgs.select);
+
+        return {
+            status: 'success',
+            data: agent,
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const updateAgentHandler = async (ctx: InnerTRPCContext, input: updateAgentInput) => {
+    try {
+        const fintAgentWhere: Prisma.AgentWhereUniqueInput = {
+            userId: input.agentId,
+        }
+        const updateAgentData: Prisma.XOR<Prisma.AgentUpdateInput, Prisma.AgentUncheckedUpdateInput> = {
+            contactInfo: {
+                update: {
+                    telegramLink: input.telegramLink,
+                    whatsappLink: input.whatsappLink,
+                    viberLink: input.viberLink,
+                    lineLink: input.lineLink,
+                }
+            }
+        };
+
+        const agent = await updateAgent(ctx, fintAgentWhere, updateAgentData);
 
         return {
             status: 'success',
