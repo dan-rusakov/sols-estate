@@ -1,15 +1,19 @@
-import { Alert, Button, Divider, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Divider,
+  TextField,
+} from "@mui/material";
 import { type GetServerSidePropsContext } from "next";
-import { getCsrfToken } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { signIn } from "next-auth/react";
 import { type SignInErrorTypes } from "next-auth/src/core/pages/signin";
 import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
+import { authOptions } from "~/server/auth";
 
-interface SignInProps {
-  csrfToken?: string;
-}
-
-export default function SignIn({ csrfToken }: SignInProps) {
+export default function SignIn() {
   const router = useRouter();
   const { error: errorType } = router.query;
   const errorTypeString: string =
@@ -17,6 +21,7 @@ export default function SignIn({ csrfToken }: SignInProps) {
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const errors: Record<SignInErrorTypes, string> = {
     Signin: "Try signing in with a different account",
@@ -38,22 +43,27 @@ export default function SignIn({ csrfToken }: SignInProps) {
     errorType &&
     (errors[errorTypeString as SignInErrorTypes] ?? errors.default);
 
-  const onSigninHandler = (evt: FormEvent) => {
+  const onSigninHandler = async (evt: FormEvent) => {
+    evt.preventDefault();
+
     if (!email) {
-      evt.preventDefault();
       setEmailError("Email must be specified");
+    }
+
+    try {
+      setIsLoading(true);
+      await signIn("email", { email });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <form
-      method="post"
-      action="/api/auth/signin/email"
       className="m-auto flex w-full max-w-[400px] flex-col rounded p-4 pb-28"
-      onSubmit={onSigninHandler}
+      onSubmit={(evt) => void onSigninHandler(evt)}
     >
       <p className="mx-auto mb-12 text-4xl font-semibold">Sols Estate</p>
-      <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
       <TextField
         id="email"
         label="Email"
@@ -73,6 +83,8 @@ export default function SignIn({ csrfToken }: SignInProps) {
         className="w-full bg-indigo-700 normal-case"
         size="large"
         disableElevation
+        endIcon={isLoading && <CircularProgress size={16} color="inherit" />}
+        disabled={isLoading}
       >
         Login
       </Button>
@@ -90,6 +102,8 @@ export default function SignIn({ csrfToken }: SignInProps) {
         className="w-full normal-case"
         size="large"
         disableElevation
+        endIcon={isLoading && <CircularProgress size={16} color="inherit" />}
+        disabled={isLoading}
       >
         Create account
       </Button>
@@ -103,8 +117,16 @@ export default function SignIn({ csrfToken }: SignInProps) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const csrfToken = (await getCsrfToken({ req: context.req })) ?? null;
-  return {
-    props: { csrfToken },
-  };
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
 }

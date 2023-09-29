@@ -39,10 +39,6 @@ export const authOptions: NextAuthOptions = {
         status: user.status,
       },
     }),
-    // jwt: ({ token, user }) => {
-    //   console.log('jwt', token);
-    //   return token;
-    // },
   },
   pages: {
     signIn: '/auth/signin',
@@ -52,9 +48,6 @@ export const authOptions: NextAuthOptions = {
     newUser: '/auth/create-agent' // New users will be directed here on first sign in (leave the property out if not of interest)
   },
   adapter: PrismaAdapter(prisma),
-  // session: {
-  //   strategy: 'jwt',
-  // },
   providers: [
     EmailProvider({
       server: {

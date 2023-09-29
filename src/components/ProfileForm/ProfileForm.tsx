@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { type FormEvent, useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import CheckIcon from "@mui/icons-material/Check";
+import ChangeEmailDialog from "../ChangeEmailDialog/ChangeEmailDialog";
 
 export default function ProfileForm() {
   const [whatsappLink, setWhatsappLink] = useState("");
@@ -100,17 +101,7 @@ export default function ProfileForm() {
           }}
           disabled={isLoadingAgent || isUpdatingAgent}
         />
-        <Button
-          variant="outlined"
-          type="submit"
-          color="indigo"
-          className="mb-8 w-full normal-case "
-          size="large"
-          disableElevation
-          disabled={isLoadingAgent || isUpdatingAgent}
-        >
-          Change email
-        </Button>
+        <ChangeEmailDialog isFormLoading={isLoadingAgent || isUpdatingAgent} />
         <div className="py-4">
           <p className="text-md mb-1 font-normal text-neutral-700">
             Messengers links
