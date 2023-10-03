@@ -19,7 +19,7 @@ export const getTableParamsFromSearchParams = (
 
 export const cellRangeValue = (min: string | number | null, max: string | number | null): string => {
     if (!min && !max) {
-        return '';
+        return '—';
     }
 
     if (!min) {

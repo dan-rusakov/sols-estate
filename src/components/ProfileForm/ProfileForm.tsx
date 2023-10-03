@@ -165,7 +165,7 @@ export default function ProfileForm() {
           disableElevation
           disabled={isLoadingAgent || isUpdatingAgent}
           endIcon={
-            (updateAgentSuccess && <CheckIcon />) ||
+            (updateAgentSuccess && <CheckIcon color="inherit" />) ||
             (isUpdatingAgent && <CircularProgress size={16} color="inherit" />)
           }
         >

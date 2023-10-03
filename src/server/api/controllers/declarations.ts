@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
-import { findAllDeclarations } from "../services/declarations";
+import { createDeclaration, findAllDeclarations } from "../services/declarations";
 import { type InnerTRPCContext } from "../trpc";
 import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
-import { type findAllDeclarationsInput } from '../schema/declarations';
+import { type createDeclaraionInput, type findAllDeclarationsInput } from '../schema/declarations';
 import { TRPCError } from "@trpc/server";
 
 export const findAllDeclarationsArgs = Prisma.validator<Prisma.DeclarationDefaultArgs>()({
@@ -29,6 +29,7 @@ export const findAllDeclarationsArgs = Prisma.validator<Prisma.DeclarationDefaul
                         telegramLink: true,
                         whatsappLink: true,
                         viberLink: true,
+                        lineLink: true,
                     }
                 }
             }
@@ -160,6 +161,50 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
         return {
             status: 'success',
             data: declarations,
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: createDeclaraionInput) => {
+    try {
+        const createDeclarationData: Prisma.XOR<Prisma.DeclarationCreateInput, Prisma.DeclarationUncheckedCreateInput> = {
+            propertyType: input.propertyType,
+            priceMin: input.priceMin,
+            priceMax: input.priceMax,
+            checkinDate: input.checkinDate,
+            checkoutDate: input.checkoutDate,
+            roomsMin: input.roomsMin,
+            roomsMax: input.roomsMax,
+            commission: input.commission,
+            agent: {
+                connect: {
+                    userId: input.userId,
+                }
+            },
+            location: {
+                connectOrCreate: {
+                    where: {
+                        district_city_region: {
+                            district: input.district,
+                            city: input.city,
+                            region: input.region,
+                        }
+                    },
+                    create: {
+                        district: input.district,
+                        city: input.city,
+                        region: input.region,
+                    }
+                }
+            }
+        };
+
+        await createDeclaration(ctx, createDeclarationData);
+
+        return {
+            status: 'success',
         };
     } catch (err: unknown) {
         throw err;

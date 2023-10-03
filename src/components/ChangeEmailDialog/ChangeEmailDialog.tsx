@@ -134,7 +134,7 @@ export default function ChangeEmailDialog(props: ChangeEmailDialogProps) {
         </form>
       </Dialog>
       {errorNotification(
-        !!updateEmailError ?? !!signOutError,
+        !!updateEmailError || !!signOutError,
         updateEmailError?.message ?? signOutError ?? "",
       )}
     </>

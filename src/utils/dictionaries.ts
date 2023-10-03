@@ -19,3 +19,9 @@ export const AgentTypeDict: Record<$Enums.AgentType, string> = {
 }
 
 export type AgentType = keyof typeof $Enums.AgentType;
+
+export const propertyTypeDict: Record<$Enums.PropertyType, string> = {
+    [$Enums.PropertyType.VILLA]: 'Villa',
+    [$Enums.PropertyType.APARTMENT]: 'Apartment',
+    [$Enums.PropertyType.TOWNHOUSE]: 'Townhouse',
+}

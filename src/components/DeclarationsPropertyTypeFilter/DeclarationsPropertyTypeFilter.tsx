@@ -10,12 +10,10 @@ import { useRouter } from "next/router";
 import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
 import { useState } from "react";
 import { TableParamsName } from "~/utils/table";
-import {
-  DeclarationsParamsKey,
-  propertyTypeDict,
-} from "../DeclarationsTable/utils";
+import { DeclarationsParamsKey } from "../DeclarationsTable/utils";
 import { createSearchParamsString } from "~/utils/url";
 import { type $Enums } from "@prisma/client";
+import { propertyTypeDict } from "~/utils/dictionaries";
 
 export default function DeclarationsPropertyTypeFilter() {
   const router = useRouter();

@@ -216,7 +216,9 @@ export default function CreateAgent() {
             size="large"
             disableElevation
             disabled={isCreatingAgent}
-            endIcon={isCreatingAgent && <CircularProgress size={16} />}
+            endIcon={
+              isCreatingAgent && <CircularProgress size={16} color="inherit" />
+            }
           >
             Save
           </Button>

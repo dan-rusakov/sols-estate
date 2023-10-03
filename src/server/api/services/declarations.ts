@@ -27,3 +27,9 @@ export const findAllDeclarations = async (ctx: InnerTRPCContext, where: Prisma.D
         }),
     ])
 }
+
+export const createDeclaration = async (ctx: InnerTRPCContext, data: Prisma.XOR<Prisma.DeclarationCreateInput, Prisma.DeclarationUncheckedCreateInput>) => {
+    return ctx.prisma.declaration.create({
+        data,
+    });
+}

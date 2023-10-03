@@ -3,12 +3,12 @@ import {
   type GridPaginationModel,
   type GridRenderCellParams,
 } from "@mui/x-data-grid";
-import { DeclarationsParamsKey, propertyTypeDict } from "./utils";
+import { DeclarationsParamsKey } from "./utils";
 import ContactLinks from "./ContactLinks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
 import { api } from "~/utils/api";
-import { getNameFromDict } from "~/utils/dictionaries";
+import { getNameFromDict, propertyTypeDict } from "~/utils/dictionaries";
 import { createSearchParamsString } from "~/utils/url";
 import {
   TableParamsName,
@@ -69,9 +69,10 @@ export default function DeclarationsTable() {
     agentName: `${declaration.agent.firstName} ${declaration.agent.lastName}`,
     contactLinks: (
       <ContactLinks
-        telegramLink={declaration.agent.contactInfo.telegramLink}
-        whatsappLink={declaration.agent.contactInfo.whatsappLink}
-        viberLink={declaration.agent.contactInfo.viberLink}
+        telegramLink={declaration.agent.contactInfo?.telegramLink ?? undefined}
+        whatsappLink={declaration.agent.contactInfo?.whatsappLink ?? undefined}
+        lineLink={declaration.agent.contactInfo?.lineLink ?? undefined}
+        viberLink={declaration.agent.contactInfo?.viberLink ?? undefined}
       />
     ),
     commission: `${declaration.commission}%`,
@@ -96,7 +97,7 @@ export default function DeclarationsTable() {
     {
       field: "contactLinks",
       headerName: "Contacts",
-      width: 160,
+      width: 190,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       renderCell: (params: GridRenderCellParams<any, JSX.Element>) => (
         <>{params.value}</>
