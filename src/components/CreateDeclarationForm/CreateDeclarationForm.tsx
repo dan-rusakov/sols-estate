@@ -121,8 +121,8 @@ export default function CreateDeclarationForm() {
     error ? <Alert severity="error">{errorText}</Alert> : null;
 
   return (
-    <div className="ml-auto mr-auto flex w-full max-w-[400px] flex-col py-20">
-      <h1 className="mb-10 text-3xl font-bold text-neutral-900">
+    <div className="ml-auto mr-auto flex w-full max-w-[400px] flex-col py-20 sm:py-12">
+      <h1 className="mb-10 text-3xl font-bold text-neutral-900 sm:text-2xl">
         Create new request
       </h1>
       <form className="flex flex-col gap-y-6" onSubmit={createDeclaration}>
