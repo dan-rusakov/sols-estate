@@ -11,6 +11,7 @@ import PlacingOrdersImg from "../assets/images/placing-the-orders.png";
 import Header from "~/components/Header";
 import { type GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
+import { getServerAuthSession } from "~/server/auth";
 
 export default function Home() {
   return (
@@ -188,7 +189,7 @@ export default function Home() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
+  const session = await getServerAuthSession(context);
 
   return {
     props: {

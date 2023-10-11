@@ -1,8 +1,8 @@
 import { type GetServerSidePropsContext } from "next";
-import { getSession } from "next-auth/react";
 import AgentsFilters from "~/components/AgentsFilters/AgentsFilters";
 import AgentsTable from "~/components/AgentsTable/AgentsTable";
 import Header from "~/components/Header";
+import { getServerAuthSession } from "~/server/auth";
 
 export default function Agents() {
   return (
@@ -17,7 +17,7 @@ export default function Agents() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
+  const session = await getServerAuthSession(context);
 
   if (session?.user.status === "NEW") {
     return {

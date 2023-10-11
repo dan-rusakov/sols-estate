@@ -3,6 +3,7 @@ import { getSession } from "next-auth/react";
 import DeclarationsFilters from "~/components/DeclarationsFilters/DeclarationsFilters";
 import DeclarationsTable from "~/components/DeclarationsTable/DeclarationsTable";
 import Header from "~/components/Header";
+import { getServerAuthSession } from "~/server/auth";
 
 export default function Declarations() {
   return (
@@ -17,7 +18,7 @@ export default function Declarations() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
+  const session = await getServerAuthSession(context);
 
   if (session?.user.status === "NEW") {
     return {

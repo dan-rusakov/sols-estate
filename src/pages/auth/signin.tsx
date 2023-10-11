@@ -6,12 +6,11 @@ import {
   TextField,
 } from "@mui/material";
 import { type GetServerSidePropsContext } from "next";
-import { getServerSession } from "next-auth";
 import { signIn } from "next-auth/react";
 import { type SignInErrorTypes } from "next-auth/src/core/pages/signin";
 import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
-import { authOptions } from "~/server/auth";
+import { getServerAuthSession } from "~/server/auth";
 
 export default function SignIn() {
   const router = useRouter();
@@ -117,7 +116,7 @@ export default function SignIn() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerAuthSession(context);
 
   if (session) {
     return {

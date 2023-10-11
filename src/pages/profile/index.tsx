@@ -2,6 +2,7 @@ import { type GetServerSidePropsContext } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Header from "~/components/Header";
 import ProfileForm from "~/components/ProfileForm/ProfileForm";
+import { getServerAuthSession } from "~/server/auth";
 
 export default function Profile() {
   const { status } = useSession();
@@ -24,7 +25,7 @@ export default function Profile() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getSession(context);
+  const session = await getServerAuthSession(context);
 
   if (session?.user.status === "NEW") {
     return {
