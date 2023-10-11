@@ -1,4 +1,9 @@
-export default function Gear() {
+interface GearProps {
+  className?: string;
+}
+
+export default function Gear(props: GearProps) {
+  const { className } = props;
   return (
     <svg
       width="37"
@@ -6,6 +11,7 @@ export default function Gear() {
       viewBox="0 0 37 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <g clipPath="url(#clip0_48_415)">
         <path

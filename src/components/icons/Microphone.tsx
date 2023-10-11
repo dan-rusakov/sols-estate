@@ -1,4 +1,10 @@
-export default function Microphone() {
+interface MicrophoneProps {
+  className?: string;
+}
+
+export default function Microphone(props: MicrophoneProps) {
+  const { className } = props;
+
   return (
     <svg
       width="37"
@@ -6,6 +12,7 @@ export default function Microphone() {
       viewBox="0 0 37 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <path
         id="Vector"

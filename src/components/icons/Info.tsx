@@ -1,4 +1,10 @@
-export default function Info() {
+interface InfoProps {
+  className?: string;
+}
+
+export default function Info(props: InfoProps) {
+  const { className } = props;
+
   return (
     <svg
       width="36"
@@ -6,6 +12,7 @@ export default function Info() {
       viewBox="0 0 36 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <g clipPath="url(#clip0_48_390)">
         <path

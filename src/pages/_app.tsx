@@ -21,7 +21,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <SessionProvider session={session}>
-          <div className="mx-auto flex min-h-[100vh] max-w-7xl flex-col px-8">
+          <div className="mx-auto flex min-h-[100vh] max-w-7xl flex-col px-8 sm:px-5">
             <Component {...pageProps} />
             <ReactQueryDevtools initialIsOpen={true} />
           </div>
