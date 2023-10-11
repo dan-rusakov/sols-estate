@@ -5,3 +5,9 @@ export const updateUserEmailSchema = object({
     email: z.string(),
 });
 export type updateUserEmailInput = TypeOf<typeof updateUserEmailSchema>;
+
+export const findUserSchema = object({
+    userId: z.string(),
+    agentId: z.string(),
+});
+export type findUserInput = TypeOf<typeof findUserSchema>;

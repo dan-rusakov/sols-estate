@@ -60,7 +60,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     status        UserStatus @default(NEW)
-    Agent         Agent?
+    agent         Agent?
 }
 
 enum UserStatus {
@@ -102,7 +102,7 @@ model Location {
     district    String
     city        String
     region      String
-    Declaration Declaration[]
+    declaration Declaration[]
 
     @@unique([district, city, region])
 }
@@ -130,7 +130,7 @@ model Agent {
     agencyInfoId   String?
     statusedAgents AgentPersonalStatus[] @relation("Initiator")
     personalStatus AgentPersonalStatus[] @relation("Effector")
-    Declaration    Declaration[]
+    declaration    Declaration[]
 
     @@index([legalAddressId])
     @@index([agencyInfoId])
@@ -141,7 +141,7 @@ model LegalAddress {
     district String
     city     String
     region   String
-    Agent    Agent[]
+    agent    Agent[]
 
     @@unique([district, city, region])
 }
@@ -152,7 +152,7 @@ model ContactInfo {
     whatsappLink String?
     viberLink    String?
     lineLink     String?
-    Agent        Agent?
+    agent        Agent?
 }
 
 enum AgentType {
@@ -163,17 +163,17 @@ enum AgentType {
 model AgencyInfo {
     id         String  @id @default(cuid())
     agencyName String  @unique
-    Agent      Agent[]
+    agent      Agent[]
 }
 
 model AgentPersonalStatus {
-    id          String                  @id @default(cuid())
     status      AgentPersonalStatusType @default(NONE)
     initiator   Agent                   @relation("Initiator", fields: [initiatorId], references: [id])
     effector    Agent                   @relation("Effector", fields: [effectorId], references: [id])
     initiatorId String
     effectorId  String
 
+    @@id([initiatorId, effectorId])
     @@index([initiatorId])
     @@index([effectorId])
 }

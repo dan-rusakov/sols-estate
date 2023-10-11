@@ -1,7 +1,7 @@
 import { getSingleNumberFromUrl } from "./url";
 import dayjs from "dayjs";
 
-export const TAKE_RECORDS_AMOUNT = 1;
+export const TAKE_RECORDS_AMOUNT = 2;
 
 export enum TableParamsName {
     page = 'page'

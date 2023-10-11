@@ -7,3 +7,9 @@ export const updateUserEmail = async (ctx: InnerTRPCContext, where: Prisma.UserW
         data
     });
 }
+
+export const findUser = async (ctx: InnerTRPCContext, where: Prisma.UserWhereUniqueInput) => {
+    return ctx.prisma.user.findUnique({
+        where,
+    });
+}

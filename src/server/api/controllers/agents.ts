@@ -1,25 +1,72 @@
 import { Prisma } from "@prisma/client";
-import { createAgent, findAgent, findAllAgents, updateAgent } from "../services/agents";
+import { addAgentToBlacklist, addAgentToFavourites, createAgent, findAgent, findAllAgents, removeAgentFromBlacklist, removeAgentFromFavourites, updateAgent } from "../services/agents";
 import { type InnerTRPCContext } from "../trpc";
-import { type findAgentInput, type createAgentInput, type findAllAgentsInput, type updateAgentInput } from "../schema/agents";
+import { type findAgentInput, type createAgentInput, type findAllAgentsInput, type updateAgentInput, type addAgentToFavouritesInput, type removeAgentFromFavouritesInput, type addAgentToBlacklistInput } from "../schema/agents";
 import { TRPCError } from "@trpc/server";
 import { updateUser } from "../services/users";
+import { AgentsParamsKey } from "~/components/AgentsTable/utils";
 
-export const findAllAgentsArgs = Prisma.validator<Prisma.AgentDefaultArgs>()({
-    select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        type: true,
-    }
-});
 export const findAllAgentsHandler = async (ctx: InnerTRPCContext, input: findAllAgentsInput) => {
     try {
-        const agents = await findAllAgents(ctx, findAllAgentsArgs.select, input.page);
+        const agentStatusType = input[AgentsParamsKey.agentStatusType];
+
+        const findAgentWhere: Prisma.AgentWhereUniqueInput = {
+            userId: input.userId,
+        }
+
+        const userAgent = await findAgent(ctx, findAgentWhere, findAgentArgs.select);
+
+        interface BaseFiltering {
+            AND: Prisma.AgentWhereInput[],
+        }
+        const filtering: BaseFiltering = {
+            AND: []
+        };
+
+        if (agentStatusType && agentStatusType !== 'NONE') {
+            filtering.AND.push({
+                personalStatus: {
+                    some: {
+                        initiatorId: userAgent?.id,
+                        status: agentStatusType,
+                    }
+                }
+            })
+        }
+
+        const findAllAgentsArgs = Prisma.validator<Prisma.AgentDefaultArgs>()({
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                type: true,
+                user: {
+                    select: {
+                        id: true,
+                        email: true,
+                    }
+                },
+                personalStatus: {
+                    select: {
+                        status: true,
+                        initiator: {
+                            select: {
+                                id: true,
+                            }
+                        }
+                    },
+                    where: {
+                        initiatorId: userAgent?.id,
+                    }
+                }
+            }
+        });
+
+        const agentsData = await findAllAgents(ctx, filtering, findAllAgentsArgs.select, input.page);
 
         return {
             status: 'success',
-            data: agents,
+            data: agentsData,
         };
     } catch (err: unknown) {
         throw err;
@@ -186,6 +233,162 @@ export const updateAgentHandler = async (ctx: InnerTRPCContext, input: updateAge
         return {
             status: 'success',
             data: agent,
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const addAgentToFavouritesHandler = async (ctx: InnerTRPCContext, input: addAgentToFavouritesInput) => {
+    try {
+        const findUserAgentWhere: Prisma.AgentWhereUniqueInput = {
+            userId: input.userId,
+        }
+        const userAgent = await findAgent(ctx, findUserAgentWhere, findAgentArgs.select);
+
+        if (!userAgent) {
+            throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Couldn`t find user agent',
+            });
+        }
+
+        const findAgentStatusWhere: Prisma.AgentPersonalStatusWhereUniqueInput = {
+            initiatorId_effectorId: {
+                initiatorId: userAgent.id,
+                effectorId: input.agentId
+            },
+        }
+        const createAgentStatusData: Prisma.XOR<Prisma.AgentPersonalStatusCreateInput, Prisma.AgentPersonalStatusUncheckedCreateInput> = {
+            status: 'FAVOURITE',
+            initiator: {
+                connect: {
+                    id: userAgent.id,
+                }
+            },
+            effector: {
+                connect: {
+                    id: input.agentId
+                }
+            }
+        };
+        const updateAgentStatusData: Prisma.XOR<Prisma.AgentPersonalStatusUpdateInput, Prisma.AgentPersonalStatusUncheckedUpdateInput> = {
+            status: 'FAVOURITE',
+        };
+
+        await addAgentToFavourites(ctx, findAgentStatusWhere, createAgentStatusData, updateAgentStatusData);
+
+        return {
+            status: 'success',
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const removeAgentFromFavouritesHandler = async (ctx: InnerTRPCContext, input: removeAgentFromFavouritesInput) => {
+    try {
+        const findUserAgentWhere: Prisma.AgentWhereUniqueInput = {
+            userId: input.userId,
+        }
+        const userAgent = await findAgent(ctx, findUserAgentWhere, findAgentArgs.select);
+
+        if (!userAgent) {
+            throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Couldn`t find user agent',
+            });
+        }
+
+        const findAgentStatusWhere: Prisma.AgentPersonalStatusWhereUniqueInput = {
+            initiatorId_effectorId: {
+                initiatorId: userAgent.id,
+                effectorId: input.agentId
+            },
+        }
+
+        await removeAgentFromFavourites(ctx, findAgentStatusWhere);
+
+        return {
+            status: 'success',
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const addAgentToBlacklistHandler = async (ctx: InnerTRPCContext, input: addAgentToBlacklistInput) => {
+    try {
+        const findUserAgentWhere: Prisma.AgentWhereUniqueInput = {
+            userId: input.userId,
+        }
+        const userAgent = await findAgent(ctx, findUserAgentWhere, findAgentArgs.select);
+
+        if (!userAgent) {
+            throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Couldn`t find user agent',
+            });
+        }
+
+        const findAgentStatusWhere: Prisma.AgentPersonalStatusWhereUniqueInput = {
+            initiatorId_effectorId: {
+                initiatorId: userAgent.id,
+                effectorId: input.agentId
+            },
+        }
+        const createAgentStatusData: Prisma.XOR<Prisma.AgentPersonalStatusCreateInput, Prisma.AgentPersonalStatusUncheckedCreateInput> = {
+            status: 'BLOCKED',
+            initiator: {
+                connect: {
+                    id: userAgent.id,
+                }
+            },
+            effector: {
+                connect: {
+                    id: input.agentId
+                }
+            }
+        };
+        const updateAgentStatusData: Prisma.XOR<Prisma.AgentPersonalStatusUpdateInput, Prisma.AgentPersonalStatusUncheckedUpdateInput> = {
+            status: 'BLOCKED',
+        };
+
+        await addAgentToBlacklist(ctx, findAgentStatusWhere, createAgentStatusData, updateAgentStatusData);
+
+        return {
+            status: 'success',
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const removeAgentFromBlacklistHandler = async (ctx: InnerTRPCContext, input: removeAgentFromFavouritesInput) => {
+    try {
+        const findUserAgentWhere: Prisma.AgentWhereUniqueInput = {
+            userId: input.userId,
+        }
+        const userAgent = await findAgent(ctx, findUserAgentWhere, findAgentArgs.select);
+
+        if (!userAgent) {
+            throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Couldn`t find user agent',
+            });
+        }
+
+        const findAgentStatusWhere: Prisma.AgentPersonalStatusWhereUniqueInput = {
+            initiatorId_effectorId: {
+                initiatorId: userAgent.id,
+                effectorId: input.agentId
+            },
+        }
+
+        await removeAgentFromBlacklist(ctx, findAgentStatusWhere);
+
+        return {
+            status: 'success',
         };
     } catch (err: unknown) {
         throw err;
