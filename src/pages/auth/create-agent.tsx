@@ -97,8 +97,8 @@ export default function CreateAgent() {
 
   return (
     <>
-      <div className="ml-auto mr-auto flex w-full max-w-[400px] flex-col py-20">
-        <h1 className="mb-2 text-3xl font-bold text-neutral-900">
+      <div className="ml-auto mr-auto flex w-full max-w-[400px] flex-col py-20 sm:py-12">
+        <h1 className="mb-2 text-3xl font-bold text-neutral-900 sm:text-2xl">
           Create your account
         </h1>
         <p className="mb-10 text-sm font-normal text-neutral-500">
