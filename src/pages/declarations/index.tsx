@@ -8,7 +8,7 @@ export default function Declarations() {
   return (
     <>
       <Header />
-      <div className="mb-12 mt-12">
+      <div className="my-12 sm:mb-8">
         <DeclarationsFilters />
       </div>
       <DeclarationsTable />
