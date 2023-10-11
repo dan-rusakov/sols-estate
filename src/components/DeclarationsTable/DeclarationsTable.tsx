@@ -8,7 +8,13 @@ import ContactLinks from "./ContactLinks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
 import { api } from "~/utils/api";
-import { getNameFromDict, propertyTypeDict } from "~/utils/dictionaries";
+import {
+  commissionTypeDict,
+  type commissionTypes,
+  commissionValues,
+  getNameFromDict,
+  propertyTypeDict,
+} from "~/utils/dictionaries";
 import { createSearchParamsString } from "~/utils/url";
 import {
   TableParamsName,
@@ -41,6 +47,12 @@ export default function DeclarationsTable() {
   const { data: districts, isLoading: isDistrictsLoading } =
     api.locationDict.getAllDistricts.useQuery();
   const [declarationsCount, declarations] = declarationsData?.data ?? [];
+
+  const getCommissionLabel = (commission: number): string => {
+    return (
+      commissionTypeDict[commission as commissionTypes] ?? commission.toString()
+    );
+  };
 
   const rows = declarations?.map((declaration) => ({
     id: declaration.id,
@@ -75,7 +87,7 @@ export default function DeclarationsTable() {
         viberLink={declaration.agent.contactInfo?.viberLink ?? undefined}
       />
     ),
-    commission: `${declaration.commission}%`,
+    commission: getCommissionLabel(declaration.commission),
   }));
 
   const columns = [
@@ -86,13 +98,13 @@ export default function DeclarationsTable() {
     },
     { field: "propertyType", headerName: "Property type", width: 120 },
     { field: "prices", headerName: "Price", width: 150 },
-    { field: "livingDates", headerName: "Dates of stay", width: 190 },
-    { field: "rooms", headerName: "Rooms amount", width: 120 },
     {
       field: "commission",
       headerName: "Commission",
       width: 120,
     },
+    { field: "livingDates", headerName: "Dates of stay", width: 190 },
+    { field: "rooms", headerName: "Rooms amount", width: 120 },
     { field: "agentName", headerName: "Agent", width: 160 },
     {
       field: "contactLinks",

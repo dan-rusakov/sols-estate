@@ -5,13 +5,12 @@ import {
   Select,
   type SelectChangeEvent,
 } from "@mui/material";
+import { commissionTypeDict, commissionValues } from "~/utils/dictionaries";
 
 interface CreateDeclarationCommissionProps {
   commission: number | null;
   setCommission: (commission: number) => void;
 }
-
-const commissionTypes = [0, 3, 5, 10];
 
 export default function CreateDeclarationCommission(
   props: CreateDeclarationCommissionProps,
@@ -35,9 +34,9 @@ export default function CreateDeclarationCommission(
           onChange={onCommissionChange}
           required
         >
-          {commissionTypes.map((value) => (
+          {commissionValues.map((value) => (
             <MenuItem key={value} value={value}>
-              {value}%
+              {commissionTypeDict[value]}
             </MenuItem>
           ))}
         </Select>
