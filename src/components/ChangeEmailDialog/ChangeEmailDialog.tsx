@@ -89,7 +89,7 @@ export default function ChangeEmailDialog(props: ChangeEmailDialogProps) {
         <form onSubmit={changeEmail}>
           <DialogTitle>Change your email</DialogTitle>
           <DialogContent className="flex flex-col items-start gap-y-4">
-            <DialogContentText>
+            <DialogContentText className="sm:text-xs">
               To change this email, please enter your new address here. We will
               send confirmation email to you.
             </DialogContentText>
@@ -101,7 +101,7 @@ export default function ChangeEmailDialog(props: ChangeEmailDialogProps) {
               value={email}
               onChange={(evt) => setEmail(evt.target.value)}
               variant="outlined"
-              className="mt-4 w-80"
+              className="mt-4 w-80 sm:w-full"
               disabled={isUpdatingEmail ?? isSigningOut}
             />
           </DialogContent>

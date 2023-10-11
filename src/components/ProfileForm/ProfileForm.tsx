@@ -59,8 +59,10 @@ export default function ProfileForm() {
   };
 
   return (
-    <div className="ml-auto mr-auto flex w-full max-w-[400px] flex-col gap-y-6 py-20">
-      <h1 className="mb-10 text-3xl font-bold text-neutral-900">Profile</h1>
+    <div className="ml-auto mr-auto flex w-full max-w-[400px] flex-col gap-y-6 py-20 sm:py-12">
+      <h1 className="mb-10 text-3xl font-bold text-neutral-900 sm:text-2xl">
+        Profile
+      </h1>
       <form className="flex flex-col gap-y-6" onSubmit={saveProfileHandler}>
         <TextField
           id="first-name"
