@@ -68,12 +68,12 @@ export default function DeclarationsPriceFilter() {
   };
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 sm:w-full">
       <TextField
         id="price-min-filter"
         label="Min price"
         type="number"
-        className="w-32"
+        className="w-32 sm:w-full"
         error={minPriceError}
         value={minPrice ?? ""}
         onChange={onMinPriceChange}
@@ -83,7 +83,7 @@ export default function DeclarationsPriceFilter() {
         id="price-max-filter"
         label="Max price"
         type="number"
-        className="w-32"
+        className="w-32 sm:w-full"
         error={maxPriceError}
         value={maxPrice ?? ""}
         onChange={onMaxPriceChange}

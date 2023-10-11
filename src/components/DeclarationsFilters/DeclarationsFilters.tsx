@@ -6,7 +6,7 @@ import PropertyTypeFilter from "../DeclarationsPropertyTypeFilter/DeclarationsPr
 
 export default memo(function DeclarationsFilters() {
   return (
-    <div className="flex w-full flex-row gap-8">
+    <div className="flex w-full flex-row flex-wrap gap-x-8 gap-y-5">
       <DistrictFilter />
       <PriceFilter />
       <RoomsFilter />

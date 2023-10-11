@@ -69,12 +69,12 @@ export default function DeclarationsRoomsFilter() {
   };
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 sm:w-full">
       <TextField
         id="rooms-min-filter"
         label="Min rooms"
         type="number"
-        className="w-32"
+        className="w-32 sm:w-full"
         error={minRoomsError}
         value={minRooms ?? ""}
         onChange={onMinRoomsChange}
@@ -84,7 +84,7 @@ export default function DeclarationsRoomsFilter() {
         id="rooms-max-filter"
         label="Max rooms"
         type="number"
-        className="w-32"
+        className="w-32 sm:w-full"
         error={maxRoomsError}
         value={maxRooms ?? ""}
         onChange={onMaxRoomsChange}

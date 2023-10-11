@@ -43,7 +43,7 @@ export default function DeclarationsDistrictFilter() {
   };
 
   return (
-    <FormControl className="w-44">
+    <FormControl className="w-44 sm:w-full">
       <InputLabel id="location-filter-label" className="flex items-center">
         Location{" "}
         {isLoading && (

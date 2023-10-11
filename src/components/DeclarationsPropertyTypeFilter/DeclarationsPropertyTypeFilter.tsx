@@ -47,7 +47,7 @@ export default function DeclarationsPropertyTypeFilter() {
   };
 
   return (
-    <FormControl className="w-44">
+    <FormControl className="w-44 sm:w-full">
       <InputLabel id="property-type-filter-label">Property type</InputLabel>
       <Select<(keyof typeof $Enums.PropertyType)[]>
         labelId="property-type-filter-label"
@@ -57,7 +57,6 @@ export default function DeclarationsPropertyTypeFilter() {
         onChange={onPropertyTypeChange}
         onClose={onPropertyTypeClose}
         multiple
-        className="w-44"
       >
         {Object.entries(propertyTypeDict).map(([key, value]) => (
           <MenuItem key={key} value={key}>

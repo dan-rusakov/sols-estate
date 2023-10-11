@@ -1,5 +1,4 @@
 import { type GetServerSidePropsContext } from "next";
-import { getSession } from "next-auth/react";
 import DeclarationsFilters from "~/components/DeclarationsFilters/DeclarationsFilters";
 import DeclarationsTable from "~/components/DeclarationsTable/DeclarationsTable";
 import Header from "~/components/Header";

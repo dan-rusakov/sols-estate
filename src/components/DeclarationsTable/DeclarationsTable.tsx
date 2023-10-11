@@ -141,8 +141,8 @@ export default function DeclarationsTable() {
   };
 
   return (
-    <div className="relative">
-      <Box sx={{ height: 400, width: "100%" }}>
+    <div className="relative mb-16">
+      <Box sx={{ height: 650, width: "100%" }}>
         <DataGrid
           rows={rows ?? []}
           columns={columns}
