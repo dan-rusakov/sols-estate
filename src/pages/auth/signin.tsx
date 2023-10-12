@@ -7,10 +7,22 @@ import {
 } from "@mui/material";
 import { type GetServerSidePropsContext } from "next";
 import { signIn } from "next-auth/react";
-import { type SignInErrorTypes } from "next-auth/src/core/pages/signin";
 import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
 import { getServerAuthSession } from "~/server/auth";
+
+type SignInErrorTypes =
+  | "Signin"
+  | "OAuthSignin"
+  | "OAuthCallback"
+  | "OAuthCreateAccount"
+  | "EmailCreateAccount"
+  | "Callback"
+  | "OAuthAccountNotLinked"
+  | "EmailSignin"
+  | "CredentialsSignin"
+  | "SessionRequired"
+  | "default";
 
 export default function SignIn() {
   const router = useRouter();
