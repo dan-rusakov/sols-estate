@@ -1,6 +1,7 @@
 import { Alert, Button, CircularProgress, TextField } from "@mui/material";
 import { type AgentType } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
 import AgentTypeFilter from "~/components/CreateAgentAgentTypeFilter/CreateAgentAgentTypeFilter";
@@ -97,6 +98,19 @@ export default function CreateAgent() {
 
   return (
     <>
+      <Head>
+        <title>
+          Sols estate: search and share estates requests - create agent
+        </title>
+        <meta
+          name="description"
+          content="Join Sols Estate as a real estate agent. Create your agent profile by providing essential information, including legal address, agent name, and work status (freelance or agency-affiliated). Customize your profile with agency details and messenger links for seamless communication in one place."
+        />
+        <meta
+          name="keywords"
+          content="Agent profile creation, real estate agent information, legal address, agent name, free agent, agency-affiliated agent, agency name, messenger links, personalized experience, agent networking, property requests, agent collaboration, property matchmaking, Sols Estate"
+        />
+      </Head>
       <div className="ml-auto mr-auto flex w-full max-w-[400px] flex-col py-20 sm:py-12">
         <h1 className="mb-2 text-3xl font-bold text-neutral-900 sm:text-2xl">
           Create your account

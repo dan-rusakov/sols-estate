@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import { type GetServerSidePropsContext } from "next";
 import { signIn } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
 import { getServerAuthSession } from "~/server/auth";
@@ -70,60 +71,73 @@ export default function SignIn() {
   };
 
   return (
-    <form
-      className="m-auto flex w-full max-w-[400px] flex-col rounded p-4 pb-28"
-      onSubmit={(evt) => void onSigninHandler(evt)}
-    >
-      <p className="mx-auto mb-12 text-4xl font-semibold">Sols Estate</p>
-      <TextField
-        id="email"
-        label="Email"
-        type="email"
-        name="email"
-        variant="outlined"
-        value={email}
-        onChange={(evt) => setEmail(evt.target.value)}
-        className="mb-8 w-full"
-        error={!!emailError}
-        helperText={emailError}
-      />
-      <Button
-        variant="contained"
-        type="submit"
-        color="indigo"
-        className="w-full bg-indigo-700 normal-case"
-        size="large"
-        disableElevation
-        endIcon={isLoading && <CircularProgress size={16} color="inherit" />}
-        disabled={isLoading}
+    <>
+      <Head>
+        <title>Sols estate: search and share estates requests - sign in</title>
+        <meta
+          name="description"
+          content="Join Sols Estate and access the future of real estate collaboration. Create a new account or log in to your existing account as a real estate agent. Experience the convenience of uniting with other agents and providing a personalized experience for every user in one place."
+        />
+        <meta
+          name="keywords"
+          content="Real estate agent sign-in, account creation, agent login, real estate collaboration, agent registration, account access, personalized experience, real estate platform, Sols Estate, agent unity, property requests, agent networking, property matchmaking"
+        />
+      </Head>
+      <form
+        className="m-auto flex w-full max-w-[400px] flex-col rounded p-4 pb-28"
+        onSubmit={(evt) => void onSigninHandler(evt)}
       >
-        Login
-      </Button>
-      <Divider
-        textAlign="center"
-        role="presentation"
-        className="py-3 text-sm text-neutral-400"
-      >
-        or
-      </Divider>
-      <Button
-        variant="outlined"
-        type="submit"
-        color="indigo"
-        className="w-full normal-case"
-        size="large"
-        disableElevation
-        endIcon={isLoading && <CircularProgress size={16} color="inherit" />}
-        disabled={isLoading}
-      >
-        Create account
-      </Button>
-      {!!errorText && (
-        <Alert severity="error" className="mt-8">
-          {errorText}
-        </Alert>
-      )}
-    </form>
+        <p className="mx-auto mb-12 text-4xl font-semibold">Sols Estate</p>
+        <TextField
+          id="email"
+          label="Email"
+          type="email"
+          name="email"
+          variant="outlined"
+          value={email}
+          onChange={(evt) => setEmail(evt.target.value)}
+          className="mb-8 w-full"
+          error={!!emailError}
+          helperText={emailError}
+        />
+        <Button
+          variant="contained"
+          type="submit"
+          color="indigo"
+          className="w-full bg-indigo-700 normal-case"
+          size="large"
+          disableElevation
+          endIcon={isLoading && <CircularProgress size={16} color="inherit" />}
+          disabled={isLoading}
+        >
+          Login
+        </Button>
+        <Divider
+          textAlign="center"
+          role="presentation"
+          className="py-3 text-sm text-neutral-400"
+        >
+          or
+        </Divider>
+        <Button
+          variant="outlined"
+          type="submit"
+          color="indigo"
+          className="w-full normal-case"
+          size="large"
+          disableElevation
+          endIcon={isLoading && <CircularProgress size={16} color="inherit" />}
+          disabled={isLoading}
+        >
+          Create account
+        </Button>
+        {!!errorText && (
+          <Alert severity="error" className="mt-8">
+            {errorText}
+          </Alert>
+        )}
+      </form>
+    </>
   );
 }
 

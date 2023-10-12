@@ -16,8 +16,15 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Sols estate</title>
-        <meta name="description" content="" />
+        <title>Sols estate: search and share estates requests</title>
+        <meta
+          name="description"
+          content="Discover a seamless way to combine real estate agents and clients in one powerful platform. Share and apply for requests for estates like villas, condos, and townhouses, offering a personalized experience for every user. Streamline the real estate process like never before"
+        />
+        <meta
+          name="keywords"
+          content="Sols Estate, real estate requests, property exchange, villa requests, condo requests, townhouse requests, agent collaboration, unified platform, personalized experience, real estate rentals, request sharing, agent networking, property matchmaking, efficient real estate, rental requests, agent-client interaction, property search, estate requests platform, real estate unity, user-centric experience"
+        />
       </Head>
       <Header />
       <section
