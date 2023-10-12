@@ -24,11 +24,9 @@ export default function Home() {
         className={`${styles.welcomeScreenBg} flex flex-col items-center pb-40 pt-20 sm:pb-32 sm:pt-12 md:pt-40`}
       >
         <h1 className="mb-28 text-center text-5xl font-bold leading-tight text-gray-900 sm:text-xl md:mb-0 md:text-3xl xl:text-4xl">
-          Поиск предложений
+          Поиск и обмен запросами
           <br />
-          по недвижимости
-          <br />
-          для агентов и покупателей
+          на аренду недвижимости
         </h1>
         <Image
           src={TableImg}
