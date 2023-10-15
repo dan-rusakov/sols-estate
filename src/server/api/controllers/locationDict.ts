@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { findAllCities, findAllDistricts, findAllRegions } from "../services/locationDict";
+import { findAllApartmentLocations, findAllCities, findAllDistricts, findAllRegions, findAllVillaLocations } from "../services/locationDict";
 import { type InnerTRPCContext } from "../trpc";
 
 export const findAllDistrictsArgs = Prisma.validator<Prisma.LocationDistrictDictDefaultArgs>()({
@@ -53,6 +53,44 @@ export const findAllRegionsHandler = async (ctx: InnerTRPCContext) => {
         return {
             status: 'success',
             data: regions,
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const findAllVillaLocationsArgs = Prisma.validator<Prisma.LocationVillaDictDefaultArgs>()({
+    select: {
+        name: true,
+        slug: true,
+    }
+});
+export const findAllVillaLocationsHandler = async (ctx: InnerTRPCContext) => {
+    try {
+        const villaLocations = await findAllVillaLocations(ctx, findAllVillaLocationsArgs.select);
+
+        return {
+            status: 'success',
+            data: villaLocations,
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+};
+
+export const findAllApartmentLocationsArgs = Prisma.validator<Prisma.LocationApartmentDictDefaultArgs>()({
+    select: {
+        name: true,
+        slug: true,
+    }
+});
+export const findAllApartmentLocationsHandler = async (ctx: InnerTRPCContext) => {
+    try {
+        const apartmentLocations = await findAllApartmentLocations(ctx, findAllApartmentLocationsArgs.select);
+
+        return {
+            status: 'success',
+            data: apartmentLocations,
         };
     } catch (err: unknown) {
         throw err;

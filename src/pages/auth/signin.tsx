@@ -88,18 +88,20 @@ export default function SignIn() {
         onSubmit={(evt) => void onSigninHandler(evt)}
       >
         <p className="mx-auto mb-12 text-4xl font-semibold">Sols Estate</p>
-        <TextField
-          id="email"
-          label="Email"
-          type="email"
-          name="email"
-          variant="outlined"
-          value={email}
-          onChange={(evt) => setEmail(evt.target.value)}
-          className="mb-8 w-full"
-          error={!!emailError}
-          helperText={emailError}
-        />
+        <div className="mb-8">
+          <TextField
+            id="email"
+            label="Email"
+            type="email"
+            name="email"
+            variant="outlined"
+            value={email}
+            onChange={(evt) => setEmail(evt.target.value)}
+            className="w-full"
+            error={!!emailError}
+            helperText={emailError}
+          />
+        </div>
         <Button
           variant="contained"
           type="submit"

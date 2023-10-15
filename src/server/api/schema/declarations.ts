@@ -20,6 +20,8 @@ export const createDeclarationSchema = object({
     city: z.string(),
     region: z.string(),
     propertyType: z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]),
+    villaLocation: z.string().or(z.null()),
+    apartmentLocation: z.string().or(z.null()),
     priceMin: z.number().or(z.null()),
     priceMax: z.number().or(z.null()),
     checkinDate: z.string().or(z.null()),

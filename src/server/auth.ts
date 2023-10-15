@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         await transport.sendMail({
           to: email,
-          from,
+          from: `Sols estate ${from}`,
           subject: `Log in to ${host}`,
           text: `Log in to ${host}\n${url}\n\n`,
           html: html({ url }),

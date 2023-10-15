@@ -11,6 +11,8 @@ export const findAllDeclarationsArgs = Prisma.validator<Prisma.DeclarationDefaul
         location: {
             select: {
                 district: true,
+                villa: true,
+                apartment: true,
             }
         },
         propertyType: true,
@@ -184,19 +186,12 @@ export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: cre
                 }
             },
             location: {
-                connectOrCreate: {
-                    where: {
-                        district_city_region: {
-                            district: input.district,
-                            city: input.city,
-                            region: input.region,
-                        }
-                    },
-                    create: {
-                        district: input.district,
-                        city: input.city,
-                        region: input.region,
-                    }
+                create: {
+                    district: input.district,
+                    city: input.city,
+                    region: input.region,
+                    villa: input.villaLocation,
+                    apartment: input.apartmentLocation,
                 }
             }
         };

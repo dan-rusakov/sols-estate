@@ -81,7 +81,7 @@ model Declaration {
     createdAt    DateTime     @default(now())
     updatedAt    DateTime     @updatedAt
     location     Location     @relation(fields: [locationId], references: [id])
-    locationId   String
+    locationId   String       @unique
     propertyType PropertyType
     priceMin     Float?
     priceMax     Float?
@@ -93,18 +93,17 @@ model Declaration {
     agent        Agent        @relation(fields: [agentId], references: [id])
     agentId      String
 
-    @@index([locationId])
     @@index([agentId])
 }
 
 model Location {
-    id          String        @id @default(cuid())
+    id          String       @id @default(cuid())
     district    String
     city        String
     region      String
-    declaration Declaration[]
-
-    @@unique([district, city, region])
+    villa       String?
+    apartment   String?
+    declaration Declaration?
 }
 
 enum PropertyType {
@@ -185,6 +184,18 @@ enum AgentPersonalStatusType {
 }
 
 // Dictionaries
+
+model LocationVillaDict {
+    id   String @id @default(cuid())
+    name String @unique
+    slug String @unique
+}
+
+model LocationApartmentDict {
+    id   String @id @default(cuid())
+    name String @unique
+    slug String @unique
+}
 
 model LocationDistrictDict {
     id   String @id @default(cuid())

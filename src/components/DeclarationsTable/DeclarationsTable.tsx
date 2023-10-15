@@ -11,7 +11,6 @@ import { api } from "~/utils/api";
 import {
   commissionTypeDict,
   type commissionTypes,
-  commissionValues,
   getNameFromDict,
   propertyTypeDict,
 } from "~/utils/dictionaries";
@@ -46,6 +45,10 @@ export default function DeclarationsTable() {
     });
   const { data: districts, isLoading: isDistrictsLoading } =
     api.locationDict.getAllDistricts.useQuery();
+  const { data: villaLocations, isLoading: isVillaLocationsLoading } =
+    api.locationDict.getAllVillaLocations.useQuery();
+  const { data: apartmentLocations, isLoading: isApartmentLocationsLoading } =
+    api.locationDict.getAllVillaLocations.useQuery();
   const [declarationsCount, declarations] = declarationsData?.data ?? [];
 
   const getCommissionLabel = (commission: number): string => {
@@ -54,11 +57,29 @@ export default function DeclarationsTable() {
     );
   };
 
+  const getPropertyAddress = (
+    villaAddress: string | null,
+    apartmentAddress: string | null,
+  ): string => {
+    const villaAddressName = villaAddress
+      ? getNameFromDict(villaAddress, villaLocations?.data)
+      : null;
+    const apartmentAddressName = apartmentAddress
+      ? getNameFromDict(apartmentAddress, apartmentLocations?.data)
+      : null;
+
+    return villaAddressName ?? apartmentAddressName ?? "—";
+  };
+
   const rows = declarations?.map((declaration) => ({
     id: declaration.id,
     [DeclarationsParamsKey.location]: getNameFromDict(
       declaration.location.district,
       districts?.data,
+    ),
+    address: getPropertyAddress(
+      declaration.location.villa,
+      declaration.location.apartment,
     ),
     propertyType: propertyTypeDict[declaration.propertyType],
     prices: cellRangeValue(
@@ -95,6 +116,11 @@ export default function DeclarationsTable() {
       field: DeclarationsParamsKey.location,
       headerName: "Location",
       width: 100,
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      width: 190,
     },
     { field: "propertyType", headerName: "Property type", width: 120 },
     { field: "prices", headerName: "Price", width: 150 },
@@ -147,7 +173,12 @@ export default function DeclarationsTable() {
           rows={rows ?? []}
           columns={columns}
           disableColumnMenu
-          loading={isDeclarationsLoading || isDistrictsLoading}
+          loading={
+            isDeclarationsLoading ||
+            isDistrictsLoading ||
+            isVillaLocationsLoading ||
+            isApartmentLocationsLoading
+          }
           paginationMode="server"
           rowCount={declarationsCount ?? 0}
           onPaginationModelChange={onPageChange}

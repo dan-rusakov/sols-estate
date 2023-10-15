@@ -32,6 +32,10 @@ export default function CreateDeclarationForm() {
   const [propertyType, setPropertyType] = useState<
     keyof typeof $Enums.PropertyType | null
   >(null);
+  const [villaLocation, setVillaLocation] = useState<string | null>(null);
+  const [apartmentLocation, setApartmentLocation] = useState<string | null>(
+    null,
+  );
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [minPriceError, setMinPriceError] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
@@ -73,6 +77,16 @@ export default function CreateDeclarationForm() {
       return false;
     }
 
+    if (propertyType === "VILLA" && villaLocation === null) {
+      setValidationError("Please, select villa location");
+      return false;
+    }
+
+    if (propertyType === "APARTMENT" && apartmentLocation === null) {
+      setValidationError("Please, select apartment location");
+      return false;
+    }
+
     setValidationError(null);
     return true;
   };
@@ -95,6 +109,8 @@ export default function CreateDeclarationForm() {
         district: district!,
         city: city!,
         region: region!,
+        villaLocation,
+        apartmentLocation,
       });
     }
   };
@@ -104,6 +120,8 @@ export default function CreateDeclarationForm() {
     setCity(null);
     setRegion(null);
     setPropertyType(null);
+    setVillaLocation(null);
+    setApartmentLocation(null);
     setMinPrice(null);
     setMinPriceError(false);
     setMaxPrice(null);
@@ -129,6 +147,10 @@ export default function CreateDeclarationForm() {
         <CreateDeclarationPropertyType
           propertyType={propertyType}
           setPropertyType={setPropertyType}
+          villaLocation={villaLocation}
+          setVillaLocation={setVillaLocation}
+          apartmentLocation={apartmentLocation}
+          setApartmentLocation={setApartmentLocation}
         />
         <CreateDeclarationLocation
           district={district}
