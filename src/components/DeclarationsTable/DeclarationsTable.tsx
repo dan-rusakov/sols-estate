@@ -48,7 +48,7 @@ export default function DeclarationsTable() {
   const { data: villaLocations, isLoading: isVillaLocationsLoading } =
     api.locationDict.getAllVillaLocations.useQuery();
   const { data: apartmentLocations, isLoading: isApartmentLocationsLoading } =
-    api.locationDict.getAllVillaLocations.useQuery();
+    api.locationDict.getAllApartmentLocations.useQuery();
   const [declarationsCount, declarations] = declarationsData?.data ?? [];
 
   const getCommissionLabel = (commission: number): string => {
