@@ -26,6 +26,7 @@ import { prisma } from "~/server/db";
 
 interface CreateContextOptions {
   session: Session | null;
+  serverAuth?: string;
 }
 
 export interface InnerTRPCContext extends CreateContextOptions {
@@ -46,6 +47,7 @@ export const createInnerTRPCContext = (opts: CreateContextOptions): InnerTRPCCon
   return {
     session: opts.session,
     prisma,
+    serverAuth: opts.serverAuth,
   };
 };
 
@@ -58,11 +60,13 @@ export const createInnerTRPCContext = (opts: CreateContextOptions): InnerTRPCCon
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
 
+  const serverAuth = req.headers.authorization;
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
 
   return createInnerTRPCContext({
     session,
+    serverAuth,
   });
 };
 
@@ -124,6 +128,16 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+const enforceServerWithAuth = t.middleware(({ ctx, next }) => {
+  const authHeader = ctx.serverAuth;
+
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && process.env.NODE_ENV === "production") {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next();
+});
+
 /**
  * Protected (authenticated) procedure
  *
@@ -133,3 +147,5 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export const protectedServerProcedure = t.procedure.use(enforceServerWithAuth);

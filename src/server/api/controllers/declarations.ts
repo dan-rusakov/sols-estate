@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
-import { createDeclaration, findAllDeclarations } from "../services/declarations";
+import { createDeclaration, deleteDeclaration, findAllDeclarations } from "../services/declarations";
 import { type InnerTRPCContext } from "../trpc";
 import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
-import { type createDeclaraionInput, type findAllDeclarationsInput } from '../schema/declarations';
+import { type deleteDeclaraionInput, type createDeclaraionInput, type findAllDeclarationsInput } from '../schema/declarations';
 import { TRPCError } from "@trpc/server";
 
 export const findAllDeclarationsArgs = Prisma.validator<Prisma.DeclarationDefaultArgs>()({
@@ -158,7 +158,15 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
             })
         }
 
-        const declarations = await findAllDeclarations(ctx, filtering, findAllDeclarationsArgs.select, input.page);
+        if (input.createdAtMax !== null) {
+            filtering.AND.push({
+                createdAt: {
+                    lte: input.createdAtMax,
+                }
+            })
+        }
+
+        const declarations = await findAllDeclarations(ctx, filtering, findAllDeclarationsArgs.select, input.page, input.take);
 
         return {
             status: 'success',
@@ -197,6 +205,22 @@ export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: cre
         };
 
         await createDeclaration(ctx, createDeclarationData);
+
+        return {
+            status: 'success',
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+}
+
+export const deleteDeclarationHandler = async (ctx: InnerTRPCContext, input: deleteDeclaraionInput) => {
+    try {
+        const deleteDeclarationWhere: Prisma.DeclarationWhereUniqueInput = {
+            id: input.declarationId
+        };
+
+        await deleteDeclaration(ctx, deleteDeclarationWhere);
 
         return {
             status: 'success',

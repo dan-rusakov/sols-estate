@@ -42,6 +42,8 @@ export default function DeclarationsTable() {
       roomsMin,
       roomsMax,
       propertyType,
+      take: TAKE_RECORDS_AMOUNT,
+      createdAtMax: null,
     });
   const { data: districts, isLoading: isDistrictsLoading } =
     api.locationDict.getAllDistricts.useQuery();

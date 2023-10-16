@@ -1,5 +1,6 @@
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { type Dayjs } from "dayjs";
+import { ISO_DATE_FORMAT } from "~/utils/date";
 
 interface CreateDeclarationDatesProps {
   checkinDate: string | null;
@@ -8,15 +9,12 @@ interface CreateDeclarationDatesProps {
   setCheckoutDate: (date: string | null) => void;
 }
 
-const ISO_DATE_FORMAT = "YYYY-MM-DDT00:00:00[Z]";
-
 export default function CreateDeclarationDates(
   props: CreateDeclarationDatesProps,
 ) {
   const { checkinDate, setCheckinDate, checkoutDate, setCheckoutDate } = props;
 
   const onCheckinDateChange = (value: Dayjs | null) => {
-    console.log(value?.format(ISO_DATE_FORMAT) ?? null);
     setCheckinDate(value?.format(ISO_DATE_FORMAT) ?? null);
   };
 
