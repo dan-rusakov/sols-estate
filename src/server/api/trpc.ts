@@ -12,6 +12,7 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { env } from "~/env.mjs";
 
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
@@ -131,7 +132,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 const enforceServerWithAuth = t.middleware(({ ctx, next }) => {
   const authHeader = ctx.serverAuth;
 
-  if (authHeader !== `Bearer ${globalThis.process?.env?.CRON_SECRET}` && globalThis.process?.env?.NODE_ENV === "production") {
+  if (authHeader !== `Bearer ${env.CRON_SECRET}` && env.NODE_ENV === "production") {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
