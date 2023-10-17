@@ -131,7 +131,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 const enforceServerWithAuth = t.middleware(({ ctx, next }) => {
   const authHeader = ctx.serverAuth;
 
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && process.env.NODE_ENV === "production") {
+  if (authHeader !== `Bearer ${globalThis.process?.env?.CRON_SECRET}` && globalThis.process?.env?.NODE_ENV === "production") {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
