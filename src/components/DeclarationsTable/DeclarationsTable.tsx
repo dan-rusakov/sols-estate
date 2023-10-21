@@ -22,6 +22,8 @@ import {
   cellRangeValue,
   formatDateToDateString,
   formatNumber,
+  getCommissionLabel,
+  getPropertyAddress,
 } from "~/utils/table";
 import { Box } from "@mui/material";
 
@@ -53,26 +55,6 @@ export default function DeclarationsTable() {
     api.locationDict.getAllApartmentLocations.useQuery();
   const [declarationsCount, declarations] = declarationsData?.data ?? [];
 
-  const getCommissionLabel = (commission: number): string => {
-    return (
-      commissionTypeDict[commission as commissionTypes] ?? commission.toString()
-    );
-  };
-
-  const getPropertyAddress = (
-    villaAddress: string | null,
-    apartmentAddress: string | null,
-  ): string => {
-    const villaAddressName = villaAddress
-      ? getNameFromDict(villaAddress, villaLocations?.data)
-      : null;
-    const apartmentAddressName = apartmentAddress
-      ? getNameFromDict(apartmentAddress, apartmentLocations?.data)
-      : null;
-
-    return villaAddressName ?? apartmentAddressName ?? "—";
-  };
-
   const rows = declarations?.map((declaration) => ({
     id: declaration.id,
     [DeclarationsParamsKey.location]: getNameFromDict(
@@ -82,6 +64,8 @@ export default function DeclarationsTable() {
     address: getPropertyAddress(
       declaration.location.villa,
       declaration.location.apartment,
+      villaLocations,
+      apartmentLocations,
     ),
     propertyType: propertyTypeDict[declaration.propertyType],
     prices: cellRangeValue(

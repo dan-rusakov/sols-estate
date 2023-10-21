@@ -13,7 +13,7 @@ export default function Header() {
 
   return (
     <header className="relative flex items-center justify-between py-4 lg:justify-start">
-      <p className="text-[28px] font-semibold sm:text-xl lg:mr-auto xl:text-2xl">
+      <p className="text-[28px] font-semibold xl:text-2xl lg:mr-auto sm:text-xl">
         Sols estate
       </p>
       <nav className="lg:hidden">
@@ -21,6 +21,14 @@ export default function Header() {
           <li>
             <Link className="text-base font-medium text-neutral-500" href="/">
               Main page
+            </Link>
+          </li>
+          <li>
+            <Link
+              className="text-base font-medium text-neutral-500"
+              href="/trackings"
+            >
+              Trackings
             </Link>
           </li>
           <li>

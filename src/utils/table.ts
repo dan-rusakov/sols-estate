@@ -1,3 +1,5 @@
+import { type RouterOutputs } from "./api";
+import { commissionTypeDict, getNameFromDict, type commissionTypes } from "./dictionaries";
 import { getSingleNumberFromUrl } from "./url";
 import dayjs from "dayjs";
 
@@ -46,3 +48,25 @@ export const formatNumber = (number: number, formattingType: FormatNumberType = 
 export const formatDateToDateString = (date: Date): string => {
     return dayjs(date).format('DD.MM.YYYY');
 }
+
+export const getCommissionLabel = (commission: number): string => {
+    return (
+        commissionTypeDict[commission as commissionTypes] ?? commission.toString()
+    );
+};
+
+export const getPropertyAddress = (
+    villaAddress: string | null,
+    apartmentAddress: string | null,
+    villaLocations?: RouterOutputs['locationDict']['getAllVillaLocations'],
+    apartmentLocations?: RouterOutputs['locationDict']['getAllApartmentLocations'],
+): string => {
+    const villaAddressName = villaAddress
+        ? getNameFromDict(villaAddress, villaLocations?.data)
+        : null;
+    const apartmentAddressName = apartmentAddress
+        ? getNameFromDict(apartmentAddress, apartmentLocations?.data)
+        : null;
+
+    return villaAddressName ?? apartmentAddressName ?? "—";
+};

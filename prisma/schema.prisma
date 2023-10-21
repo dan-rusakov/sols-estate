@@ -104,6 +104,7 @@ model Location {
     villa       String?
     apartment   String?
     declaration Declaration?
+    tracking    Tracking?
 }
 
 enum PropertyType {
@@ -130,6 +131,7 @@ model Agent {
     statusedAgents AgentPersonalStatus[] @relation("Initiator")
     personalStatus AgentPersonalStatus[] @relation("Effector")
     declaration    Declaration[]
+    tracking       Tracking[]
 
     @@index([legalAddressId])
     @@index([agencyInfoId])
@@ -181,6 +183,24 @@ enum AgentPersonalStatusType {
     FAVOURITE
     BLOCKED
     NONE
+}
+
+model Tracking {
+    id           String       @id @default(cuid())
+    createdAt    DateTime     @default(now())
+    updatedAt    DateTime     @updatedAt
+    location     Location     @relation(fields: [locationId], references: [id])
+    locationId   String       @unique
+    propertyType PropertyType
+    priceMin     Float?
+    priceMax     Float?
+    roomsMin     Int?
+    roomsMax     Int?
+    commission   Float
+    agent        Agent        @relation(fields: [agentId], references: [id])
+    agentId      String
+
+    @@index([agentId])
 }
 
 // Dictionaries
