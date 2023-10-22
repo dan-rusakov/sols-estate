@@ -148,17 +148,23 @@ model LegalAddress {
 }
 
 model ContactInfo {
-    id           String  @id @default(cuid())
-    telegramLink String?
-    whatsappLink String?
-    viberLink    String?
-    lineLink     String?
-    agent        Agent?
+    id             String          @id @default(cuid())
+    telegramLink   String?
+    telegramStatus MessengerStatus @default(NEW)
+    whatsappLink   String?
+    viberLink      String?
+    lineLink       String?
+    agent          Agent?
 }
 
 enum AgentType {
     PERSONAL
     AGENCY
+}
+
+enum MessengerStatus {
+    NEW
+    CONFIRMED
 }
 
 model AgencyInfo {

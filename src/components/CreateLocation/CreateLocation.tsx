@@ -17,9 +17,7 @@ interface CreateDeclarationLocationProps {
   setRegion: (city: string) => void;
 }
 
-export default function CreateDeclarationLocation(
-  props: CreateDeclarationLocationProps,
-) {
+export default function CreateLocation(props: CreateDeclarationLocationProps) {
   const { district, setDistrict, city, setCity, region, setRegion } = props;
 
   const { data: districts, isLoading: isDistrictsLoading } =

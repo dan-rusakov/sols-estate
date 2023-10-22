@@ -7,14 +7,12 @@ import {
 } from "@mui/material";
 import { commissionTypeDict, commissionValues } from "~/utils/dictionaries";
 
-interface CreateDeclarationCommissionProps {
+interface CreateCommissionProps {
   commission: number | null;
   setCommission: (commission: number) => void;
 }
 
-export default function CreateDeclarationCommission(
-  props: CreateDeclarationCommissionProps,
-) {
+export default function CreateCommission(props: CreateCommissionProps) {
   const { commission, setCommission } = props;
 
   const onCommissionChange = (event: SelectChangeEvent<number>) => {

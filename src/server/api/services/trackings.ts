@@ -21,3 +21,15 @@ export const findAllTrackings = async (ctx: InnerTRPCContext, where: Prisma.Trac
         }),
     ])
 }
+
+export const createTracking = async (ctx: InnerTRPCContext, data: Prisma.TrackingCreateArgs['data']) => {
+    return ctx.prisma.tracking.create({
+        data,
+    });
+}
+
+export const deleteTracking = async (ctx: InnerTRPCContext, where: Prisma.TrackingDeleteArgs['where']) => {
+    return ctx.prisma.tracking.delete({
+        where,
+    });
+}

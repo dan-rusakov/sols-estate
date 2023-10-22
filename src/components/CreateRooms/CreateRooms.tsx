@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { type ChangeEvent } from "react";
 
-interface CreateDeclarationRoomsProps {
+interface CreateRoomsProps {
   minRooms: number | null;
   setMinRooms: (rooms: number | null) => void;
   minRoomsError: boolean;
@@ -12,9 +12,7 @@ interface CreateDeclarationRoomsProps {
   setMaxRoomsError: (error: boolean) => void;
 }
 
-export default function CreateDeclarationRooms(
-  props: CreateDeclarationRoomsProps,
-) {
+export default function CreateRooms(props: CreateRoomsProps) {
   const {
     minRooms,
     setMinRooms,

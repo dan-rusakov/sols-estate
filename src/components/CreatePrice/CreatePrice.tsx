@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { type ChangeEvent } from "react";
 
-interface CreateDeclarationPriceProps {
+interface CreatePriceProps {
   minPrice: number | null;
   setMinPrice: (price: number | null) => void;
   minPriceError: boolean;
@@ -12,9 +12,7 @@ interface CreateDeclarationPriceProps {
   setMaxPriceError: (error: boolean) => void;
 }
 
-export default function CreateDeclarationPrice(
-  props: CreateDeclarationPriceProps,
-) {
+export default function CreatePrice(props: CreatePriceProps) {
   const {
     minPrice,
     setMinPrice,

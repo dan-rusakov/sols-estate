@@ -44,7 +44,7 @@ export default function TrackingsTable() {
     ),
     commission: getCommissionLabel(tracking.commission),
     rooms: cellRangeValue(tracking.roomsMin, tracking.roomsMax),
-    actions: <Actions />,
+    actions: <Actions trackingId={tracking.id} />,
   }));
 
   const columns = [

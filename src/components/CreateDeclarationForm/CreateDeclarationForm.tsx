@@ -1,16 +1,16 @@
 import { type FormEvent, useState } from "react";
-import CreateDeclarationLocation from "../CreateDeclarationLocation/CreateDeclarationLocation";
-import CreateDeclarationPropertyType from "../CreateDeclarationPropertyType/CreateDeclarationPropertyType";
+import CreateLocation from "../CreateLocation/CreateLocation";
 import { type $Enums } from "@prisma/client";
-import CreateDeclarationPrice from "../CreateDeclarationPrice/CreateDeclarationPrice";
+import CreatePrice from "../CreatePrice/CreatePrice";
 import CreateDeclarationDates from "../CreateDeclarationDates/CreateDeclarationDates";
-import CreateDeclarationRooms from "../CreateDeclarationRooms/CreateDeclarationRooms";
-import CreateDeclarationCommission from "../CreateDeclarationCommission/CreateDeclarationCommission";
+import CreateRooms from "../CreateRooms/CreateRooms";
+import CreateCommission from "../CreateCommission/CreateCommission";
 import { Alert, Button, CircularProgress } from "@mui/material";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import CheckIcon from "@mui/icons-material/Check";
+import CreatePropertyType from "../CreatePropertyType/CreatePropertyType";
 
 export default function CreateDeclarationForm() {
   const { data: session } = useSession();
@@ -144,7 +144,7 @@ export default function CreateDeclarationForm() {
         Create new request
       </h1>
       <form className="flex flex-col gap-y-6" onSubmit={createDeclaration}>
-        <CreateDeclarationPropertyType
+        <CreatePropertyType
           propertyType={propertyType}
           setPropertyType={setPropertyType}
           villaLocation={villaLocation}
@@ -152,7 +152,7 @@ export default function CreateDeclarationForm() {
           apartmentLocation={apartmentLocation}
           setApartmentLocation={setApartmentLocation}
         />
-        <CreateDeclarationLocation
+        <CreateLocation
           district={district}
           setDistrict={setDistricts}
           city={city}
@@ -160,7 +160,7 @@ export default function CreateDeclarationForm() {
           region={region}
           setRegion={setRegion}
         />
-        <CreateDeclarationPrice
+        <CreatePrice
           minPrice={minPrice}
           setMinPrice={setMinPrice}
           minPriceError={minPriceError}
@@ -170,7 +170,7 @@ export default function CreateDeclarationForm() {
           maxPriceError={maxPriceError}
           setMaxPriceError={setMaxPriceError}
         />
-        <CreateDeclarationRooms
+        <CreateRooms
           minRooms={minRooms}
           setMinRooms={setMinRooms}
           minRoomsError={minRoomsError}
@@ -186,7 +186,7 @@ export default function CreateDeclarationForm() {
           checkoutDate={checkoutDate}
           setCheckoutDate={setCheckoutDate}
         />
-        <CreateDeclarationCommission
+        <CreateCommission
           commission={commission}
           setCommission={setCommission}
         />

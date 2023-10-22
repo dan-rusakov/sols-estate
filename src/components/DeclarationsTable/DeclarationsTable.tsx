@@ -8,12 +8,7 @@ import ContactLinks from "./ContactLinks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
 import { api } from "~/utils/api";
-import {
-  commissionTypeDict,
-  type commissionTypes,
-  getNameFromDict,
-  propertyTypeDict,
-} from "~/utils/dictionaries";
+import { getNameFromDict, propertyTypeDict } from "~/utils/dictionaries";
 import { createSearchParamsString } from "~/utils/url";
 import {
   TableParamsName,

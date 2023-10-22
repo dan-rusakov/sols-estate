@@ -4,6 +4,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import CheckIcon from "@mui/icons-material/Check";
 import ChangeEmailDialog from "../ChangeEmailDialog/ChangeEmailDialog";
+import InputLabelWithLoading from "../InputLabelWithLoading/InputLabelWithLoading";
 
 export default function ProfileForm() {
   const [whatsappLink, setWhatsappLink] = useState("");
@@ -36,17 +37,6 @@ export default function ProfileForm() {
     setLineLink(contactInfo?.lineLink ?? "");
   }, [contactInfo]);
 
-  const labelWithLoadingState = (label: string) => (
-    <div className="flex items-center">
-      {label}{" "}
-      {isLoadingAgent && (
-        <div className="ml-3 inline-flex">
-          <CircularProgress size={16} />
-        </div>
-      )}
-    </div>
-  );
-
   const saveProfileHandler = (evt: FormEvent) => {
     evt.preventDefault();
     mutate({
@@ -66,7 +56,12 @@ export default function ProfileForm() {
       <form className="flex flex-col gap-y-6" onSubmit={saveProfileHandler}>
         <TextField
           id="first-name"
-          label={labelWithLoadingState("First name")}
+          label={
+            <InputLabelWithLoading
+              label="First name"
+              isLoading={isLoadingAgent}
+            />
+          }
           type="text"
           name="first-name"
           variant="outlined"
@@ -79,7 +74,12 @@ export default function ProfileForm() {
         />
         <TextField
           id="last-name"
-          label={labelWithLoadingState("Last name")}
+          label={
+            <InputLabelWithLoading
+              label="Last name"
+              isLoading={isLoadingAgent}
+            />
+          }
           type="text"
           name="last-name"
           variant="outlined"
@@ -92,7 +92,9 @@ export default function ProfileForm() {
         />
         <TextField
           id="email"
-          label={labelWithLoadingState("Email")}
+          label={
+            <InputLabelWithLoading label="Email" isLoading={isLoadingAgent} />
+          }
           type="email"
           name="email"
           variant="outlined"
@@ -114,7 +116,12 @@ export default function ProfileForm() {
           <div className="flex flex-col gap-y-6">
             <TextField
               id="whatsapp-link"
-              label={labelWithLoadingState("Whats app link")}
+              label={
+                <InputLabelWithLoading
+                  label="Whats app link"
+                  isLoading={isLoadingAgent}
+                />
+              }
               type="text"
               name="whatsapp-link"
               variant="outlined"
@@ -125,7 +132,12 @@ export default function ProfileForm() {
             />
             <TextField
               id="telegram-link"
-              label={labelWithLoadingState("Telegram link")}
+              label={
+                <InputLabelWithLoading
+                  label="Telegram link"
+                  isLoading={isLoadingAgent}
+                />
+              }
               type="text"
               name="telegram-link"
               variant="outlined"
@@ -136,7 +148,12 @@ export default function ProfileForm() {
             />
             <TextField
               id="line-link"
-              label={labelWithLoadingState("Line link")}
+              label={
+                <InputLabelWithLoading
+                  label="Line link"
+                  isLoading={isLoadingAgent}
+                />
+              }
               type="text"
               name="line-link"
               variant="outlined"
@@ -147,7 +164,12 @@ export default function ProfileForm() {
             />
             <TextField
               id="viber-link"
-              label={labelWithLoadingState("Viber link")}
+              label={
+                <InputLabelWithLoading
+                  label="Viber link"
+                  isLoading={isLoadingAgent}
+                />
+              }
               type="text"
               name="viber-link"
               variant="outlined"
