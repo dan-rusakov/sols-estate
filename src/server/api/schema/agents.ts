@@ -5,6 +5,7 @@ import { TableParamsName } from "~/utils/table";
 
 export const findAllAgentsSchema = object({
     'userId': z.string().or(z.undefined()),
+    agentIds: z.array(z.string()).or(z.undefined()),
     [TableParamsName.page]: z.number().or(z.null()),
     [AgentsParamsKey.agentStatusType]: z.enum([$Enums.AgentPersonalStatusType.BLOCKED, $Enums.AgentPersonalStatusType.FAVOURITE, $Enums.AgentPersonalStatusType.NONE]).or(z.null()),
 });

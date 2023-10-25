@@ -59,8 +59,8 @@ export default function DeclarationsTable() {
     address: getPropertyAddress(
       declaration.location.villa,
       declaration.location.apartment,
-      villaLocations,
-      apartmentLocations,
+      villaLocations?.data,
+      apartmentLocations?.data,
     ),
     propertyType: propertyTypeDict[declaration.propertyType],
     prices: cellRangeValue(

@@ -29,6 +29,7 @@ export const env = createEnv({
     EMAIL_SERVER_HOST: z.string(),
     EMAIL_SERVER_PORT: z.string(),
     CRON_SECRET: z.string(),
+    TELEGRAM_BOT_SECRET: z.string(),
   },
 
   /**
@@ -38,6 +39,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+    NEXT_PUBLIC_TELEGRAM_BOT_URL: z.string(),
   },
 
   /**
@@ -57,6 +59,8 @@ export const env = createEnv({
     EMAIL_SERVER_HOST: process.env.EMAIL_SERVER_HOST,
     EMAIL_SERVER_PORT: process.env.EMAIL_SERVER_PORT,
     CRON_SECRET: process.env.CRON_SECRET,
+    TELEGRAM_BOT_SECRET: process.env.TELEGRAM_BOT_SECRET,
+    NEXT_PUBLIC_TELEGRAM_BOT_URL: process.env.NEXT_PUBLIC_TELEGRAM_BOT_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

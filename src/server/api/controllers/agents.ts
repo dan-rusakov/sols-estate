@@ -23,6 +23,14 @@ export const findAllAgentsHandler = async (ctx: InnerTRPCContext, input: findAll
             AND: []
         };
 
+        if (input.agentIds) {
+            filtering.AND.push({
+                id: {
+                    in: input.agentIds,
+                }
+            })
+        }
+
         if (agentStatusType && agentStatusType !== 'NONE') {
             filtering.AND.push({
                 personalStatus: {
@@ -57,6 +65,11 @@ export const findAllAgentsHandler = async (ctx: InnerTRPCContext, input: findAll
                     },
                     where: {
                         initiatorId: userAgent?.id,
+                    }
+                },
+                notificationInfo: {
+                    select: {
+                        telegramId: true,
                     }
                 }
             }
@@ -192,6 +205,11 @@ export const findAgentArgs = Prisma.validator<Prisma.AgentDefaultArgs>()({
                 lineLink: true,
             }
         },
+        notificationInfo: {
+            select: {
+                telegramId: true,
+            }
+        }
     }
 });
 export const findAgentHandler = async (ctx: InnerTRPCContext, input: findAgentInput) => {

@@ -5,6 +5,7 @@ import { agentsRouter } from "./routers/agents";
 import { legalAddressDictRouter } from "./routers/legalAddressDict";
 import { userRouter } from "./routers/user";
 import { trackingsRouter } from "./routers/trackings";
+import { notificationRouter } from "./routers/notification";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   legalAddressDict: legalAddressDictRouter,
   user: userRouter,
   trackings: trackingsRouter,
+  notification: notificationRouter,
 });
 
 // export type definition of API

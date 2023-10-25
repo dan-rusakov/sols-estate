@@ -4,6 +4,7 @@ import { type InnerTRPCContext } from "../trpc";
 import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
 import { type deleteDeclaraionInput, type createDeclaraionInput, type findAllDeclarationsInput } from '../schema/declarations';
 import { TRPCError } from "@trpc/server";
+import { sendNotificationsHandler } from "./notification";
 
 export const findAllDeclarationsArgs = Prisma.validator<Prisma.DeclarationDefaultArgs>()({
     select: {
@@ -205,6 +206,22 @@ export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: cre
         };
 
         await createDeclaration(ctx, createDeclarationData);
+        void sendNotificationsHandler(ctx, {
+            userId: input.userId,
+            district: input.district,
+            city: input.city,
+            region: input.region,
+            propertyType: input.propertyType,
+            villaLocation: input.villaLocation,
+            apartmentLocation: input.apartmentLocation,
+            priceMin: input.priceMin,
+            priceMax: input.priceMax,
+            roomsMin: input.roomsMin,
+            roomsMax: input.roomsMax,
+            checkinDate: input.checkinDate,
+            checkoutDate: input.checkoutDate,
+            commission: input.commission,
+        });
 
         return {
             status: 'success',

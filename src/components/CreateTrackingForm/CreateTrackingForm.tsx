@@ -6,10 +6,10 @@ import CreatePrice from "../CreatePrice/CreatePrice";
 import CreateRooms from "../CreateRooms/CreateRooms";
 import CreateCommission from "../CreateCommission/CreateCommission";
 import { Alert, Button, CircularProgress } from "@mui/material";
-import CreateMessengerLinks from "../CreateMessengerLinks/CreateMessengerLinks";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import ConnectMessengers from "../ConnectMessengers/ConnectMessengers";
 
 export default function CreateTrackingForm() {
   const [district, setDistricts] = useState<string | null>(null);
@@ -31,7 +31,6 @@ export default function CreateTrackingForm() {
   const [maxRooms, setMaxRooms] = useState<number | null>(null);
   const [maxRoomsError, setMaxRoomsError] = useState(false);
   const [commission, setCommission] = useState<number | null>(null);
-  const [telegramLink, setTelegramLink] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [createTrackingError, setCreateTrackingError] = useState<string | null>(
     null,
@@ -42,8 +41,6 @@ export default function CreateTrackingForm() {
 
   const { mutateAsync: addTracking, isLoading: isCreatingTracking } =
     api.trackings.addTracking.useMutation();
-  const { mutateAsync: updateAgent, isLoading: isUpdatingAgent } =
-    api.agents.changeAgent.useMutation();
   const { data: agentData } = api.agents.getAgent.useQuery({
     agentId: session?.user.id ?? "",
   });
@@ -59,10 +56,14 @@ export default function CreateTrackingForm() {
       minPriceError ||
       maxPriceError ||
       minRoomsError ||
-      maxRoomsError ||
-      telegramLink === null
+      maxRoomsError
     ) {
       setValidationError("Please, check the fields for correct data");
+      return false;
+    }
+
+    if ((contactInfo?.telegramLink ?? null) === null) {
+      setValidationError("Please, connect messenger");
       return false;
     }
 
@@ -102,13 +103,6 @@ export default function CreateTrackingForm() {
           priceMax: maxPrice,
           roomsMin: minRooms,
           roomsMax: maxRooms,
-        }),
-        updateAgent({
-          agentId: session?.user.id ?? "",
-          telegramLink,
-          whatsappLink: contactInfo?.whatsappLink ?? null,
-          lineLink: contactInfo?.lineLink ?? null,
-          viberLink: contactInfo?.viberLink ?? null,
         }),
       ]);
       void router.push("/trackings");
@@ -169,10 +163,7 @@ export default function CreateTrackingForm() {
           commission={commission}
           setCommission={setCommission}
         />
-        <CreateMessengerLinks
-          telegramLink={telegramLink}
-          setTelegramLink={setTelegramLink}
-        />
+        <ConnectMessengers />
         <Button
           variant="contained"
           type="submit"
@@ -180,11 +171,9 @@ export default function CreateTrackingForm() {
           className="w-full bg-indigo-700 normal-case"
           size="large"
           disableElevation
-          disabled={isCreatingTracking || isUpdatingAgent}
+          disabled={isCreatingTracking}
           endIcon={
-            (isCreatingTracking || isUpdatingAgent) && (
-              <CircularProgress size={16} color="inherit" />
-            )
+            isCreatingTracking && <CircularProgress size={16} color="inherit" />
           }
         >
           Save

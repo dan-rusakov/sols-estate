@@ -45,7 +45,7 @@ export const formatNumber = (number: number, formattingType: FormatNumberType = 
     return number.toString();
 }
 
-export const formatDateToDateString = (date: Date): string => {
+export const formatDateToDateString = (date: Date | string): string => {
     return dayjs(date).format('DD.MM.YYYY');
 }
 
@@ -58,14 +58,14 @@ export const getCommissionLabel = (commission: number): string => {
 export const getPropertyAddress = (
     villaAddress: string | null,
     apartmentAddress: string | null,
-    villaLocations?: RouterOutputs['locationDict']['getAllVillaLocations'],
-    apartmentLocations?: RouterOutputs['locationDict']['getAllApartmentLocations'],
+    villaLocations?: RouterOutputs['locationDict']['getAllVillaLocations']['data'],
+    apartmentLocations?: RouterOutputs['locationDict']['getAllApartmentLocations']['data'],
 ): string => {
     const villaAddressName = villaAddress
-        ? getNameFromDict(villaAddress, villaLocations?.data)
+        ? getNameFromDict(villaAddress, villaLocations)
         : null;
     const apartmentAddressName = apartmentAddress
-        ? getNameFromDict(apartmentAddress, apartmentLocations?.data)
+        ? getNameFromDict(apartmentAddress, apartmentLocations)
         : null;
 
     return villaAddressName ?? apartmentAddressName ?? "—";
