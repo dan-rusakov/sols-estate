@@ -39,8 +39,8 @@ export default function TrackingsTable() {
     address: getPropertyAddress(
       tracking.location.villa,
       tracking.location.apartment,
-      villaLocations,
-      apartmentLocations,
+      villaLocations?.data,
+      apartmentLocations?.data,
     ),
     commission: getCommissionLabel(tracking.commission),
     rooms: cellRangeValue(tracking.roomsMin, tracking.roomsMax),
