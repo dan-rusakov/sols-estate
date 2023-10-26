@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const bot = new TelegramBot(env.TELEGRAM_BOT_SECRET);
 
-        await bot.setWebHook(`${req.headers.host}/api/bots/telegram`);
+        await bot.setWebHook(`${env.WEBSITE_HOST}/api/bots/telegram`);
 
         res.status(200).json({ data: { status: 'success' } });
     } catch (err) {
