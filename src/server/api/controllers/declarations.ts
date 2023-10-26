@@ -206,7 +206,7 @@ export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: cre
         };
 
         await createDeclaration(ctx, createDeclarationData);
-        await sendNotificationsHandler(ctx, {
+        void sendNotificationsHandler(ctx, {
             userId: input.userId,
             district: input.district,
             city: input.city,
