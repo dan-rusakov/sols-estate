@@ -5,6 +5,7 @@ import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
 import { type deleteDeclaraionInput, type createDeclaraionInput, type findAllDeclarationsInput } from '../schema/declarations';
 import { TRPCError } from "@trpc/server";
 import { sendNotificationsHandler } from "./notification";
+import { excludePropertyTypesListAnyValue, validatePropertyTypeAnyValue } from "~/utils/entities";
 
 export const findAllDeclarationsArgs = Prisma.validator<Prisma.DeclarationDefaultArgs>()({
     select: {
@@ -153,10 +154,17 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
 
         if (propertyType?.length) {
             filtering.AND.push({
-                propertyType: {
-                    in: propertyType
-                }
-            })
+                OR: [
+                    {
+                        propertyType: {
+                            in: excludePropertyTypesListAnyValue(propertyType),
+                        }
+                    },
+                    propertyType.includes('any') ? {
+                        propertyType: null,
+                    } : {}
+                ]
+            });
         }
 
         if (input.createdAtMax !== null) {
@@ -181,7 +189,7 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
 export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: createDeclaraionInput) => {
     try {
         const createDeclarationData: Prisma.XOR<Prisma.DeclarationCreateInput, Prisma.DeclarationUncheckedCreateInput> = {
-            propertyType: input.propertyType,
+            propertyType: validatePropertyTypeAnyValue(input.propertyType),
             priceMin: input.priceMin,
             priceMax: input.priceMax,
             checkinDate: input.checkinDate,

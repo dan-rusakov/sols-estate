@@ -9,10 +9,13 @@ import {
 import { type $Enums } from "@prisma/client";
 import { api } from "~/utils/api";
 import { propertyTypeDict } from "~/utils/dictionaries";
+import { PropertyTypeAnyValue, type PropertyTypeAny } from "~/utils/entities";
 
 interface CreateDeclarationPropertyTypeProps {
-  propertyType: keyof typeof $Enums.PropertyType | null;
-  setPropertyType: (propertyType: keyof typeof $Enums.PropertyType) => void;
+  propertyType: keyof typeof $Enums.PropertyType | PropertyTypeAny | null;
+  setPropertyType: (
+    propertyType: keyof typeof $Enums.PropertyType | PropertyTypeAny,
+  ) => void;
   villaLocation: string | null;
   setVillaLocation: (villaLocation: string) => void;
   apartmentLocation: string | null;
@@ -37,10 +40,14 @@ export default function CreateDeclarationPropertyType(
     api.locationDict.getAllApartmentLocations.useQuery();
 
   const onPropertyTypeChange = (
-    event: SelectChangeEvent<keyof typeof $Enums.PropertyType>,
+    event: SelectChangeEvent<
+      keyof typeof $Enums.PropertyType | PropertyTypeAny
+    >,
   ) => {
-    const newSelectedPropertyType = event.target
-      .value as keyof typeof $Enums.PropertyType;
+    const newSelectedPropertyType = event.target.value as
+      | keyof typeof $Enums.PropertyType
+      | PropertyTypeAny;
+
     setPropertyType(newSelectedPropertyType);
   };
 
@@ -58,7 +65,7 @@ export default function CreateDeclarationPropertyType(
     <div className="flex flex-col gap-y-6">
       <FormControl className="w-full">
         <InputLabel id="property-type-filter-label">Property type</InputLabel>
-        <Select<keyof typeof $Enums.PropertyType>
+        <Select<keyof typeof $Enums.PropertyType | PropertyTypeAny>
           labelId="property-type-filter-label"
           id="property-type-filter"
           value={propertyType ?? ""}
@@ -66,6 +73,9 @@ export default function CreateDeclarationPropertyType(
           onChange={onPropertyTypeChange}
           required
         >
+          <MenuItem key={PropertyTypeAnyValue} value={PropertyTypeAnyValue}>
+            Any
+          </MenuItem>
           {Object.entries(propertyTypeDict).map(([key, value]) => (
             <MenuItem key={key} value={key}>
               {value}

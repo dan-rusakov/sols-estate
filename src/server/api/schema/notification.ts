@@ -1,5 +1,6 @@
 import { $Enums } from "@prisma/client";
 import { type TypeOf, object, z } from "zod";
+import { PropertyTypeAnyValue } from "~/utils/entities";
 
 export const createVerificationTokenSchema = object({
     identifier: z.string(),
@@ -29,7 +30,7 @@ export const sendNotificationsSchema = object({
     district: z.string(),
     city: z.string(),
     region: z.string(),
-    propertyType: z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]),
+    propertyType: z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]).or(z.literal(PropertyTypeAnyValue)),
     villaLocation: z.string().or(z.null()),
     apartmentLocation: z.string().or(z.null()),
     priceMin: z.number().or(z.null()),

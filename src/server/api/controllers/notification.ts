@@ -9,9 +9,9 @@ import { findAgentHandler, findAllAgentsHandler } from "./agents";
 import TelegramBot from "node-telegram-bot-api";
 import { env } from "~/env.mjs";
 import { cellRangeValue, formatDateToDateString, getCommissionLabel, getPropertyAddress } from "~/utils/table";
-import { type RouterOutputs } from "~/utils/api";
 import { getNameFromDict, propertyTypeDict } from "~/utils/dictionaries";
 import { findAllApartmentLocationsHandler, findAllDistrictsHandler, findAllVillaLocationsHandler } from "./locationDict";
+import { validatePropertyTypeAnyValue } from "~/utils/entities";
 
 export const createVerificationTokenHandler = async (ctx: InnerTRPCContext, input: createVerificationTokenInput) => {
     try {
@@ -110,7 +110,7 @@ export const sendNotificationsHandler = async (ctx: InnerTRPCContext, input: sen
             district: input.district,
             city: input.city,
             region: input.region,
-            propertyType: input.propertyType,
+            propertyType: validatePropertyTypeAnyValue(input.propertyType),
             villaLocation: input.villaLocation,
             apartmentLocation: input.apartmentLocation,
             priceMin: input.priceMin,
@@ -142,6 +142,7 @@ export const sendNotificationsHandler = async (ctx: InnerTRPCContext, input: sen
         const agentContacts = (lineLink?: string | null, telegramLink?: string | null, whatsappLink?: string | null, viberLink?: string | null): string => {
             return `${lineLink ? createMarkdownLink('Line', lineLink) : ''} ${telegramLink ? createMarkdownLink('TG', telegramLink) : ''} ${whatsappLink ? createMarkdownLink('Whatsapp', whatsappLink) : ''} ${viberLink ? createMarkdownLink('Viber', viberLink) : ''}`
         }
+        const propertyTypeWithNull = validatePropertyTypeAnyValue(input.propertyType);
 
         const bot = new TelegramBot(env.TELEGRAM_BOT_SECRET);
         const notificationPromises = telegramIds.map(id => bot.sendMessage(
@@ -158,7 +159,7 @@ complex name: *${getPropertyAddress(
                 villaLocations?.data,
                 apartmentLocations?.data,
             )}*
-property type: *${propertyTypeDict[input.propertyType]}*
+property type: *${propertyTypeWithNull ? propertyTypeDict[propertyTypeWithNull] : 'Any'}*
 price: *${cellRangeValue(input.priceMin, input.priceMax)}*
 commission: *${getCommissionLabel(input.commission)}*
 dates of stay: *${cellRangeValue(

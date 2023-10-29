@@ -77,12 +77,12 @@ model VerificationToken {
 }
 
 model Declaration {
-    id           String       @id @default(cuid())
-    createdAt    DateTime     @default(now())
-    updatedAt    DateTime     @updatedAt
-    location     Location     @relation(fields: [locationId], references: [id])
-    locationId   String       @unique
-    propertyType PropertyType
+    id           String        @id @default(cuid())
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    location     Location      @relation(fields: [locationId], references: [id])
+    locationId   String        @unique
+    propertyType PropertyType?
     priceMin     Float?
     priceMax     Float?
     checkinDate  DateTime?
@@ -90,7 +90,7 @@ model Declaration {
     roomsMin     Int?
     roomsMax     Int?
     commission   Float
-    agent        Agent        @relation(fields: [agentId], references: [id])
+    agent        Agent         @relation(fields: [agentId], references: [id])
     agentId      String
 
     @@index([agentId])
@@ -202,18 +202,18 @@ enum AgentPersonalStatusType {
 }
 
 model Tracking {
-    id           String       @id @default(cuid())
-    createdAt    DateTime     @default(now())
-    updatedAt    DateTime     @updatedAt
-    location     Location     @relation(fields: [locationId], references: [id])
-    locationId   String       @unique
-    propertyType PropertyType
+    id           String        @id @default(cuid())
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    location     Location      @relation(fields: [locationId], references: [id])
+    locationId   String        @unique
+    propertyType PropertyType?
     priceMin     Float?
     priceMax     Float?
     roomsMin     Int?
     roomsMax     Int?
     commission   Float
-    agent        Agent        @relation(fields: [agentId], references: [id])
+    agent        Agent         @relation(fields: [agentId], references: [id])
     agentId      String
 
     @@index([agentId])

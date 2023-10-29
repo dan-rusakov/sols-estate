@@ -6,7 +6,7 @@ export const findAllTrackingsSchema = object({
     district: z.string().or(z.undefined()),
     city: z.string().or(z.undefined()),
     region: z.string().or(z.undefined()),
-    propertyType: z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]).or(z.undefined()),
+    propertyType: z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]).or(z.undefined()).or(z.null()),
     villaLocation: z.string().or(z.null()).or(z.undefined()),
     apartmentLocation: z.string().or(z.null()).or(z.undefined()),
     priceMin: z.number().or(z.null()).or(z.undefined()),

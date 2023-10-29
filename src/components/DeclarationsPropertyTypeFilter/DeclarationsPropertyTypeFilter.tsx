@@ -13,6 +13,7 @@ import { TableParamsName } from "~/utils/table";
 import { DeclarationsParamsKey } from "../DeclarationsTable/utils";
 import { createSearchParamsString } from "~/utils/url";
 import { type $Enums } from "@prisma/client";
+import { type PropertyTypeAny } from "~/utils/entities";
 import { propertyTypeDict } from "~/utils/dictionaries";
 
 export default function DeclarationsPropertyTypeFilter() {
@@ -21,14 +22,18 @@ export default function DeclarationsPropertyTypeFilter() {
   const searchParams = useSearchParams()!;
   const { propertyType } = getDeclarationsFiltersFromSearchParams(searchParams);
   const [selectedPropertyType, setSelectedPropertyType] = useState<
-    (keyof typeof $Enums.PropertyType)[]
+    (keyof typeof $Enums.PropertyType | PropertyTypeAny)[]
   >(propertyType ?? []);
 
   const onPropertyTypeChange = (
-    event: SelectChangeEvent<(keyof typeof $Enums.PropertyType)[]>,
+    event: SelectChangeEvent<
+      (keyof typeof $Enums.PropertyType | PropertyTypeAny)[]
+    >,
   ) => {
-    const newSelectedPropertyType = event.target
-      .value as (keyof typeof $Enums.PropertyType)[];
+    const newSelectedPropertyType = event.target.value as (
+      | keyof typeof $Enums.PropertyType
+      | PropertyTypeAny
+    )[];
     setSelectedPropertyType([...newSelectedPropertyType]);
   };
 
@@ -49,7 +54,7 @@ export default function DeclarationsPropertyTypeFilter() {
   return (
     <FormControl className="w-44 sm:w-full">
       <InputLabel id="property-type-filter-label">Property type</InputLabel>
-      <Select<(keyof typeof $Enums.PropertyType)[]>
+      <Select<(keyof typeof $Enums.PropertyType | PropertyTypeAny)[]>
         labelId="property-type-filter-label"
         id="property-type-filter"
         value={selectedPropertyType}
@@ -58,6 +63,9 @@ export default function DeclarationsPropertyTypeFilter() {
         onClose={onPropertyTypeClose}
         multiple
       >
+        <MenuItem key={"any"} value={"any"}>
+          Any
+        </MenuItem>
         {Object.entries(propertyTypeDict).map(([key, value]) => (
           <MenuItem key={key} value={key}>
             {value}

@@ -62,7 +62,10 @@ export default function DeclarationsTable() {
       villaLocations?.data,
       apartmentLocations?.data,
     ),
-    propertyType: propertyTypeDict[declaration.propertyType],
+    propertyType:
+      declaration.propertyType === null
+        ? "Any"
+        : propertyTypeDict[declaration.propertyType],
     prices: cellRangeValue(
       declaration.priceMin
         ? formatNumber(declaration.priceMin, "numeric")

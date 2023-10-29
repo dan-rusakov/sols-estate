@@ -1,6 +1,7 @@
 import { $Enums } from "@prisma/client";
 import { type TypeOf, object, z } from "zod";
 import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
+import { PropertyTypeAnyValue } from "~/utils/entities";
 import { TableParamsName } from "~/utils/table";
 
 export const findAllDeclarationsSchema = object({
@@ -11,7 +12,7 @@ export const findAllDeclarationsSchema = object({
     [DeclarationsParamsKey.priceMax]: z.number().or(z.null()),
     [DeclarationsParamsKey.roomsMin]: z.number().or(z.null()),
     [DeclarationsParamsKey.roomsMax]: z.number().or(z.null()),
-    [DeclarationsParamsKey.propertyType]: z.array(z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE])).or(z.null()),
+    [DeclarationsParamsKey.propertyType]: z.array(z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]).or(z.literal(PropertyTypeAnyValue))).or(z.null()),
     createdAtMax: z.string().or(z.null()),
 });
 export type findAllDeclarationsInput = TypeOf<typeof findAllDeclarationsSchema>;
@@ -21,7 +22,7 @@ export const createDeclarationSchema = object({
     district: z.string(),
     city: z.string(),
     region: z.string(),
-    propertyType: z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]),
+    propertyType: z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]).or(z.literal(PropertyTypeAnyValue)),
     villaLocation: z.string().or(z.null()),
     apartmentLocation: z.string().or(z.null()),
     priceMin: z.number().or(z.null()),

@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import CheckIcon from "@mui/icons-material/Check";
 import CreatePropertyType from "../CreatePropertyType/CreatePropertyType";
+import { type PropertyTypeAny } from "~/utils/entities";
 
 export default function CreateDeclarationForm() {
   const { data: session } = useSession();
@@ -30,7 +31,7 @@ export default function CreateDeclarationForm() {
   const [city, setCity] = useState<string | null>(null);
   const [region, setRegion] = useState<string | null>(null);
   const [propertyType, setPropertyType] = useState<
-    keyof typeof $Enums.PropertyType | null
+    keyof typeof $Enums.PropertyType | PropertyTypeAny | null
   >(null);
   const [villaLocation, setVillaLocation] = useState<string | null>(null);
   const [apartmentLocation, setApartmentLocation] = useState<string | null>(
