@@ -55,7 +55,7 @@ export const getCommissionLabel = (commission: number): string => {
     );
 };
 
-export const getPropertyAddress = (
+export const getComplexName = (
     villaAddress: string | null,
     apartmentAddress: string | null,
     villaLocations?: RouterOutputs['locationDict']['getAllVillaLocations']['data'],

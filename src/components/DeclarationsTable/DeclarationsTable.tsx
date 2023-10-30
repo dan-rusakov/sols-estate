@@ -18,7 +18,7 @@ import {
   formatDateToDateString,
   formatNumber,
   getCommissionLabel,
-  getPropertyAddress,
+  getComplexName,
 } from "~/utils/table";
 import { Box } from "@mui/material";
 
@@ -56,7 +56,7 @@ export default function DeclarationsTable() {
       declaration.location.district,
       districts?.data,
     ),
-    address: getPropertyAddress(
+    complex_name: getComplexName(
       declaration.location.villa,
       declaration.location.apartment,
       villaLocations?.data,
@@ -102,8 +102,8 @@ export default function DeclarationsTable() {
       width: 100,
     },
     {
-      field: "address",
-      headerName: "Address",
+      field: "complex_name",
+      headerName: "Complex name",
       width: 190,
     },
     { field: "propertyType", headerName: "Property type", width: 120 },

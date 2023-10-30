@@ -86,7 +86,7 @@ export default function CreateDeclarationPropertyType(
       {propertyType === "VILLA" && (
         <FormControl className="w-full">
           <InputLabel id="villa-location-filter-label">
-            Address{" "}
+            Complex name{" "}
             {isVillaLocationsLoading && (
               <div className="ml-3 inline-flex">
                 <CircularProgress size={16} />
@@ -97,7 +97,7 @@ export default function CreateDeclarationPropertyType(
             labelId="villa-location-filter-label"
             id="villa-location-filter"
             value={villaLocation ?? ""}
-            label="Address"
+            label="Complex name"
             onChange={onVillaLocationChange}
             disabled={isVillaLocationsLoading}
             required
@@ -113,7 +113,7 @@ export default function CreateDeclarationPropertyType(
       {propertyType === "APARTMENT" && (
         <FormControl className="w-full">
           <InputLabel id="apartment-location-filter-label">
-            Address{" "}
+            Complex name{" "}
             {isApartmentLocationsLoading && (
               <div className="ml-3 inline-flex">
                 <CircularProgress size={16} />
@@ -124,7 +124,7 @@ export default function CreateDeclarationPropertyType(
             labelId="apartment-location-filter-label"
             id="apartment-location-filter"
             value={apartmentLocation ?? ""}
-            label="Address"
+            label="Complex name"
             onChange={onApartmentLocationChange}
             disabled={isApartmentLocationsLoading}
             required

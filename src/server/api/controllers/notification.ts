@@ -8,7 +8,7 @@ import { findAllTrackingsHandler } from "./trackings";
 import { findAgentHandler, findAllAgentsHandler } from "./agents";
 import TelegramBot from "node-telegram-bot-api";
 import { env } from "~/env.mjs";
-import { cellRangeValue, formatDateToDateString, getCommissionLabel, getPropertyAddress } from "~/utils/table";
+import { cellRangeValue, formatDateToDateString, getCommissionLabel, getComplexName } from "~/utils/table";
 import { getNameFromDict, propertyTypeDict } from "~/utils/dictionaries";
 import { findAllApartmentLocationsHandler, findAllDistrictsHandler, findAllVillaLocationsHandler } from "./locationDict";
 import { validatePropertyTypeAnyValue } from "~/utils/entities";
@@ -153,7 +153,7 @@ location: *${getNameFromDict(
                 input.district,
                 districts?.data,
             )}*
-complex name: *${getPropertyAddress(
+complex name: *${getComplexName(
                 input.villaLocation,
                 input.apartmentLocation,
                 villaLocations?.data,

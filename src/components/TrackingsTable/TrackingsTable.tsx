@@ -6,7 +6,7 @@ import {
   cellRangeValue,
   formatNumber,
   getCommissionLabel,
-  getPropertyAddress,
+  getComplexName,
 } from "~/utils/table";
 import Actions from "./Actions";
 import { api } from "~/utils/api";
@@ -30,13 +30,16 @@ export default function TrackingsTable() {
   const rows = trackings?.map((tracking) => ({
     id: tracking.id,
     location: getNameFromDict(tracking.location.district, districts?.data),
-    propertyType: propertyTypeDict[tracking.propertyType],
+    propertyType:
+      tracking.propertyType === null
+        ? "Any"
+        : propertyTypeDict[tracking.propertyType],
     prices: cellRangeValue(
       tracking.priceMin ? formatNumber(tracking.priceMin, "numeric") : null,
       tracking.priceMax ? formatNumber(tracking.priceMax, "numeric") : null,
     ),
 
-    address: getPropertyAddress(
+    complex_name: getComplexName(
       tracking.location.villa,
       tracking.location.apartment,
       villaLocations?.data,
@@ -54,8 +57,8 @@ export default function TrackingsTable() {
       width: 100,
     },
     {
-      field: "address",
-      headerName: "Address",
+      field: "complex_name",
+      headerName: "Complex name",
       width: 190,
     },
     { field: "propertyType", headerName: "Property type", width: 120 },
