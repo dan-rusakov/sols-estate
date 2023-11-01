@@ -188,8 +188,32 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
 
 export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: createDeclaraionInput) => {
     try {
-        const createDeclarationData: Prisma.XOR<Prisma.DeclarationCreateInput, Prisma.DeclarationUncheckedCreateInput> = {
-            propertyType: validatePropertyTypeAnyValue(input.propertyType),
+        const createDeclarationData: Prisma.DeclarationCreateArgs['data'] = {
+            propertyType: {
+                connect: validatePropertyTypeAnyValue(input.propertyTypeSlug).map(property => ({
+                    slug: property,
+                }))
+            },
+            district: {
+                connect: input.districtSlug?.map(district => ({
+                    slug: district,
+                }))
+            },
+            city: {
+                connect: input.citySlug.map(city => ({
+                    slug: city,
+                }))
+            },
+            region: {
+                connect: input.regionSlug.map(region => ({
+                    slug: region,
+                }))
+            },
+            complex: {
+                connect: input.complexId?.map(complex => ({
+                    id: complex,
+                }))
+            },
             priceMin: input.priceMin,
             priceMax: input.priceMax,
             checkinDate: input.checkinDate,
@@ -202,34 +226,25 @@ export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: cre
                     userId: input.userId,
                 }
             },
-            location: {
-                create: {
-                    district: input.district,
-                    city: input.city,
-                    region: input.region,
-                    villa: input.villaLocation,
-                    apartment: input.apartmentLocation,
-                }
-            }
         };
 
         await createDeclaration(ctx, createDeclarationData);
-        void sendNotificationsHandler(ctx, {
-            userId: input.userId,
-            district: input.district,
-            city: input.city,
-            region: input.region,
-            propertyType: input.propertyType,
-            villaLocation: input.villaLocation,
-            apartmentLocation: input.apartmentLocation,
-            priceMin: input.priceMin,
-            priceMax: input.priceMax,
-            roomsMin: input.roomsMin,
-            roomsMax: input.roomsMax,
-            checkinDate: input.checkinDate,
-            checkoutDate: input.checkoutDate,
-            commission: input.commission,
-        });
+        // void sendNotificationsHandler(ctx, {
+        //     userId: input.userId,
+        //     district: input.district,
+        //     city: input.city,
+        //     region: input.region,
+        //     propertyType: input.propertyType,
+        //     villaLocation: input.villaLocation,
+        //     apartmentLocation: input.apartmentLocation,
+        //     priceMin: input.priceMin,
+        //     priceMax: input.priceMax,
+        //     roomsMin: input.roomsMin,
+        //     roomsMax: input.roomsMax,
+        //     checkinDate: input.checkinDate,
+        //     checkoutDate: input.checkoutDate,
+        //     commission: input.commission,
+        // });
 
         return {
             status: 'success',

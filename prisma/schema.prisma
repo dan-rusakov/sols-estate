@@ -77,12 +77,9 @@ model VerificationToken {
 }
 
 model Declaration {
-    id           String        @id @default(cuid())
-    createdAt    DateTime      @default(now())
-    updatedAt    DateTime      @updatedAt
-    location     Location      @relation(fields: [locationId], references: [id])
-    locationId   String        @unique
-    propertyType PropertyType?
+    id           String             @id @default(cuid())
+    createdAt    DateTime           @default(now())
+    updatedAt    DateTime           @updatedAt
     priceMin     Float?
     priceMax     Float?
     checkinDate  DateTime?
@@ -90,27 +87,23 @@ model Declaration {
     roomsMin     Int?
     roomsMax     Int?
     commission   Float
-    agent        Agent         @relation(fields: [agentId], references: [id])
+    agent        Agent              @relation(fields: [agentId], references: [id])
     agentId      String
+    district     LocationDistrict[]
+    city         LocationCity[]
+    region       LocationRegion[]
+    propertyType PropertyType[]
+    complex      Complex[]
 
     @@index([agentId])
 }
 
-model Location {
-    id          String       @id @default(cuid())
-    district    String
-    city        String
-    region      String
-    villa       String?
-    apartment   String?
-    declaration Declaration?
-    tracking    Tracking?
-}
-
-enum PropertyType {
-    VILLA
-    APARTMENT
-    TOWNHOUSE
+model PropertyType {
+    id          String        @id @default(cuid())
+    name        String
+    slug        String        @unique
+    declaration Declaration[]
+    tracking    Tracking[]
 }
 
 model Agent {
@@ -202,53 +195,63 @@ enum AgentPersonalStatusType {
 }
 
 model Tracking {
-    id           String        @id @default(cuid())
-    createdAt    DateTime      @default(now())
-    updatedAt    DateTime      @updatedAt
-    location     Location      @relation(fields: [locationId], references: [id])
-    locationId   String        @unique
-    propertyType PropertyType?
+    id           String             @id @default(cuid())
+    createdAt    DateTime           @default(now())
+    updatedAt    DateTime           @updatedAt
     priceMin     Float?
     priceMax     Float?
     roomsMin     Int?
     roomsMax     Int?
     commission   Float
-    agent        Agent         @relation(fields: [agentId], references: [id])
+    agent        Agent              @relation(fields: [agentId], references: [id])
     agentId      String
+    district     LocationDistrict[]
+    city         LocationCity[]
+    region       LocationRegion[]
+    propertyType PropertyType[]
+    complex      Complex[]
 
     @@index([agentId])
 }
 
 // Dictionaries
 
-model LocationVillaDict {
-    id   String @id @default(cuid())
-    name String @unique
-    slug String @unique
+model Complex {
+    id          String        @id @default(cuid())
+    name        String
+    type        ComplexType[]
+    declaration Declaration[]
+    tracking    Tracking[]
 }
 
-model LocationApartmentDict {
-    id   String @id @default(cuid())
-    name String @unique
-    slug String @unique
+model ComplexType {
+    id      String    @id @default(cuid())
+    type    String    @unique
+    complex Complex[]
 }
 
-model LocationDistrictDict {
-    id   String @id @default(cuid())
-    name String @unique
-    slug String @unique
+model LocationDistrict {
+    id          String        @id @default(cuid())
+    name        String
+    slug        String        @unique
+    declaration Declaration[]
+    tracking    Tracking[]
 }
 
-model LocationCityDict {
-    id   String @id @default(cuid())
-    name String @unique
-    slug String @unique
+model LocationCity {
+    id          String        @id @default(cuid())
+    name        String
+    slug        String        @unique
+    declaration Declaration[]
+    tracking    Tracking[]
 }
 
-model LocationRegionDict {
-    id   String @id @default(cuid())
-    name String @unique
-    slug String @unique
+model LocationRegion {
+    id          String        @id @default(cuid())
+    name        String
+    slug        String        @unique
+    declaration Declaration[]
+    tracking    Tracking[]
 }
 
 model LegalAddressDistrictDict {

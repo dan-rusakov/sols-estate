@@ -4,7 +4,9 @@ import { type $Enums } from "@prisma/client";
 export type PropertyTypeAny = 'any';
 export const PropertyTypeAnyValue: PropertyTypeAny = 'any';
 
-export const validatePropertyTypeAnyValue = (type: keyof typeof $Enums.PropertyType | PropertyTypeAny): keyof typeof $Enums.PropertyType | null => type === 'any' ? null : type;
+export const validatePropertyTypeAnyValue = (types: string[]): string[] => {
+    return types.filter(type => type !== PropertyTypeAnyValue);
+}
 
 export const validatePropertyTypesListAnyValue = (types: (keyof typeof $Enums.PropertyType | PropertyTypeAny)[]): (keyof typeof $Enums.PropertyType | null)[] => {
     return types.map(validatePropertyTypeAnyValue);

@@ -1,4 +1,5 @@
 import {
+  Alert,
   CircularProgress,
   FormControl,
   InputLabel,
@@ -9,12 +10,12 @@ import {
 import { api } from "~/utils/api";
 
 interface CreateDeclarationLocationProps {
-  district: string | null;
-  setDistrict: (district: string) => void;
-  city: string | null;
-  setCity: (city: string) => void;
-  region: string | null;
-  setRegion: (city: string) => void;
+  district: string[] | null;
+  setDistrict: (district: string[]) => void;
+  city: string[] | null;
+  setCity: (city: string[]) => void;
+  region: string[] | null;
+  setRegion: (city: string[]) => void;
 }
 
 export default function CreateLocation(props: CreateDeclarationLocationProps) {
@@ -27,19 +28,29 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
   const { data: regions, isLoading: isRegionsLoading } =
     api.locationDict.getAllRegions.useQuery();
 
-  const onDistrictChange = (event: SelectChangeEvent<string>) => {
+  const onDistrictChange = (event: SelectChangeEvent<string[]>) => {
     const newSelectedDistrict = event.target.value;
-    setDistrict(newSelectedDistrict);
+    setDistrict(
+      typeof newSelectedDistrict === "string"
+        ? [newSelectedDistrict]
+        : newSelectedDistrict,
+    );
   };
 
-  const onCityChange = (event: SelectChangeEvent<string>) => {
+  const onCityChange = (event: SelectChangeEvent<string[]>) => {
     const newSelectedCity = event.target.value;
-    setCity(newSelectedCity);
+    setCity(
+      typeof newSelectedCity === "string" ? [newSelectedCity] : newSelectedCity,
+    );
   };
 
-  const onRegionChange = (event: SelectChangeEvent<string>) => {
+  const onRegionChange = (event: SelectChangeEvent<string[]>) => {
     const newSelectedRegion = event.target.value;
-    setRegion(newSelectedRegion);
+    setRegion(
+      typeof newSelectedRegion === "string"
+        ? [newSelectedRegion]
+        : newSelectedRegion,
+    );
   };
 
   return (
@@ -57,14 +68,14 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
               </div>
             )}
           </InputLabel>
-          <Select<string>
+          <Select<string[]>
             labelId="district-filter-label"
             id="district-filter"
-            value={district ?? ""}
+            value={district ?? []}
             label="District"
             onChange={onDistrictChange}
             disabled={isDistrictsLoading}
-            required
+            multiple
           >
             {districts?.data.map(({ name, slug }) => (
               <MenuItem key={slug} value={slug}>
@@ -82,13 +93,14 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
               </div>
             )}
           </InputLabel>
-          <Select<string>
+          <Select<string[]>
             labelId="city-filter-label"
             id="city-filter"
-            value={city ?? ""}
+            value={city ?? []}
             label="City"
             onChange={onCityChange}
             disabled={isCitiesLoading}
+            multiple
             required
           >
             {cities?.data.map(({ name, slug }) => (
@@ -107,13 +119,14 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
               </div>
             )}
           </InputLabel>
-          <Select<string>
+          <Select<string[]>
             labelId="region-filter-label"
             id="region-filter"
-            value={region ?? ""}
+            value={region ?? []}
             label="Region"
             onChange={onRegionChange}
             disabled={isRegionsLoading}
+            multiple
             required
           >
             {regions?.data.map(({ name, slug }) => (

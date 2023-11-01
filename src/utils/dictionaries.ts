@@ -20,10 +20,10 @@ export const AgentTypeDict: Record<$Enums.AgentType, string> = {
 
 export type AgentType = keyof typeof $Enums.AgentType;
 
-export const propertyTypeDict: Record<$Enums.PropertyType, string> = {
-    [$Enums.PropertyType.VILLA]: 'Villa',
-    [$Enums.PropertyType.APARTMENT]: 'Apartment',
-    [$Enums.PropertyType.TOWNHOUSE]: 'Townhouse',
+export const propertyTypeDict: Record<string, string> = {
+    VILLA: 'Villa',
+    APARTMENT: 'Apartment',
+    TOWNHOUSE: 'Townhouse',
 }
 
 export type commissionTypes = 0 | 3 | 5 | 10;

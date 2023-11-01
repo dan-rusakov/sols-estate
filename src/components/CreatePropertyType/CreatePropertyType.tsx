@@ -2,141 +2,126 @@ import {
   CircularProgress,
   FormControl,
   InputLabel,
+  ListSubheader,
   MenuItem,
   Select,
   type SelectChangeEvent,
 } from "@mui/material";
-import { type $Enums } from "@prisma/client";
 import { api } from "~/utils/api";
-import { propertyTypeDict } from "~/utils/dictionaries";
-import { PropertyTypeAnyValue, type PropertyTypeAny } from "~/utils/entities";
+import { PropertyTypeAnyValue } from "~/utils/entities";
 
 interface CreateDeclarationPropertyTypeProps {
-  propertyType: keyof typeof $Enums.PropertyType | PropertyTypeAny | null;
-  setPropertyType: (
-    propertyType: keyof typeof $Enums.PropertyType | PropertyTypeAny,
-  ) => void;
-  villaLocation: string | null;
-  setVillaLocation: (villaLocation: string) => void;
-  apartmentLocation: string | null;
-  setApartmentLocation: (apartmentLocation: string) => void;
+  propertyType: string[];
+  setPropertyType: (propertyType: string[]) => void;
+  complex: string[] | null;
+  setComplex: (complex: string[]) => void;
 }
 
 export default function CreateDeclarationPropertyType(
   props: CreateDeclarationPropertyTypeProps,
 ) {
   const {
-    propertyType,
+    propertyType: selectedPropertyType,
     setPropertyType,
-    villaLocation,
-    setVillaLocation,
-    apartmentLocation,
-    setApartmentLocation,
+    complex: selectedComplex,
+    setComplex,
   } = props;
 
-  const { data: villaLocations, isLoading: isVillaLocationsLoading } =
-    api.locationDict.getAllVillaLocations.useQuery();
-  const { data: apartmentLocations, isLoading: isApartmentLocationsLoading } =
-    api.locationDict.getAllApartmentLocations.useQuery();
+  const { data: complexes, isLoading: isComplexesLoading } =
+    api.property.getAllComplexes.useQuery();
+  const { data: propertyType, isLoading: isPropertyTypeLoading } =
+    api.property.getAllPropertyType.useQuery();
 
-  const onPropertyTypeChange = (
-    event: SelectChangeEvent<
-      keyof typeof $Enums.PropertyType | PropertyTypeAny
-    >,
-  ) => {
-    const newSelectedPropertyType = event.target.value as
-      | keyof typeof $Enums.PropertyType
-      | PropertyTypeAny;
+  const onPropertyTypeChange = (event: SelectChangeEvent<string[]>) => {
+    const newPropertyType = event.target.value as string[];
+    const lastSelectedValue = newPropertyType[newPropertyType.length - 1];
 
-    setPropertyType(newSelectedPropertyType);
+    if (lastSelectedValue === PropertyTypeAnyValue || !newPropertyType.length) {
+      setPropertyType([PropertyTypeAnyValue]);
+      return;
+    }
+
+    setPropertyType(
+      newPropertyType.filter((property) => property !== PropertyTypeAnyValue),
+    );
   };
 
-  const onVillaLocationChange = (event: SelectChangeEvent<string>) => {
-    const newSelectedVillaLocation = event.target.value;
-    setVillaLocation(newSelectedVillaLocation);
-  };
+  const onComplexChange = (event: SelectChangeEvent<string[]>) => {
+    const selectedComplexes = event.target.value as string[];
 
-  const onApartmentLocationChange = (event: SelectChangeEvent<string>) => {
-    const newSelectedApartmentLocation = event.target.value;
-    setApartmentLocation(newSelectedApartmentLocation);
+    setComplex(selectedComplexes);
   };
 
   return (
     <div className="flex flex-col gap-y-6">
       <FormControl className="w-full">
-        <InputLabel id="property-type-filter-label">Property type</InputLabel>
-        <Select<keyof typeof $Enums.PropertyType | PropertyTypeAny>
+        <InputLabel id="property-type-filter-label">
+          Property type{" "}
+          {isPropertyTypeLoading && (
+            <div className="ml-36 inline-flex">
+              <CircularProgress size={16} />
+            </div>
+          )}
+        </InputLabel>
+        <Select<string[]>
           labelId="property-type-filter-label"
           id="property-type-filter"
-          value={propertyType ?? ""}
-          label="Property type"
+          value={selectedPropertyType}
           onChange={onPropertyTypeChange}
-          required
+          disabled={isPropertyTypeLoading}
+          label="Property type"
+          multiple
         >
           <MenuItem key={PropertyTypeAnyValue} value={PropertyTypeAnyValue}>
             Any
           </MenuItem>
-          {Object.entries(propertyTypeDict).map(([key, value]) => (
-            <MenuItem key={key} value={key}>
-              {value}
+          {propertyType?.data.map(({ name, slug }) => (
+            <MenuItem key={slug} value={slug}>
+              {name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      {propertyType === "VILLA" && (
-        <FormControl className="w-full">
-          <InputLabel id="villa-location-filter-label">
-            Complex name{" "}
-            {isVillaLocationsLoading && (
-              <div className="ml-3 inline-flex">
-                <CircularProgress size={16} />
-              </div>
-            )}
-          </InputLabel>
-          <Select<string>
-            labelId="villa-location-filter-label"
-            id="villa-location-filter"
-            value={villaLocation ?? ""}
-            label="Complex name"
-            onChange={onVillaLocationChange}
-            disabled={isVillaLocationsLoading}
-            required
-          >
-            {villaLocations?.data.map(({ name, slug }) => (
-              <MenuItem key={slug} value={slug}>
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      )}
-      {propertyType === "APARTMENT" && (
-        <FormControl className="w-full">
-          <InputLabel id="apartment-location-filter-label">
-            Complex name{" "}
-            {isApartmentLocationsLoading && (
-              <div className="ml-3 inline-flex">
-                <CircularProgress size={16} />
-              </div>
-            )}
-          </InputLabel>
-          <Select<string>
-            labelId="apartment-location-filter-label"
-            id="apartment-location-filter"
-            value={apartmentLocation ?? ""}
-            label="Complex name"
-            onChange={onApartmentLocationChange}
-            disabled={isApartmentLocationsLoading}
-            required
-          >
-            {apartmentLocations?.data.map(({ name, slug }) => (
-              <MenuItem key={slug} value={slug}>
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      )}
+      <FormControl className="w-full">
+        <InputLabel id="complex-filter-label">
+          Complex name{" "}
+          {isComplexesLoading && (
+            <div className="ml-3 inline-flex">
+              <CircularProgress size={16} />
+            </div>
+          )}
+        </InputLabel>
+        <Select<string[]>
+          labelId="complex-filter-label"
+          id="complex-filter"
+          value={selectedComplex ?? []}
+          label="Complex name"
+          onChange={onComplexChange}
+          multiple
+          disabled={isComplexesLoading}
+        >
+          <ListSubheader>Villas</ListSubheader>
+          {complexes?.data.map(({ name, id, type }) => {
+            if (type.some(({ type }) => type === "villa")) {
+              return (
+                <MenuItem key={id} value={id}>
+                  {name}
+                </MenuItem>
+              );
+            }
+          })}
+          <ListSubheader>Apartments</ListSubheader>
+          {complexes?.data.map(({ name, id, type }) => {
+            if (type.some(({ type }) => type === "apartment")) {
+              return (
+                <MenuItem key={id} value={id}>
+                  {name}
+                </MenuItem>
+              );
+            }
+          })}
+        </Select>
+      </FormControl>
     </div>
   );
 }

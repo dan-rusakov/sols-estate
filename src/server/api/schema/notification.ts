@@ -30,7 +30,7 @@ export const sendNotificationsSchema = object({
     district: z.string(),
     city: z.string(),
     region: z.string(),
-    propertyType: z.enum([$Enums.PropertyType.VILLA, $Enums.PropertyType.APARTMENT, $Enums.PropertyType.TOWNHOUSE]).or(z.literal(PropertyTypeAnyValue)),
+    propertyType: z.enum(['VILLA', 'APARTMENT', 'TOWNHOUSE']).or(z.literal(PropertyTypeAnyValue)),
     villaLocation: z.string().or(z.null()),
     apartmentLocation: z.string().or(z.null()),
     priceMin: z.number().or(z.null()),

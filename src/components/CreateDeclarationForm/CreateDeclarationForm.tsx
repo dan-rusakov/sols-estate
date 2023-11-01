@@ -1,6 +1,5 @@
 import { type FormEvent, useState } from "react";
 import CreateLocation from "../CreateLocation/CreateLocation";
-import { type $Enums } from "@prisma/client";
 import CreatePrice from "../CreatePrice/CreatePrice";
 import CreateDeclarationDates from "../CreateDeclarationDates/CreateDeclarationDates";
 import CreateRooms from "../CreateRooms/CreateRooms";
@@ -11,32 +10,28 @@ import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import CheckIcon from "@mui/icons-material/Check";
 import CreatePropertyType from "../CreatePropertyType/CreatePropertyType";
-import { type PropertyTypeAny } from "~/utils/entities";
+import { PropertyTypeAnyValue } from "~/utils/entities";
 
 export default function CreateDeclarationForm() {
   const { data: session } = useSession();
 
   const {
     isLoading: isCreatingDeclaraion,
-    mutate,
+    mutate: addDeclaration,
     error: createDeclarationError,
   } = api.declarations.addDeclaraion.useMutation({
     onSuccess() {
       setSuccessCreation(true);
-      resetAllFields();
     },
   });
 
-  const [district, setDistricts] = useState<string | null>(null);
-  const [city, setCity] = useState<string | null>(null);
-  const [region, setRegion] = useState<string | null>(null);
-  const [propertyType, setPropertyType] = useState<
-    keyof typeof $Enums.PropertyType | PropertyTypeAny | null
-  >(null);
-  const [villaLocation, setVillaLocation] = useState<string | null>(null);
-  const [apartmentLocation, setApartmentLocation] = useState<string | null>(
-    null,
-  );
+  const [district, setDistricts] = useState<string[] | null>(null);
+  const [city, setCity] = useState<string[] | null>(null);
+  const [region, setRegion] = useState<string[] | null>(null);
+  const [propertyType, setPropertyType] = useState<string[]>([
+    PropertyTypeAnyValue,
+  ]);
+  const [complex, setComplex] = useState<string[] | null>(null);
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [minPriceError, setMinPriceError] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
@@ -53,9 +48,7 @@ export default function CreateDeclarationForm() {
 
   const validateFields = (): boolean => {
     if (
-      propertyType === null ||
       commission === null ||
-      district === null ||
       city === null ||
       region === null ||
       minPriceError ||
@@ -78,16 +71,6 @@ export default function CreateDeclarationForm() {
       return false;
     }
 
-    if (propertyType === "VILLA" && villaLocation === null) {
-      setValidationError("Please, select villa location");
-      return false;
-    }
-
-    if (propertyType === "APARTMENT" && apartmentLocation === null) {
-      setValidationError("Please, select apartment location");
-      return false;
-    }
-
     setValidationError(null);
     return true;
   };
@@ -97,9 +80,9 @@ export default function CreateDeclarationForm() {
 
     if (validateFields()) {
       setSuccessCreation(false);
-      mutate({
+      addDeclaration({
         userId: session?.user.id ?? "",
-        propertyType: propertyType!,
+        propertyTypeSlug: propertyType,
         priceMin: minPrice,
         priceMax: maxPrice,
         checkinDate,
@@ -107,33 +90,12 @@ export default function CreateDeclarationForm() {
         roomsMin: minRooms,
         roomsMax: maxRooms,
         commission: commission!,
-        district: district!,
-        city: city!,
-        region: region!,
-        villaLocation,
-        apartmentLocation,
+        districtSlug: district,
+        citySlug: city!,
+        regionSlug: region!,
+        complexId: complex,
       });
     }
-  };
-
-  const resetAllFields = () => {
-    setDistricts(null);
-    setCity(null);
-    setRegion(null);
-    setPropertyType(null);
-    setVillaLocation(null);
-    setApartmentLocation(null);
-    setMinPrice(null);
-    setMinPriceError(false);
-    setMaxPrice(null);
-    setMaxPriceError(false);
-    setCheckinDate(null);
-    setCheckoutDate(null);
-    setMinRooms(null);
-    setMinRoomsError(false);
-    setMaxRooms(null);
-    setMaxRoomsError(false);
-    setCommission(null);
   };
 
   const errorNotification = (error: boolean, errorText: string) =>
@@ -148,10 +110,8 @@ export default function CreateDeclarationForm() {
         <CreatePropertyType
           propertyType={propertyType}
           setPropertyType={setPropertyType}
-          villaLocation={villaLocation}
-          setVillaLocation={setVillaLocation}
-          apartmentLocation={apartmentLocation}
-          setApartmentLocation={setApartmentLocation}
+          complex={complex}
+          setComplex={setComplex}
         />
         <CreateLocation
           district={district}
