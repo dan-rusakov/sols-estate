@@ -8,7 +8,7 @@ import ContactLinks from "./ContactLinks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getDeclarationsFiltersFromSearchParams } from "../DeclarationsFilters/utils";
 import { api } from "~/utils/api";
-import { getNameFromDict, propertyTypeDict } from "~/utils/dictionaries";
+import { mapDictByName } from "~/utils/dictionaries";
 import { createSearchParamsString } from "~/utils/url";
 import {
   TableParamsName,
@@ -18,7 +18,6 @@ import {
   formatDateToDateString,
   formatNumber,
   getCommissionLabel,
-  getComplexName,
 } from "~/utils/table";
 import { Box } from "@mui/material";
 
@@ -32,40 +31,26 @@ export default function DeclarationsTable() {
 
   const { data: declarationsData, isLoading: isDeclarationsLoading } =
     api.declarations.getAllDeclarations.useQuery({
-      location,
+      districtSlug: location,
       page,
       priceMin,
       priceMax,
       roomsMin,
       roomsMax,
-      propertyType,
+      propertyTypeSlug: propertyType,
       take: TAKE_RECORDS_AMOUNT,
       createdAtMax: null,
     });
-  const { data: districts, isLoading: isDistrictsLoading } =
-    api.locationDict.getAllDistricts.useQuery();
-  const { data: villaLocations, isLoading: isVillaLocationsLoading } =
-    api.locationDict.getAllVillaLocations.useQuery();
-  const { data: apartmentLocations, isLoading: isApartmentLocationsLoading } =
-    api.locationDict.getAllApartmentLocations.useQuery();
   const [declarationsCount, declarations] = declarationsData?.data ?? [];
 
   const rows = declarations?.map((declaration) => ({
     id: declaration.id,
-    [DeclarationsParamsKey.location]: getNameFromDict(
-      declaration.location.district,
-      districts?.data,
-    ),
-    complex_name: getComplexName(
-      declaration.location.villa,
-      declaration.location.apartment,
-      villaLocations?.data,
-      apartmentLocations?.data,
-    ),
-    propertyType:
-      declaration.propertyType === null
-        ? "Any"
-        : propertyTypeDict[declaration.propertyType],
+    [DeclarationsParamsKey.location]:
+      declaration.district.map(mapDictByName).join(", ") || "—",
+    complex_name: declaration.complex.map(mapDictByName).join(", ") || "—",
+    propertyType: !declaration.propertyType.length
+      ? "Any"
+      : declaration.propertyType.map(mapDictByName).join(", "),
     prices: cellRangeValue(
       declaration.priceMin
         ? formatNumber(declaration.priceMin, "numeric")
@@ -99,14 +84,14 @@ export default function DeclarationsTable() {
     {
       field: DeclarationsParamsKey.location,
       headerName: "Location",
-      width: 100,
+      width: 180,
     },
     {
       field: "complex_name",
       headerName: "Complex name",
-      width: 190,
+      width: 240,
     },
-    { field: "propertyType", headerName: "Property type", width: 120 },
+    { field: "propertyType", headerName: "Property type", width: 160 },
     { field: "prices", headerName: "Price", width: 150 },
     {
       field: "commission",
@@ -157,12 +142,7 @@ export default function DeclarationsTable() {
           rows={rows ?? []}
           columns={columns}
           disableColumnMenu
-          loading={
-            isDeclarationsLoading ||
-            isDistrictsLoading ||
-            isVillaLocationsLoading ||
-            isApartmentLocationsLoading
-          }
+          loading={isDeclarationsLoading}
           paginationMode="server"
           rowCount={declarationsCount ?? 0}
           onPaginationModelChange={onPageChange}

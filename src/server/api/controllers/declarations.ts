@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 import { createDeclaration, deleteDeclaration, findAllDeclarations } from "../services/declarations";
 import { type InnerTRPCContext } from "../trpc";
 import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
@@ -7,49 +7,37 @@ import { TRPCError } from "@trpc/server";
 import { sendNotificationsHandler } from "./notification";
 import { excludePropertyTypesListAnyValue, validatePropertyTypeAnyValue } from "~/utils/entities";
 
-export const findAllDeclarationsArgs = Prisma.validator<Prisma.DeclarationDefaultArgs>()({
-    select: {
-        id: true,
-        location: {
-            select: {
-                district: true,
-                villa: true,
-                apartment: true,
-            }
-        },
-        propertyType: true,
-        priceMin: true,
-        priceMax: true,
-        checkinDate: true,
-        checkoutDate: true,
-        roomsMin: true,
-        roomsMax: true,
-        agent: {
-            select: {
-                firstName: true,
-                lastName: true,
-                contactInfo: {
-                    select: {
-                        telegramLink: true,
-                        whatsappLink: true,
-                        viberLink: true,
-                        lineLink: true,
-                    }
-                }
-            }
-        },
-        commission: true,
-    }
-});
-
 export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: findAllDeclarationsInput) => {
     try {
-        const location = input[DeclarationsParamsKey.location];
+        const findAllDeclarationsSelect: Prisma.DeclarationSelect = {
+            id: true,
+            district: true,
+            city: true,
+            region: true,
+            propertyType: true,
+            complex: true,
+            priceMin: true,
+            priceMax: true,
+            checkinDate: true,
+            checkoutDate: true,
+            roomsMin: true,
+            roomsMax: true,
+            agent: {
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    contactInfo: true,
+                }
+            },
+            commission: true,
+        }
+
+        const districtSlug = input.districtSlug;
         const priceMin = input[DeclarationsParamsKey.priceMin];
         const priceMax = input[DeclarationsParamsKey.priceMax];
         const roomsMin = input[DeclarationsParamsKey.roomsMin];
         const roomsMax = input[DeclarationsParamsKey.roomsMax];
-        const propertyType = input[DeclarationsParamsKey.propertyType];
+        const propertyTypeSlug = input.propertyTypeSlug;
 
         if (priceMin && priceMax && priceMin > priceMax) {
             throw new TRPCError({
@@ -72,11 +60,13 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
             AND: []
         };
 
-        if (location?.length) {
+        if (districtSlug?.length) {
             filtering.AND.push({
-                location: {
-                    district: {
-                        in: location,
+                district: {
+                    some: {
+                        slug: {
+                            in: districtSlug,
+                        }
                     }
                 }
             })
@@ -152,17 +142,42 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
             });
         }
 
-        if (propertyType?.length) {
+        if (propertyTypeSlug?.length === 1 && propertyTypeSlug.includes('any')) {
+            filtering.AND.push({
+                propertyType: {
+                    none: {},
+                },
+            });
+        }
+
+        if (propertyTypeSlug?.length && !propertyTypeSlug.includes('any')) {
+            filtering.AND.push({
+                propertyType: {
+                    some: {
+                        slug: {
+                            in: excludePropertyTypesListAnyValue(propertyTypeSlug) ?? undefined,
+                        }
+                    }
+                },
+            });
+        }
+
+        if (propertyTypeSlug?.length && propertyTypeSlug.length > 1 && propertyTypeSlug.includes('any')) {
             filtering.AND.push({
                 OR: [
                     {
                         propertyType: {
-                            in: excludePropertyTypesListAnyValue(propertyType),
-                        }
-                    },
-                    propertyType.includes('any') ? {
-                        propertyType: null,
-                    } : {}
+                            some: {
+                                slug: {
+                                    in: excludePropertyTypesListAnyValue(propertyTypeSlug) ?? undefined,
+                                }
+                            }
+                        },
+                    }, {
+                        propertyType: {
+                            none: {},
+                        },
+                    }
                 ]
             });
         }
@@ -175,7 +190,7 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
             })
         }
 
-        const declarations = await findAllDeclarations(ctx, filtering, findAllDeclarationsArgs.select, input.page, input.take);
+        const declarations = await findAllDeclarations(ctx, filtering, findAllDeclarationsSelect, input.page, input.take);
 
         return {
             status: 'success',

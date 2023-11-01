@@ -1,8 +1,7 @@
 import { type Prisma } from "@prisma/client";
 import { type InnerTRPCContext } from "../trpc";
-import { type findAllDeclarationsArgs } from '../controllers/declarations'
 
-export const findAllDeclarations = async (ctx: InnerTRPCContext, where: Prisma.DeclarationWhereInput, select: typeof findAllDeclarationsArgs.select, page: number | null, take?: number) => {
+export const findAllDeclarations = async (ctx: InnerTRPCContext, where: Prisma.DeclarationWhereInput, select: Prisma.DeclarationSelect, page: number | null, take?: number) => {
     const skip = (take ?? 0) * (page ?? 0);
 
     return ctx.prisma.$transaction([

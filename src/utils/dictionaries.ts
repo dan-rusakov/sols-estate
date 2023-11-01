@@ -13,6 +13,8 @@ export const getNameFromDict = (slug: string, dict: BaseDictStructure[] | undefi
     return dict.find(dictValue => dictValue.slug === slug)?.name ?? slug;
 }
 
+export const mapDictByName = (value: { name: string }) => value.name;
+
 export const AgentTypeDict: Record<$Enums.AgentType, string> = {
     [$Enums.AgentType.AGENCY]: 'Agency',
     [$Enums.AgentType.PERSONAL]: 'Free agent',

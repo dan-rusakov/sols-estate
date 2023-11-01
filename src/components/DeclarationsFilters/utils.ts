@@ -1,27 +1,5 @@
 import { getSingleNumberFromUrl, getStringsArrayFromUrl } from "~/utils/url";
 import { DeclarationsParamsKey } from "../DeclarationsTable/utils";
-import { $Enums } from "@prisma/client";
-import { PropertyTypeAnyValue, type PropertyTypeAny } from "~/utils/entities";
-
-export const getPropertyTypeFromUrl = (value: string | string[] | undefined): (keyof typeof $Enums.PropertyType | PropertyTypeAny)[] | null => {
-    const stringsArrayFromUrl = getStringsArrayFromUrl(value);
-
-    if (!stringsArrayFromUrl) {
-        return null;
-    }
-
-    return stringsArrayFromUrl?.reduce<(keyof typeof $Enums.PropertyType | PropertyTypeAny)[]>((acc, stringValue) => {
-        if (Object.keys($Enums.PropertyType).includes(stringValue)) {
-            acc.push(stringValue as keyof typeof $Enums.PropertyType);
-        }
-
-        if (stringValue === PropertyTypeAnyValue) {
-            acc.push(stringValue);
-        }
-
-        return acc;
-    }, []);
-};
 
 export const getDeclarationsFiltersFromSearchParams = (
     searchParams: URLSearchParams,
@@ -42,7 +20,7 @@ export const getDeclarationsFiltersFromSearchParams = (
         [DeclarationsParamsKey.roomsMax]: getSingleNumberFromUrl(
             searchParams.getAll(DeclarationsParamsKey.roomsMax),
         ),
-        [DeclarationsParamsKey.propertyType]: getPropertyTypeFromUrl(
+        [DeclarationsParamsKey.propertyType]: getStringsArrayFromUrl(
             searchParams.getAll(DeclarationsParamsKey.propertyType),
         ),
     };

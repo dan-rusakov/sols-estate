@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -12,28 +13,23 @@ import { useState } from "react";
 import { TableParamsName } from "~/utils/table";
 import { DeclarationsParamsKey } from "../DeclarationsTable/utils";
 import { createSearchParamsString } from "~/utils/url";
-import { type $Enums } from "@prisma/client";
-import { type PropertyTypeAny } from "~/utils/entities";
-import { propertyTypeDict } from "~/utils/dictionaries";
+import { api } from "~/utils/api";
 
 export default function DeclarationsPropertyTypeFilter() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
-  const { propertyType } = getDeclarationsFiltersFromSearchParams(searchParams);
-  const [selectedPropertyType, setSelectedPropertyType] = useState<
-    (keyof typeof $Enums.PropertyType | PropertyTypeAny)[]
-  >(propertyType ?? []);
+  const { propertyType: propertyTypeFromURL } =
+    getDeclarationsFiltersFromSearchParams(searchParams);
+  const [selectedPropertyType, setSelectedPropertyType] = useState<string[]>(
+    propertyTypeFromURL ?? [],
+  );
 
-  const onPropertyTypeChange = (
-    event: SelectChangeEvent<
-      (keyof typeof $Enums.PropertyType | PropertyTypeAny)[]
-    >,
-  ) => {
-    const newSelectedPropertyType = event.target.value as (
-      | keyof typeof $Enums.PropertyType
-      | PropertyTypeAny
-    )[];
+  const { data: propertyTypes, isLoading } =
+    api.property.getAllPropertyType.useQuery();
+
+  const onPropertyTypeChange = (event: SelectChangeEvent<string[]>) => {
+    const newSelectedPropertyType = event.target.value as string[];
     setSelectedPropertyType([...newSelectedPropertyType]);
   };
 
@@ -53,8 +49,15 @@ export default function DeclarationsPropertyTypeFilter() {
 
   return (
     <FormControl className="w-44 sm:w-full">
-      <InputLabel id="property-type-filter-label">Property type</InputLabel>
-      <Select<(keyof typeof $Enums.PropertyType | PropertyTypeAny)[]>
+      <InputLabel id="property-type-filter-label">
+        Property type{" "}
+        {isLoading && (
+          <div className="ml-3 inline-flex">
+            <CircularProgress size={16} />
+          </div>
+        )}
+      </InputLabel>
+      <Select<string[]>
         labelId="property-type-filter-label"
         id="property-type-filter"
         value={selectedPropertyType}
@@ -62,13 +65,14 @@ export default function DeclarationsPropertyTypeFilter() {
         onChange={onPropertyTypeChange}
         onClose={onPropertyTypeClose}
         multiple
+        disabled={isLoading}
       >
         <MenuItem key={"any"} value={"any"}>
           Any
         </MenuItem>
-        {Object.entries(propertyTypeDict).map(([key, value]) => (
-          <MenuItem key={key} value={key}>
-            {value}
+        {propertyTypes?.data.map(({ name, slug }) => (
+          <MenuItem key={slug} value={slug}>
+            {name}
           </MenuItem>
         ))}
       </Select>
