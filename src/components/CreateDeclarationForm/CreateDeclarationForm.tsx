@@ -8,12 +8,13 @@ import { Alert, Button, CircularProgress } from "@mui/material";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
-import CheckIcon from "@mui/icons-material/Check";
 import CreatePropertyType from "../CreatePropertyType/CreatePropertyType";
 import { PropertyTypeAnyValue } from "~/utils/entities";
+import { useRouter } from "next/router";
 
 export default function CreateDeclarationForm() {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const {
     isLoading: isCreatingDeclaraion,
@@ -21,7 +22,7 @@ export default function CreateDeclarationForm() {
     error: createDeclarationError,
   } = api.declarations.addDeclaraion.useMutation({
     onSuccess() {
-      setSuccessCreation(true);
+      void router.push("/declarations");
     },
   });
 
@@ -44,7 +45,6 @@ export default function CreateDeclarationForm() {
   const [maxRoomsError, setMaxRoomsError] = useState(false);
   const [commission, setCommission] = useState<number | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [successCreation, setSuccessCreation] = useState(false);
 
   const validateFields = (): boolean => {
     if (
@@ -79,7 +79,6 @@ export default function CreateDeclarationForm() {
     evt.preventDefault();
 
     if (validateFields()) {
-      setSuccessCreation(false);
       addDeclaration({
         userId: session?.user.id ?? "",
         propertyTypeSlug: propertyType,
@@ -160,10 +159,9 @@ export default function CreateDeclarationForm() {
           disableElevation
           disabled={isCreatingDeclaraion}
           endIcon={
-            (isCreatingDeclaraion && (
+            isCreatingDeclaraion && (
               <CircularProgress size={16} color="inherit" />
-            )) ||
-            (successCreation && <CheckIcon color="inherit" />)
+            )
           }
         >
           Save

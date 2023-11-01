@@ -6,6 +6,7 @@ import {
   type SelectChangeEvent,
 } from "@mui/material";
 import { commissionTypeDict, commissionValues } from "~/utils/dictionaries";
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
 
 interface CreateCommissionProps {
   commission: number | null;
@@ -21,8 +22,8 @@ export default function CreateCommission(props: CreateCommissionProps) {
   };
 
   return (
-    <div className="mt-6">
-      <FormControl className="w-full">
+    <div className="mt-6 flex items-center">
+      <FormControl className="flex-grow">
         <InputLabel id="commission-filter-label">Commission</InputLabel>
         <Select<number>
           labelId="commission-filter-label"
@@ -39,6 +40,7 @@ export default function CreateCommission(props: CreateCommissionProps) {
           ))}
         </Select>
       </FormControl>
+      <InfoTooltip text="Select the amount of commission you will ask from other agent who will take your request" />
     </div>
   );
 }

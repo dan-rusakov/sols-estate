@@ -58,7 +58,7 @@ export default function CreateDeclarationPropertyType(
         <InputLabel id="property-type-filter-label">
           Property type{" "}
           {isPropertyTypeLoading && (
-            <div className="ml-36 inline-flex">
+            <div className="ml-3 inline-flex">
               <CircularProgress size={16} />
             </div>
           )}

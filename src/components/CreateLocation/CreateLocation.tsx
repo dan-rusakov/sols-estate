@@ -1,5 +1,4 @@
 import {
-  Alert,
   CircularProgress,
   FormControl,
   InputLabel,
@@ -8,6 +7,7 @@ import {
   type SelectChangeEvent,
 } from "@mui/material";
 import { api } from "~/utils/api";
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
 
 interface CreateDeclarationLocationProps {
   district: string[] | null;
@@ -57,6 +57,7 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
     <div className="pb-6 pt-4">
       <p className="text-md mb-4 font-normal text-neutral-700">
         Property location
+        <InfoTooltip text="Fill district, city and region fields to specify the location of property. Select many districts if properties can be in different areas" />
       </p>
       <div className="flex flex-col gap-y-6">
         <FormControl className="w-full">
