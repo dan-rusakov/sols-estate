@@ -201,16 +201,6 @@ export default function CreateAgent() {
                 className="w-full"
               />
               <TextField
-                id="line-link"
-                label="Line link"
-                type="text"
-                name="line-link"
-                variant="outlined"
-                value={lineLink}
-                onChange={(evt) => setLineLink(evt.target.value)}
-                className="w-full"
-              />
-              <TextField
                 id="viber-link"
                 label="Viber link"
                 type="text"

@@ -147,22 +147,6 @@ export default function ProfileForm() {
               disabled={isLoadingAgent || isUpdatingAgent}
             />
             <TextField
-              id="line-link"
-              label={
-                <InputLabelWithLoading
-                  label="Line link"
-                  isLoading={isLoadingAgent}
-                />
-              }
-              type="text"
-              name="line-link"
-              variant="outlined"
-              value={lineLink}
-              onChange={(evt) => setLineLink(evt.target.value)}
-              className="w-full"
-              disabled={isLoadingAgent || isUpdatingAgent}
-            />
-            <TextField
               id="viber-link"
               label={
                 <InputLabelWithLoading
