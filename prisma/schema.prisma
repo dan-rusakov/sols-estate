@@ -195,23 +195,33 @@ enum AgentPersonalStatusType {
 }
 
 model Tracking {
-    id           String             @id @default(cuid())
-    createdAt    DateTime           @default(now())
-    updatedAt    DateTime           @updatedAt
-    priceMin     Float?
-    priceMax     Float?
-    roomsMin     Int?
-    roomsMax     Int?
-    commission   Float
-    agent        Agent              @relation(fields: [agentId], references: [id])
-    agentId      String
-    district     LocationDistrict[]
-    city         LocationCity[]
-    region       LocationRegion[]
-    propertyType PropertyType[]
-    complex      Complex[]
+    id             String            @id @default(cuid())
+    createdAt      DateTime          @default(now())
+    updatedAt      DateTime          @updatedAt
+    priceMin       Float?
+    priceMax       Float?
+    roomsMin       Int?
+    roomsMax       Int?
+    commission     Float?
+    agent          Agent             @relation(fields: [agentId], references: [id])
+    agentId        String
+    district       LocationDistrict? @relation(fields: [districtId], references: [id])
+    districtId     String?
+    city           LocationCity?     @relation(fields: [cityId], references: [id])
+    cityId         String?
+    region         LocationRegion?   @relation(fields: [regionId], references: [id])
+    regionId       String?
+    propertyType   PropertyType?     @relation(fields: [propertyTypeId], references: [id])
+    propertyTypeId String?
+    complex        Complex?          @relation(fields: [complexId], references: [id])
+    complexId      String?
 
     @@index([agentId])
+    @@index([districtId])
+    @@index([cityId])
+    @@index([regionId])
+    @@index([propertyTypeId])
+    @@index([complexId])
 }
 
 // Dictionaries

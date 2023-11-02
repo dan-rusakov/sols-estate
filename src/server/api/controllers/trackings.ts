@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { type InnerTRPCContext } from "../trpc";
 import { type deleteTrackingInput, type createTrackingInput, type findAllTrackingsInput } from "../schema/trackings";
 import { createTracking, deleteTracking, findAllTrackings } from "../services/trackings";
+import { validatePropertyTypeAnyValue } from "~/utils/entities";
 
 export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: findAllTrackingsInput) => {
     try {
@@ -274,8 +275,33 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
 
 export const createTrackingHandler = async (ctx: InnerTRPCContext, input: createTrackingInput) => {
     try {
+        const propertyTypeWithoutAny = validatePropertyTypeAnyValue(input.propertyTypeSlug);
         const createTrackingData: Prisma.TrackingCreateArgs['data'] = {
-            propertyType: input.propertyType,
+            propertyType: {
+                connect: propertyTypeWithoutAny ? {
+                    slug: propertyTypeWithoutAny,
+                } : undefined,
+            },
+            district: {
+                connect: input.districtSlug ? {
+                    slug: input.districtSlug,
+                } : undefined
+            },
+            city: {
+                connect: input.citySlug ? {
+                    slug: input.citySlug,
+                } : undefined
+            },
+            region: {
+                connect: input.regionSlug ? {
+                    slug: input.regionSlug,
+                } : undefined
+            },
+            complex: {
+                connect: input.complexId ? {
+                    id: input.complexId,
+                } : undefined
+            },
             priceMin: input.priceMin,
             priceMax: input.priceMax,
             roomsMin: input.roomsMin,
@@ -286,15 +312,6 @@ export const createTrackingHandler = async (ctx: InnerTRPCContext, input: create
                     userId: input.userId,
                 }
             },
-            location: {
-                create: {
-                    district: input.district,
-                    city: input.city,
-                    region: input.region,
-                    villa: input.villaLocation,
-                    apartment: input.apartmentLocation,
-                }
-            }
         };
 
         const tracking = await createTracking(ctx, createTrackingData);

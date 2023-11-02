@@ -10,12 +10,12 @@ import { api } from "~/utils/api";
 import InfoTooltip from "../InfoTooltip/InfoTooltip";
 
 interface CreateDeclarationLocationProps {
-  district: string[] | null;
-  setDistrict: (district: string[]) => void;
-  city: string[] | null;
-  setCity: (city: string[]) => void;
-  region: string[] | null;
-  setRegion: (city: string[]) => void;
+  district: string | null;
+  setDistrict: (district: string) => void;
+  city: string | null;
+  setCity: (city: string) => void;
+  region: string | null;
+  setRegion: (city: string) => void;
   cityRequired?: boolean;
   regionRequired?: boolean;
 }
@@ -39,36 +39,26 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
   const { data: regions, isLoading: isRegionsLoading } =
     api.locationDict.getAllRegions.useQuery();
 
-  const onDistrictChange = (event: SelectChangeEvent<string[]>) => {
+  const onDistrictChange = (event: SelectChangeEvent) => {
     const newSelectedDistrict = event.target.value;
-    setDistrict(
-      typeof newSelectedDistrict === "string"
-        ? [newSelectedDistrict]
-        : newSelectedDistrict,
-    );
+    setDistrict(newSelectedDistrict);
   };
 
-  const onCityChange = (event: SelectChangeEvent<string[]>) => {
+  const onCityChange = (event: SelectChangeEvent) => {
     const newSelectedCity = event.target.value;
-    setCity(
-      typeof newSelectedCity === "string" ? [newSelectedCity] : newSelectedCity,
-    );
+    setCity(newSelectedCity);
   };
 
-  const onRegionChange = (event: SelectChangeEvent<string[]>) => {
+  const onRegionChange = (event: SelectChangeEvent) => {
     const newSelectedRegion = event.target.value;
-    setRegion(
-      typeof newSelectedRegion === "string"
-        ? [newSelectedRegion]
-        : newSelectedRegion,
-    );
+    setRegion(newSelectedRegion);
   };
 
   return (
     <div className="pb-6 pt-4">
       <p className="text-md mb-4 font-normal text-neutral-700">
         Property location
-        <InfoTooltip text="Fill district, city and region fields to specify the location of property. Select many districts if properties can be in different areas" />
+        <InfoTooltip text="Select district, city and region in which you want to track the creation of requests" />
       </p>
       <div className="flex flex-col gap-y-6">
         <FormControl className="w-full">
@@ -80,14 +70,13 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
               </div>
             )}
           </InputLabel>
-          <Select<string[]>
+          <Select<string>
             labelId="district-filter-label"
             id="district-filter"
-            value={district ?? []}
+            value={district ?? ""}
             label="District"
             onChange={onDistrictChange}
             disabled={isDistrictsLoading}
-            multiple
           >
             {districts?.data.map(({ name, slug }) => (
               <MenuItem key={slug} value={slug}>
@@ -105,14 +94,13 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
               </div>
             )}
           </InputLabel>
-          <Select<string[]>
+          <Select<string>
             labelId="city-filter-label"
             id="city-filter"
-            value={city ?? []}
+            value={city ?? ""}
             label="City"
             onChange={onCityChange}
             disabled={isCitiesLoading}
-            multiple
             required={!!cityRequired}
           >
             {cities?.data.map(({ name, slug }) => (
@@ -131,14 +119,13 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
               </div>
             )}
           </InputLabel>
-          <Select<string[]>
+          <Select<string>
             labelId="region-filter-label"
             id="region-filter"
-            value={region ?? []}
+            value={region ?? ""}
             label="Region"
             onChange={onRegionChange}
             disabled={isRegionsLoading}
-            multiple
             required={!!regionRequired}
           >
             {regions?.data.map(({ name, slug }) => (

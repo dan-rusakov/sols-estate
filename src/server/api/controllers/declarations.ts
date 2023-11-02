@@ -5,7 +5,7 @@ import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
 import { type deleteDeclaraionInput, type createDeclaraionInput, type findAllDeclarationsInput } from '../schema/declarations';
 import { TRPCError } from "@trpc/server";
 import { sendNotificationsHandler } from "./notification";
-import { excludePropertyTypesListAnyValue, validatePropertyTypeAnyValue } from "~/utils/entities";
+import { excludePropertyTypesListAnyValue, validatePropertyTypeAnyValue, validatePropertyTypeListAnyValue } from "~/utils/entities";
 
 export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: findAllDeclarationsInput) => {
     try {
@@ -205,7 +205,7 @@ export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: cre
     try {
         const createDeclarationData: Prisma.DeclarationCreateArgs['data'] = {
             propertyType: {
-                connect: validatePropertyTypeAnyValue(input.propertyTypeSlug).map(property => ({
+                connect: validatePropertyTypeListAnyValue(input.propertyTypeSlug).map(property => ({
                     slug: property,
                 }))
             },

@@ -11,10 +11,12 @@ import InfoTooltip from "../InfoTooltip/InfoTooltip";
 interface CreateCommissionProps {
   commission: number | null;
   setCommission: (commission: number) => void;
+  required?: boolean;
+  hasInfo?: boolean;
 }
 
 export default function CreateCommission(props: CreateCommissionProps) {
-  const { commission, setCommission } = props;
+  const { commission, setCommission, required, hasInfo } = props;
 
   const onCommissionChange = (event: SelectChangeEvent<number>) => {
     const newCommission = event.target.value as number;
@@ -31,7 +33,7 @@ export default function CreateCommission(props: CreateCommissionProps) {
           value={commission ?? ""}
           label="commission"
           onChange={onCommissionChange}
-          required
+          required={required}
         >
           {commissionValues.map((value) => (
             <MenuItem key={value} value={value}>
@@ -40,7 +42,9 @@ export default function CreateCommission(props: CreateCommissionProps) {
           ))}
         </Select>
       </FormControl>
-      <InfoTooltip text="Select the amount of commission you will ask from other agent who will take your request" />
+      {hasInfo && (
+        <InfoTooltip text="Select the amount of commission you will ask from other agent who will take your request" />
+      )}
     </div>
   );
 }

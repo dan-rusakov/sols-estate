@@ -2,8 +2,12 @@
 export type PropertyTypeAny = 'any';
 export const PropertyTypeAnyValue: PropertyTypeAny = 'any';
 
-export const validatePropertyTypeAnyValue = (types: string[]): string[] => {
+export const validatePropertyTypeListAnyValue = (types: string[]): string[] => {
     return types.filter(type => type !== PropertyTypeAnyValue);
+}
+
+export const validatePropertyTypeAnyValue = (type: string): string | null => {
+    return type === PropertyTypeAnyValue ? null : type;
 }
 
 export const excludePropertyTypesListAnyValue = (types: string[]): string[] | null => {

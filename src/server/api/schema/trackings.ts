@@ -1,4 +1,3 @@
-import { $Enums } from "@prisma/client";
 import { type TypeOf, object, z } from "zod";
 
 export const findAllTrackingsSchema = object({
@@ -20,17 +19,16 @@ export type findAllTrackingsInput = TypeOf<typeof findAllTrackingsSchema>;
 
 export const createTrackingSchema = object({
     userId: z.string(),
-    district: z.string(),
-    city: z.string(),
-    region: z.string(),
-    propertyType: z.enum(['VILLA', 'APARTMENT', 'TOWNHOUSE']),
-    villaLocation: z.string().or(z.null()),
-    apartmentLocation: z.string().or(z.null()),
+    districtSlug: z.string().or(z.null()),
+    citySlug: z.string().or(z.null()),
+    regionSlug: z.string().or(z.null()),
+    propertyTypeSlug: z.string(),
+    complexId: z.string().or(z.null()),
     priceMin: z.number().or(z.null()),
     priceMax: z.number().or(z.null()),
     roomsMin: z.number().or(z.null()),
     roomsMax: z.number().or(z.null()),
-    commission: z.number(),
+    commission: z.number().or(z.null()),
 });
 export type createTrackingInput = TypeOf<typeof createTrackingSchema>;
 

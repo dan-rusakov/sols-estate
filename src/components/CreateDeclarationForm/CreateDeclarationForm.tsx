@@ -119,6 +119,8 @@ export default function CreateDeclarationForm() {
           setCity={setCity}
           region={region}
           setRegion={setRegion}
+          cityRequired
+          regionRequired
         />
         <CreatePrice
           minPrice={minPrice}
@@ -149,6 +151,8 @@ export default function CreateDeclarationForm() {
         <CreateCommission
           commission={commission}
           setCommission={setCommission}
+          required
+          hasInfo
         />
         <Button
           variant="contained"

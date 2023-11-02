@@ -1,27 +1,23 @@
 import { type FormEvent, useState } from "react";
-import CreatePropertyType from "../CreatePropertyType/CreatePropertyType";
-import { type $Enums } from "@prisma/client";
-import CreateLocation from "../CreateLocation/CreateLocation";
 import CreatePrice from "../CreatePrice/CreatePrice";
 import CreateRooms from "../CreateRooms/CreateRooms";
 import CreateCommission from "../CreateCommission/CreateCommission";
-import { Alert, Button, CircularProgress } from "@mui/material";
+import { Alert, AlertTitle, Button, CircularProgress } from "@mui/material";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import ConnectMessengers from "../ConnectMessengers/ConnectMessengers";
+import { PropertyTypeAnyValue } from "~/utils/entities";
+import CreateLocationSingle from "../CreateLocation/CreateLocationSingle";
+import CreatePropertyTypeSingle from "../CreatePropertyType/CreatePropertyTypeSingle";
 
 export default function CreateTrackingForm() {
   const [district, setDistricts] = useState<string | null>(null);
   const [city, setCity] = useState<string | null>(null);
   const [region, setRegion] = useState<string | null>(null);
-  const [propertyType, setPropertyType] = useState<
-    keyof typeof $Enums.PropertyType | null
-  >(null);
-  const [villaLocation, setVillaLocation] = useState<string | null>(null);
-  const [apartmentLocation, setApartmentLocation] = useState<string | null>(
-    null,
-  );
+  const [propertyType, setPropertyType] =
+    useState<string>(PropertyTypeAnyValue);
+  const [complex, setComplex] = useState<string | null>(null);
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [minPriceError, setMinPriceError] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
@@ -47,33 +43,13 @@ export default function CreateTrackingForm() {
   const { contactInfo } = agentData?.data ?? {};
 
   const validateFields = (): boolean => {
-    if (
-      propertyType === null ||
-      commission === null ||
-      district === null ||
-      city === null ||
-      region === null ||
-      minPriceError ||
-      maxPriceError ||
-      minRoomsError ||
-      maxRoomsError
-    ) {
+    if (minPriceError || maxPriceError || minRoomsError || maxRoomsError) {
       setValidationError("Please, check the fields for correct data");
       return false;
     }
 
-    if ((contactInfo?.telegramLink ?? null) === null) {
+    if (!contactInfo?.telegramLink) {
       setValidationError("Please, connect messenger");
-      return false;
-    }
-
-    if (propertyType === "VILLA" && villaLocation === null) {
-      setValidationError("Please, select villa location");
-      return false;
-    }
-
-    if (propertyType === "APARTMENT" && apartmentLocation === null) {
-      setValidationError("Please, select apartment location");
       return false;
     }
 
@@ -92,13 +68,12 @@ export default function CreateTrackingForm() {
       await Promise.all([
         addTracking({
           userId: session?.user.id ?? "",
-          district: district!,
-          city: city!,
-          region: region!,
-          propertyType: propertyType!,
-          commission: commission!,
-          villaLocation,
-          apartmentLocation,
+          districtSlug: district,
+          citySlug: city,
+          regionSlug: region,
+          propertyTypeSlug: propertyType,
+          complexId: complex,
+          commission: commission,
           priceMin: minPrice,
           priceMax: maxPrice,
           roomsMin: minRooms,
@@ -123,15 +98,24 @@ export default function CreateTrackingForm() {
         className="flex flex-col gap-y-6"
         onSubmit={(evt) => void createTrackingHandler(evt)}
       >
-        <CreatePropertyType
+        <div className="pb-3">
+          <Alert severity="info">
+            <AlertTitle>What is a traking</AlertTitle>
+            <p className="text-base">
+              You can create tracking to get notifications if somebody creates a
+              request that fits your criteria. Leave certain fields empty if you
+              want to track by all values or select specific ones if you want to
+              track certain requests.
+            </p>
+          </Alert>
+        </div>
+        <CreatePropertyTypeSingle
           propertyType={propertyType}
           setPropertyType={setPropertyType}
-          villaLocation={villaLocation}
-          setVillaLocation={setVillaLocation}
-          apartmentLocation={apartmentLocation}
-          setApartmentLocation={setApartmentLocation}
+          complex={complex}
+          setComplex={setComplex}
         />
-        <CreateLocation
+        <CreateLocationSingle
           district={district}
           setDistrict={setDistricts}
           city={city}
