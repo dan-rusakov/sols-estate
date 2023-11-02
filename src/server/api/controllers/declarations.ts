@@ -1,5 +1,5 @@
-import { type Prisma } from "@prisma/client";
-import { createDeclaration, deleteDeclaration, findAllDeclarations, findDeclaration } from "../services/declarations";
+import { Prisma } from "@prisma/client";
+import { createDeclaration, deleteDeclaration, findDeclaration } from "../services/declarations";
 import { type InnerTRPCContext } from "../trpc";
 import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
 import { type deleteDeclaraionInput, type createDeclaraionInput, type findAllDeclarationsInput, type findDeclarationInput } from '../schema/declarations';
@@ -9,28 +9,30 @@ import { excludePropertyTypesListAnyValue, validatePropertyTypeListAnyValue } fr
 
 export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: findAllDeclarationsInput) => {
     try {
-        const findAllDeclarationsSelect: Prisma.DeclarationSelect = {
-            id: true,
-            district: true,
-            city: true,
-            region: true,
-            propertyType: true,
-            complex: true,
-            priceMin: true,
-            priceMax: true,
-            checkinDate: true,
-            checkoutDate: true,
-            roomsMin: true,
-            roomsMax: true,
-            agent: {
-                select: {
-                    firstName: true,
-                    lastName: true,
-                    contactInfo: true,
-                }
-            },
-            commission: true,
-        }
+        const findAllDeclarationsArgs = Prisma.validator<Prisma.DeclarationFindManyArgs>()({
+            select: {
+                id: true,
+                district: true,
+                city: true,
+                region: true,
+                propertyType: true,
+                complex: true,
+                priceMin: true,
+                priceMax: true,
+                checkinDate: true,
+                checkoutDate: true,
+                roomsMin: true,
+                roomsMax: true,
+                agent: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        contactInfo: true,
+                    }
+                },
+                commission: true,
+            }
+        });
 
         const districtSlug = input.districtSlug;
         const priceMin = input[DeclarationsParamsKey.priceMin];
@@ -189,8 +191,28 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
                 }
             })
         }
+        const skip = (input.take ?? 0) * (input.page ?? 0);
 
-        const declarations = await findAllDeclarations(ctx, filtering, findAllDeclarationsSelect, input.page, input.take);
+        const declarations = await ctx.prisma.$transaction([
+            ctx.prisma.declaration.count({
+                where: {
+                    AND: [
+                        filtering,
+                    ]
+                },
+            }),
+            ctx.prisma.declaration.findMany({
+                where: {
+                    AND: [
+                        filtering,
+                    ]
+                },
+                select: findAllDeclarationsArgs.select,
+                take: input.take,
+                skip,
+                orderBy: [{ createdAt: "desc" }],
+            }),
+        ])
 
         return {
             status: 'success',
