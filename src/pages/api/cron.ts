@@ -16,12 +16,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const dateThreeDaysBeforeCurrent = dayjs().subtract(3, 'day').format(ISO_DATE_FORMAT);
         const declarations = await caller.declarations.getAllDeclarations({
-            location: null,
             priceMin: null,
             priceMax: null,
             roomsMin: null,
             roomsMax: null,
-            propertyType: null,
+            districtSlug: null,
+            propertyTypeSlug: null,
             page: null,
             createdAtMax: dateThreeDaysBeforeCurrent,
         });
