@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { type FormEvent, useState } from "react";
 import AgentTypeFilter from "~/components/CreateAgentAgentTypeFilter/CreateAgentAgentTypeFilter";
 import LegalAddressFilter from "~/components/CreateAgentLegalAddressFilter/CreateAgentLegalAddressFilter";
+import InfoTooltip from "~/components/InfoTooltip/InfoTooltip";
 import { api } from "~/utils/api";
 
 export default function CreateAgent() {
@@ -180,36 +181,45 @@ export default function CreateAgent() {
               Other agents will use these links to text you about requests
             </p>
             <div className="flex flex-col gap-y-6">
-              <TextField
-                id="whatsapp-link"
-                label="Whats app link"
-                type="text"
-                name="whatsapp-link"
-                variant="outlined"
-                value={whatsappLink}
-                onChange={(evt) => setWhatsappLink(evt.target.value)}
-                className="w-full"
-              />
-              <TextField
-                id="telegram-link"
-                label="Telegram link"
-                type="text"
-                name="telegram-link"
-                variant="outlined"
-                value={telegramLink}
-                onChange={(evt) => setTelegramLink(evt.target.value)}
-                className="w-full"
-              />
-              <TextField
-                id="viber-link"
-                label="Viber link"
-                type="text"
-                name="viber-link"
-                variant="outlined"
-                value={viberLink}
-                onChange={(evt) => setViberLink(evt.target.value)}
-                className="w-full"
-              />
+              <div className="flex items-center">
+                <TextField
+                  id="whatsapp-link"
+                  label="Whats app link"
+                  type="text"
+                  name="whatsapp-link"
+                  variant="outlined"
+                  value={whatsappLink}
+                  onChange={(evt) => setWhatsappLink(evt.target.value)}
+                  className="grow"
+                />
+                <InfoTooltip text="Enter your phone number that is linked to your whatsapp account. The number must be indicated in international format without the plus sign, spaces or other symbols. For example: 66111111111" />
+              </div>
+              <div className="flex items-center">
+                <TextField
+                  id="telegram-link"
+                  label="Telegram link"
+                  type="text"
+                  name="telegram-link"
+                  variant="outlined"
+                  value={telegramLink}
+                  onChange={(evt) => setTelegramLink(evt.target.value)}
+                  className="grow"
+                />
+                <InfoTooltip text="Enter your telegram username. It must be without `@` sign and without telegram url  (https://t.me). For example: agentUserName" />
+              </div>
+              <div className="flex items-center">
+                <TextField
+                  id="viber-link"
+                  label="Viber link"
+                  type="text"
+                  name="viber-link"
+                  variant="outlined"
+                  value={viberLink}
+                  onChange={(evt) => setViberLink(evt.target.value)}
+                  className="grow"
+                />
+                <InfoTooltip text="Enter your phone number that is linked to your viber account. The number must be indicated in international format without the plus sign, spaces or other symbols. For example: 66111111111" />
+              </div>
             </div>
           </div>
           <Button

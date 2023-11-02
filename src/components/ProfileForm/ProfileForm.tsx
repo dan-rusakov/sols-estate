@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import CheckIcon from "@mui/icons-material/Check";
 import ChangeEmailDialog from "../ChangeEmailDialog/ChangeEmailDialog";
 import InputLabelWithLoading from "../InputLabelWithLoading/InputLabelWithLoading";
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
 
 export default function ProfileForm() {
   const [whatsappLink, setWhatsappLink] = useState("");
@@ -114,54 +115,63 @@ export default function ProfileForm() {
             Other agents will use these links to text you about requests
           </p>
           <div className="flex flex-col gap-y-6">
-            <TextField
-              id="whatsapp-link"
-              label={
-                <InputLabelWithLoading
-                  label="Whats app link"
-                  isLoading={isLoadingAgent}
-                />
-              }
-              type="text"
-              name="whatsapp-link"
-              variant="outlined"
-              value={whatsappLink}
-              onChange={(evt) => setWhatsappLink(evt.target.value)}
-              className="w-full"
-              disabled={isLoadingAgent || isUpdatingAgent}
-            />
-            <TextField
-              id="telegram-link"
-              label={
-                <InputLabelWithLoading
-                  label="Telegram link"
-                  isLoading={isLoadingAgent}
-                />
-              }
-              type="text"
-              name="telegram-link"
-              variant="outlined"
-              value={telegramLink}
-              onChange={(evt) => setTelegramLink(evt.target.value)}
-              className="w-full"
-              disabled={isLoadingAgent || isUpdatingAgent}
-            />
-            <TextField
-              id="viber-link"
-              label={
-                <InputLabelWithLoading
-                  label="Viber link"
-                  isLoading={isLoadingAgent}
-                />
-              }
-              type="text"
-              name="viber-link"
-              variant="outlined"
-              value={viberLink}
-              onChange={(evt) => setViberLink(evt.target.value)}
-              className="w-full"
-              disabled={isLoadingAgent || isUpdatingAgent}
-            />
+            <div className="flex items-center">
+              <TextField
+                id="whatsapp-link"
+                label={
+                  <InputLabelWithLoading
+                    label="Whats app link"
+                    isLoading={isLoadingAgent}
+                  />
+                }
+                type="text"
+                name="whatsapp-link"
+                variant="outlined"
+                value={whatsappLink}
+                onChange={(evt) => setWhatsappLink(evt.target.value)}
+                className="grow"
+                disabled={isLoadingAgent || isUpdatingAgent}
+              />
+              <InfoTooltip text="Enter your phone number that is linked to your whatsapp account. The number must be indicated in international format without the plus sign, spaces or other symbols. For example: 66111111111" />
+            </div>
+            <div className="flex items-center">
+              <TextField
+                id="telegram-link"
+                label={
+                  <InputLabelWithLoading
+                    label="Telegram link"
+                    isLoading={isLoadingAgent}
+                  />
+                }
+                type="text"
+                name="telegram-link"
+                variant="outlined"
+                value={telegramLink}
+                onChange={(evt) => setTelegramLink(evt.target.value)}
+                className="grow"
+                disabled={isLoadingAgent || isUpdatingAgent}
+              />
+              <InfoTooltip text="Enter your telegram username. It must be without `@` sign and without telegram url  (https://t.me). For example: agentUserName" />
+            </div>
+            <div className="flex items-center">
+              <TextField
+                id="viber-link"
+                label={
+                  <InputLabelWithLoading
+                    label="Viber link"
+                    isLoading={isLoadingAgent}
+                  />
+                }
+                type="text"
+                name="viber-link"
+                variant="outlined"
+                value={viberLink}
+                onChange={(evt) => setViberLink(evt.target.value)}
+                className="grow"
+                disabled={isLoadingAgent || isUpdatingAgent}
+              />
+              <InfoTooltip text="Enter your phone number that is linked to your viber account. The number must be indicated in international format without the plus sign, spaces or other symbols. For example: 66111111111" />
+            </div>
           </div>
         </div>
         <Button

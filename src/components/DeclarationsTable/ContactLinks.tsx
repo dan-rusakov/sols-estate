@@ -1,4 +1,9 @@
 import { Link } from "@mui/material";
+import {
+  getTelegramDeepLink,
+  getViberDeepLink,
+  getWhatsappDeepLink,
+} from "~/utils/url";
 
 interface ContactLinksProps {
   telegramLink?: string;
@@ -11,14 +16,24 @@ export default function ContactLinks({
   telegramLink,
   whatsappLink,
   viberLink,
-  lineLink,
 }: ContactLinksProps) {
   return (
     <div className="flex gap-2">
-      {!!telegramLink && <Link href={telegramLink}>TG</Link>}
-      {!!whatsappLink && <Link href={whatsappLink}>WhatsApp</Link>}
-      {!!lineLink && <Link href={lineLink}>Line</Link>}
-      {!!viberLink && <Link href={viberLink}>Viber</Link>}
+      {!!telegramLink && (
+        <Link target="_blank" href={getTelegramDeepLink(telegramLink)}>
+          TG
+        </Link>
+      )}
+      {!!whatsappLink && (
+        <Link target="_blank" href={getWhatsappDeepLink(whatsappLink)}>
+          WhatsApp
+        </Link>
+      )}
+      {!!viberLink && (
+        <Link target="_blank" href={getViberDeepLink(viberLink)}>
+          Viber
+        </Link>
+      )}
     </div>
   );
 }

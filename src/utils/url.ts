@@ -84,3 +84,7 @@ export const createSearchParamsString = (
 
     return params.toString();
 };
+
+export const getViberDeepLink = (viberAccount: string): string => `viber://chat?number=${viberAccount}`;
+export const getWhatsappDeepLink = (waAccount: string): string => `https://wa.me/${waAccount}`;
+export const getTelegramDeepLink = (telegramAccount: string): string => `https://t.me/${telegramAccount}`;

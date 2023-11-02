@@ -11,6 +11,7 @@ import { env } from "~/env.mjs";
 import { cellRangeValue, formatDateToDateStringMarkdown, getCommissionLabel } from "~/utils/table";
 import { mapDictById, mapDictByName, mapDictBySlug } from "~/utils/dictionaries";
 import { findDeclarationHandler } from "./declarations";
+import { getTelegramDeepLink, getViberDeepLink, getWhatsappDeepLink } from "~/utils/url";
 
 export const createVerificationTokenHandler = async (ctx: InnerTRPCContext, input: createVerificationTokenInput) => {
     try {
@@ -137,10 +138,10 @@ export const sendNotificationsHandler = async (ctx: InnerTRPCContext, input: sen
         ]);
 
         const telegramIds = agents.data[1].map(agent => agent.notificationInfo?.telegramId).filter(Boolean) as string[];
-        const { lineLink, telegramLink, whatsappLink, viberLink } = userAgent.data?.contactInfo ?? {};
+        const { telegramLink, whatsappLink, viberLink } = userAgent.data?.contactInfo ?? {};
         const createMarkdownLink = (title: string, link: string) => `[${title}](${link})`;
-        const agentContacts = (lineLink?: string | null, telegramLink?: string | null, whatsappLink?: string | null, viberLink?: string | null): string => {
-            return `${lineLink ? createMarkdownLink('Line', lineLink) : ''} ${telegramLink ? createMarkdownLink('TG', telegramLink) : ''} ${whatsappLink ? createMarkdownLink('Whatsapp', whatsappLink) : ''} ${viberLink ? createMarkdownLink('Viber', viberLink) : ''}`
+        const agentContacts = (telegramLink?: string | null, whatsappLink?: string | null, viberLink?: string | null): string => {
+            return `${telegramLink ? createMarkdownLink('TG', getTelegramDeepLink(telegramLink)) : ''} ${whatsappLink ? createMarkdownLink('Whatsapp', getWhatsappDeepLink(whatsappLink)) : ''} ${viberLink ? createMarkdownLink('Viber', getViberDeepLink(viberLink)) : ''}`
         }
 
         const bot = new TelegramBot(env.TELEGRAM_BOT_SECRET);
@@ -163,7 +164,7 @@ dates of stay: *${cellRangeValue(
             )}*
 rooms: *${cellRangeValue(roomsMin ?? null, roomsMax ?? null)}*
 agent name: *${userAgent.data?.firstName ?? ''} ${userAgent.data?.lastName ?? ''}*
-contacts: ${agentContacts(lineLink, telegramLink, whatsappLink, viberLink)}`,
+contacts: ${agentContacts(telegramLink, whatsappLink, viberLink)}`,
             {
                 parse_mode: 'MarkdownV2',
             }
