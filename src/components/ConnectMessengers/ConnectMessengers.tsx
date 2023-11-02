@@ -95,7 +95,9 @@ export default function ConnectMessengers() {
 
   const finishConnectionHanler = () => {
     setIsOpened(false);
-    void ctx.agents.getAgent.invalidate();
+    void ctx.agents.getAgent.invalidate({
+      agentId: session?.user.id ?? "",
+    });
   };
 
   const errorNotification = (error: boolean, errorText: string) =>
