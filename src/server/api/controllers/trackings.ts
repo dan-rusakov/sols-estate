@@ -12,18 +12,35 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
         const trackingsWhere: BaseWhere = {
             AND: [
                 {
-                    propertyType: input.propertyType,
+                    propertyType: input.propertyTypeSlug ? {
+                        slug: {
+                            in: input.propertyTypeSlug,
+                        }
+                    } : undefined,
                     commission: input.commission,
                     agent: {
                         userId: input.userId,
                     },
-                    location: {
-                        district: input.district,
-                        city: input.city,
-                        region: input.region,
-                        villa: input.villaLocation,
-                        apartment: input.apartmentLocation,
-                    }
+                    district: input.districtSlug ? {
+                        slug: {
+                            in: input.districtSlug,
+                        }
+                    } : undefined,
+                    city: input.citySlug ? {
+                        slug: {
+                            in: input.citySlug,
+                        }
+                    } : undefined,
+                    region: input.regionSlug ? {
+                        slug: {
+                            in: input.regionSlug,
+                        }
+                    } : undefined,
+                    complex: input.complexId ? {
+                        id: {
+                            in: input.complexId,
+                        }
+                    } : undefined,
                 },
             ],
         };
@@ -223,7 +240,11 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
 
         } else {
             trackingsWhere.AND.push({
-                propertyType: input.propertyType,
+                propertyType: input.propertyTypeSlug ? {
+                    slug: {
+                        in: input.propertyTypeSlug,
+                    }
+                } : undefined,
                 priceMin: input.priceMin,
                 priceMax: input.priceMax,
                 roomsMin: input.roomsMin,
@@ -232,26 +253,34 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
                 agent: {
                     userId: input.userId,
                 },
-                location: {
-                    district: input.district,
-                    city: input.city,
-                    region: input.region,
-                    villa: input.villaLocation,
-                    apartment: input.apartmentLocation,
-                }
+                district: input.districtSlug ? {
+                    slug: {
+                        in: input.districtSlug,
+                    }
+                } : undefined,
+                city: input.citySlug ? {
+                    slug: {
+                        in: input.citySlug,
+                    }
+                } : undefined,
+                region: input.regionSlug ? {
+                    slug: {
+                        in: input.regionSlug,
+                    }
+                } : undefined,
+                complex: input.complexId ? {
+                    id: {
+                        in: input.complexId,
+                    }
+                } : undefined,
             });
         }
 
         const findAllTrackingsArgs = Prisma.validator<Prisma.TrackingDefaultArgs>()({
             select: {
                 id: true,
-                location: {
-                    select: {
-                        district: true,
-                        villa: true,
-                        apartment: true,
-                    }
-                },
+                district: true,
+                complex: true,
                 propertyType: true,
                 priceMin: true,
                 priceMax: true,

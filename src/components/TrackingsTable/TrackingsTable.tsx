@@ -1,12 +1,10 @@
 import { Box } from "@mui/material";
 import { DataGrid, type GridRenderCellParams } from "@mui/x-data-grid";
-import { getNameFromDict, propertyTypeDict } from "~/utils/dictionaries";
 import {
   TAKE_RECORDS_AMOUNT,
   cellRangeValue,
   formatNumber,
   getCommissionLabel,
-  getComplexName,
 } from "~/utils/table";
 import Actions from "./Actions";
 import { api } from "~/utils/api";
@@ -15,12 +13,6 @@ import { useSession } from "next-auth/react";
 export default function TrackingsTable() {
   const { data: session } = useSession();
 
-  const { data: districts, isLoading: isDistrictsLoading } =
-    api.locationDict.getAllDistricts.useQuery();
-  const { data: villaLocations, isLoading: isVillaLocationsLoading } =
-    api.locationDict.getAllVillaLocations.useQuery();
-  const { data: apartmentLocations, isLoading: isApartmentLocationsLoading } =
-    api.locationDict.getAllApartmentLocations.useQuery();
   const { data: trackingsData, isLoading: isTrackingsLoading } =
     api.trackings.getAllTrackings.useQuery({
       userId: session?.user.id ?? "",
@@ -29,23 +21,18 @@ export default function TrackingsTable() {
 
   const rows = trackings?.map((tracking) => ({
     id: tracking.id,
-    location: getNameFromDict(tracking.location.district, districts?.data),
+    location: tracking.district?.name ?? "—",
     propertyType:
-      tracking.propertyType === null
-        ? "Any"
-        : propertyTypeDict[tracking.propertyType],
+      tracking.propertyType === null ? "Any" : tracking.propertyType.name,
     prices: cellRangeValue(
       tracking.priceMin ? formatNumber(tracking.priceMin, "numeric") : null,
       tracking.priceMax ? formatNumber(tracking.priceMax, "numeric") : null,
     ),
 
-    complex_name: getComplexName(
-      tracking.location.villa,
-      tracking.location.apartment,
-      villaLocations?.data,
-      apartmentLocations?.data,
-    ),
-    commission: getCommissionLabel(tracking.commission),
+    complex_name: tracking.complex?.name ?? "—",
+    commission: tracking.commission
+      ? getCommissionLabel(tracking.commission)
+      : "—",
     rooms: cellRangeValue(tracking.roomsMin, tracking.roomsMax),
     actions: <Actions trackingId={tracking.id} />,
   }));
@@ -87,12 +74,7 @@ export default function TrackingsTable() {
           rows={rows ?? []}
           columns={columns}
           disableColumnMenu
-          loading={
-            isDistrictsLoading ||
-            isVillaLocationsLoading ||
-            isApartmentLocationsLoading ||
-            isTrackingsLoading
-          }
+          loading={isTrackingsLoading}
           paginationMode="server"
           rowCount={trackingsCount ?? 0}
           pageSizeOptions={[TAKE_RECORDS_AMOUNT]}

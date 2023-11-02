@@ -2,12 +2,11 @@ import { type TypeOf, object, z } from "zod";
 
 export const findAllTrackingsSchema = object({
     userId: z.string().or(z.undefined()),
-    district: z.string().or(z.undefined()),
-    city: z.string().or(z.undefined()),
-    region: z.string().or(z.undefined()),
-    propertyType: z.enum(['VILLA', 'APARTMENT', 'TOWNHOUSE']).or(z.undefined()).or(z.null()),
-    villaLocation: z.string().or(z.null()).or(z.undefined()),
-    apartmentLocation: z.string().or(z.null()).or(z.undefined()),
+    districtSlug: z.array(z.string()).or(z.null()).or(z.undefined()),
+    citySlug: z.array(z.string()).or(z.null()).or(z.undefined()),
+    regionSlug: z.array(z.string()).or(z.null()).or(z.undefined()),
+    propertyTypeSlug: z.array(z.string()).or(z.null()).or(z.undefined()),
+    complexId: z.array(z.string()).or(z.null()).or(z.undefined()),
     priceMin: z.number().or(z.null()).or(z.undefined()),
     priceMax: z.number().or(z.null()).or(z.undefined()),
     roomsMin: z.number().or(z.null()).or(z.undefined()),
