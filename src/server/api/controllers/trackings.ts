@@ -22,22 +22,26 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
         };
 
         if (input.byDeclaration) {
-            trackingsWhere.AND.push({
-                OR: [
-                    {
-                        commission: input.commission,
-                    },
-                    {
-                        commission: null,
-                    }
-                ]
-            });
+            if (typeof input.commission === 'number') {
+                trackingsWhere.AND.push({
+                    OR: [
+                        {
+                            commission: input.commission,
+                        },
+                        {
+                            commission: null,
+                        }
+                    ]
+                });
+            }
 
             // trackings with ANY value must track only delcarations with same value "ANY" (not declarations with any values)
             if (propertyTypeWithoutAny?.length) {
                 trackingsWhere.AND.push({
-                    propertyTypeId: {
-                        in: propertyTypeWithoutAny,
+                    propertyType: {
+                        slug: {
+                            in: propertyTypeWithoutAny,
+                        }
                     }
                 })
             }
@@ -52,8 +56,10 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
                 trackingsWhere.AND.push({
                     OR: [
                         {
-                            districtId: {
-                                in: input.districtSlug,
+                            district: {
+                                slug: {
+                                    in: input.districtSlug,
+                                }
                             }
                         },
                         {
@@ -73,8 +79,10 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
                 trackingsWhere.AND.push({
                     OR: [
                         {
-                            cityId: {
-                                in: input.citySlug,
+                            city: {
+                                slug: {
+                                    in: input.citySlug,
+                                }
                             }
                         },
                         {
@@ -94,8 +102,10 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
                 trackingsWhere.AND.push({
                     OR: [
                         {
-                            regionId: {
-                                in: input.regionSlug,
+                            region: {
+                                slug: {
+                                    in: input.regionSlug,
+                                }
                             }
                         },
                         {
@@ -354,7 +364,7 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
         });
 
         const trackings = await findAllTrackings(ctx, trackingsWhere, findAllTrackingsArgs.select);
-        console.log("FOUND TRACKING _____\n", trackings, input.complexId);
+
         return {
             status: 'success',
             data: trackings,

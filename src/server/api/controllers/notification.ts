@@ -141,6 +141,10 @@ export const sendNotificationsHandler = async (ctx: InnerTRPCContext, input: sen
         const { telegramLink, whatsappLink, viberLink } = userAgent.data?.contactInfo ?? {};
         const createMarkdownLink = (title: string, link: string) => `[${title}](${link})`;
         const agentContacts = (telegramLink?: string | null, whatsappLink?: string | null, viberLink?: string | null): string => {
+            if (!telegramLink && !whatsappLink && !viberLink) {
+                return '—';
+            }
+
             return `${telegramLink ? createMarkdownLink('TG', getTelegramDeepLink(telegramLink)) : ''} ${whatsappLink ? createMarkdownLink('Whatsapp', getWhatsappDeepLink(whatsappLink)) : ''} ${viberLink ? createMarkdownLink('Viber', getViberDeepLink(viberLink)) : ''}`
         }
 
