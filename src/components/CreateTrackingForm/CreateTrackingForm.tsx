@@ -40,7 +40,7 @@ export default function CreateTrackingForm() {
   const { data: agentData } = api.agents.getAgent.useQuery({
     agentId: session?.user.id ?? "",
   });
-  const { contactInfo } = agentData?.data ?? {};
+  const { notificationInfo } = agentData?.data ?? {};
 
   const validateFields = (): boolean => {
     if (minPriceError || maxPriceError || minRoomsError || maxRoomsError) {
@@ -48,7 +48,7 @@ export default function CreateTrackingForm() {
       return false;
     }
 
-    if (!contactInfo?.telegramLink) {
+    if (!notificationInfo?.telegramId) {
       setValidationError("Please, connect messenger");
       return false;
     }
