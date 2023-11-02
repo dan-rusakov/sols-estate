@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { api } from "~/utils/api";
 import { PropertyTypeAnyValue } from "~/utils/entities";
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
 
 interface CreateDeclarationPropertyTypeProps {
   propertyType: string;
@@ -51,33 +52,37 @@ export default function CreateDeclarationPropertyType(
 
   return (
     <div className="flex flex-col gap-y-6">
-      <FormControl className="w-full">
-        <InputLabel id="property-type-filter-label">
-          Property type{" "}
-          {isPropertyTypeLoading && (
-            <div className="ml-3 inline-flex">
-              <CircularProgress size={16} />
-            </div>
-          )}
-        </InputLabel>
-        <Select<string>
-          labelId="property-type-filter-label"
-          id="property-type-filter"
-          value={selectedPropertyType}
-          onChange={onPropertyTypeChange}
-          disabled={isPropertyTypeLoading}
-          label="Property type"
-        >
-          <MenuItem key={PropertyTypeAnyValue} value={PropertyTypeAnyValue}>
-            Any
-          </MenuItem>
-          {propertyType?.data.map(({ name, slug }) => (
-            <MenuItem key={slug} value={slug}>
-              {name}
+      <div className="flex items-center">
+        <FormControl className="w-full">
+          <InputLabel id="property-type-filter-label">
+            Property type{" "}
+            {isPropertyTypeLoading && (
+              <div className="ml-3 inline-flex">
+                <CircularProgress size={16} />
+              </div>
+            )}
+          </InputLabel>
+          <Select<string>
+            labelId="property-type-filter-label"
+            id="property-type-filter"
+            value={selectedPropertyType}
+            onChange={onPropertyTypeChange}
+            disabled={isPropertyTypeLoading}
+            label="Property type"
+          >
+            <MenuItem key={PropertyTypeAnyValue} value={PropertyTypeAnyValue}>
+              Any
             </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+            {propertyType?.data.map(({ name, slug }) => (
+              <MenuItem key={slug} value={slug}>
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <InfoTooltip text="Property type with value `Any` will be equal to requests with the same value `Any`. If you want to track requests with all available property types you should create separate trackings with needed property types" />
+      </div>
+
       <FormControl className="w-full">
         <InputLabel id="complex-filter-label">
           Complex name{" "}

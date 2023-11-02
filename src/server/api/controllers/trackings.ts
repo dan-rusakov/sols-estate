@@ -33,118 +33,102 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
                 ]
             });
 
-            if (propertyTypeWithoutAny) {
+            // trackings with ANY value must track only delcarations with same value "ANY" (not declarations with any values)
+            if (propertyTypeWithoutAny?.length) {
+                trackingsWhere.AND.push({
+                    propertyTypeId: {
+                        in: propertyTypeWithoutAny,
+                    }
+                })
+            }
+
+            if (!propertyTypeWithoutAny?.length) {
+                trackingsWhere.AND.push({
+                    propertyType: null,
+                })
+            }
+
+            if (input.districtSlug?.length) {
                 trackingsWhere.AND.push({
                     OR: [
                         {
-                            propertyType: {
-                                slug: {
-                                    in: propertyTypeWithoutAny,
-                                }
+                            districtId: {
+                                in: input.districtSlug,
                             }
                         },
                         {
-                            propertyTypeId: null,
+                            district: null,
                         }
                     ]
                 })
             }
 
-            if (!propertyTypeWithoutAny) {
+            if (!input.districtSlug?.length) {
                 trackingsWhere.AND.push({
-                    propertyTypeId: null,
+                    district: null,
                 })
             }
 
-            if (input.districtSlug) {
+            if (input.citySlug?.length) {
                 trackingsWhere.AND.push({
                     OR: [
                         {
-                            district: {
-                                slug: {
-                                    in: input.districtSlug,
-                                }
+                            cityId: {
+                                in: input.citySlug,
                             }
                         },
                         {
-                            districtId: null,
+                            city: null,
                         }
                     ]
                 })
             }
 
-            if (!input.districtSlug) {
+            if (!input.citySlug?.length) {
                 trackingsWhere.AND.push({
-                    districtId: null,
+                    city: null,
                 })
             }
 
-            if (input.citySlug) {
+            if (input.regionSlug?.length) {
                 trackingsWhere.AND.push({
                     OR: [
                         {
-                            city: {
-                                slug: {
-                                    in: input.citySlug,
-                                }
+                            regionId: {
+                                in: input.regionSlug,
                             }
                         },
                         {
-                            cityId: null,
+                            region: null,
                         }
                     ]
                 })
             }
 
-            if (!input.citySlug) {
+            if (!input.regionSlug?.length) {
                 trackingsWhere.AND.push({
-                    cityId: null,
+                    region: null,
                 })
             }
 
-            if (input.regionSlug) {
+            if (input.complexId?.length) {
                 trackingsWhere.AND.push({
                     OR: [
                         {
-                            region: {
-                                slug: {
-                                    in: input.regionSlug,
-                                }
+                            complexId: {
+                                in: input.complexId,
                             }
                         },
                         {
-                            regionId: null,
+                            complex: null,
                         }
                     ]
                 })
             }
 
-            if (!input.regionSlug) {
+            if (!input.complexId?.length) {
                 trackingsWhere.AND.push({
-                    regionId: null,
-                })
-            }
-
-            if (input.complexId) {
-                trackingsWhere.AND.push({
-                    OR: [
-                        {
-                            complex: {
-                                id: {
-                                    in: input.complexId,
-                                }
-                            }
-                        },
-                        {
-                            complexId: null,
-                        }
-                    ]
-                })
-            }
-
-            if (!input.complexId) {
-                trackingsWhere.AND.push({
-                    complexId: null,
+                    complex: null,
                 })
             }
 
@@ -200,7 +184,13 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
                                 lte: input.priceMax,
                             },
                             priceMax: null,
-                        }
+                        },
+                        {
+                            priceMin: null,
+                            priceMax: {
+                                gte: input.priceMax,
+                            }
+                        },
                     ]
 
                 })
@@ -226,6 +216,12 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
                             priceMax: {
                                 gte: input.priceMin,
                             }
+                        },
+                        {
+                            priceMin: {
+                                lte: input.priceMin,
+                            },
+                            priceMax: null
                         }
                     ]
 
@@ -358,7 +354,7 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
         });
 
         const trackings = await findAllTrackings(ctx, trackingsWhere, findAllTrackingsArgs.select);
-
+        console.log("FOUND TRACKING _____\n", trackings, input.complexId);
         return {
             status: 'success',
             data: trackings,
