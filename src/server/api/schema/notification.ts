@@ -1,6 +1,4 @@
-import { $Enums } from "@prisma/client";
 import { type TypeOf, object, z } from "zod";
-import { PropertyTypeAnyValue } from "~/utils/entities";
 
 export const createVerificationTokenSchema = object({
     identifier: z.string(),
@@ -27,18 +25,6 @@ export type createNotificationInfoInput = TypeOf<typeof createNotificationInfoSc
 
 export const sendNotificationsSchema = object({
     userId: z.string(),
-    district: z.string(),
-    city: z.string(),
-    region: z.string(),
-    propertyType: z.enum(['VILLA', 'APARTMENT', 'TOWNHOUSE']).or(z.literal(PropertyTypeAnyValue)),
-    villaLocation: z.string().or(z.null()),
-    apartmentLocation: z.string().or(z.null()),
-    priceMin: z.number().or(z.null()),
-    priceMax: z.number().or(z.null()),
-    checkinDate: z.string().or(z.null()),
-    checkoutDate: z.string().or(z.null()),
-    roomsMin: z.number().or(z.null()),
-    roomsMax: z.number().or(z.null()),
-    commission: z.number(),
+    declarationId: z.string(),
 });
 export type sendNotificationsInput = TypeOf<typeof sendNotificationsSchema>;

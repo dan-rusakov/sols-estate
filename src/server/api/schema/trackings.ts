@@ -5,7 +5,7 @@ export const findAllTrackingsSchema = object({
     districtSlug: z.array(z.string()).or(z.null()).or(z.undefined()),
     citySlug: z.array(z.string()).or(z.null()).or(z.undefined()),
     regionSlug: z.array(z.string()).or(z.null()).or(z.undefined()),
-    propertyTypeSlug: z.array(z.string()).or(z.null()).or(z.undefined()),
+    propertyTypeSlug: z.array(z.string()).or(z.undefined()),
     complexId: z.array(z.string()).or(z.null()).or(z.undefined()),
     priceMin: z.number().or(z.null()).or(z.undefined()),
     priceMax: z.number().or(z.null()).or(z.undefined()),

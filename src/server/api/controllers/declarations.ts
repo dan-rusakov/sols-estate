@@ -1,11 +1,11 @@
 import { type Prisma } from "@prisma/client";
-import { createDeclaration, deleteDeclaration, findAllDeclarations } from "../services/declarations";
+import { createDeclaration, deleteDeclaration, findAllDeclarations, findDeclaration } from "../services/declarations";
 import { type InnerTRPCContext } from "../trpc";
 import { DeclarationsParamsKey } from "~/components/DeclarationsTable/utils";
-import { type deleteDeclaraionInput, type createDeclaraionInput, type findAllDeclarationsInput } from '../schema/declarations';
+import { type deleteDeclaraionInput, type createDeclaraionInput, type findAllDeclarationsInput, type findDeclarationInput } from '../schema/declarations';
 import { TRPCError } from "@trpc/server";
 import { sendNotificationsHandler } from "./notification";
-import { excludePropertyTypesListAnyValue, validatePropertyTypeAnyValue, validatePropertyTypeListAnyValue } from "~/utils/entities";
+import { excludePropertyTypesListAnyValue, validatePropertyTypeListAnyValue } from "~/utils/entities";
 
 export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: findAllDeclarationsInput) => {
     try {
@@ -201,6 +201,43 @@ export const findAllDeclarationsHandler = async (ctx: InnerTRPCContext, input: f
     }
 };
 
+export const findDeclarationHandler = async (ctx: InnerTRPCContext, input: findDeclarationInput) => {
+    try {
+        const findAllDeclarationsSelect: Prisma.DeclarationSelect = {
+            id: true,
+            district: true,
+            city: true,
+            region: true,
+            propertyType: true,
+            complex: true,
+            priceMin: true,
+            priceMax: true,
+            checkinDate: true,
+            checkoutDate: true,
+            roomsMin: true,
+            roomsMax: true,
+            agent: {
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    contactInfo: true,
+                }
+            },
+            commission: true,
+        };
+        const declaration = await findDeclaration(ctx, {
+            id: input.declarationId,
+        }, findAllDeclarationsSelect);
+
+        return {
+            status: 'success',
+            data: declaration,
+        };
+    } catch (err: unknown) {
+        throw err;
+    }
+}
+
 export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: createDeclaraionInput) => {
     try {
         const createDeclarationData: Prisma.DeclarationCreateArgs['data'] = {
@@ -243,23 +280,11 @@ export const createDeclarationHandler = async (ctx: InnerTRPCContext, input: cre
             },
         };
 
-        await createDeclaration(ctx, createDeclarationData);
-        // void sendNotificationsHandler(ctx, {
-        //     userId: input.userId,
-        //     district: input.district,
-        //     city: input.city,
-        //     region: input.region,
-        //     propertyType: input.propertyType,
-        //     villaLocation: input.villaLocation,
-        //     apartmentLocation: input.apartmentLocation,
-        //     priceMin: input.priceMin,
-        //     priceMax: input.priceMax,
-        //     roomsMin: input.roomsMin,
-        //     roomsMax: input.roomsMax,
-        //     checkinDate: input.checkinDate,
-        //     checkoutDate: input.checkoutDate,
-        //     commission: input.commission,
-        // });
+        const declaration = await createDeclaration(ctx, createDeclarationData);
+        await sendNotificationsHandler(ctx, {
+            userId: input.userId,
+            declarationId: declaration.id,
+        });
 
         return {
             status: 'success',

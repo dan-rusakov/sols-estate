@@ -14,6 +14,8 @@ export const getNameFromDict = (slug: string, dict: BaseDictStructure[] | undefi
 }
 
 export const mapDictByName = (value: { name: string }) => value.name;
+export const mapDictBySlug = (value: { slug: string }) => value.slug;
+export const mapDictById = (value: { id: string }) => value.id;
 
 export const AgentTypeDict: Record<$Enums.AgentType, string> = {
     [$Enums.AgentType.AGENCY]: 'Agency',

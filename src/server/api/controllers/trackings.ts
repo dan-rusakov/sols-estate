@@ -2,50 +2,152 @@ import { Prisma } from "@prisma/client";
 import { type InnerTRPCContext } from "../trpc";
 import { type deleteTrackingInput, type createTrackingInput, type findAllTrackingsInput } from "../schema/trackings";
 import { createTracking, deleteTracking, findAllTrackings } from "../services/trackings";
-import { validatePropertyTypeAnyValue } from "~/utils/entities";
+import { validatePropertyTypeAnyValue, validatePropertyTypeListAnyValue } from "~/utils/entities";
 
 export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: findAllTrackingsInput) => {
     try {
+        const propertyTypeWithoutAny = input.propertyTypeSlug ? validatePropertyTypeListAnyValue(input.propertyTypeSlug) : null;
+
         interface BaseWhere {
             AND: Prisma.TrackingWhereInput[];
         }
         const trackingsWhere: BaseWhere = {
             AND: [
                 {
-                    propertyType: input.propertyTypeSlug ? {
-                        slug: {
-                            in: input.propertyTypeSlug,
-                        }
-                    } : undefined,
-                    commission: input.commission,
                     agent: {
                         userId: input.userId,
                     },
-                    district: input.districtSlug ? {
-                        slug: {
-                            in: input.districtSlug,
-                        }
-                    } : undefined,
-                    city: input.citySlug ? {
-                        slug: {
-                            in: input.citySlug,
-                        }
-                    } : undefined,
-                    region: input.regionSlug ? {
-                        slug: {
-                            in: input.regionSlug,
-                        }
-                    } : undefined,
-                    complex: input.complexId ? {
-                        id: {
-                            in: input.complexId,
-                        }
-                    } : undefined,
                 },
             ],
         };
 
         if (input.byDeclaration) {
+            trackingsWhere.AND.push({
+                OR: [
+                    {
+                        commission: input.commission,
+                    },
+                    {
+                        commission: null,
+                    }
+                ]
+            });
+
+            if (propertyTypeWithoutAny) {
+                trackingsWhere.AND.push({
+                    OR: [
+                        {
+                            propertyType: {
+                                slug: {
+                                    in: propertyTypeWithoutAny,
+                                }
+                            }
+                        },
+                        {
+                            propertyTypeId: null,
+                        }
+                    ]
+                })
+            }
+
+            if (!propertyTypeWithoutAny) {
+                trackingsWhere.AND.push({
+                    propertyTypeId: null,
+                })
+            }
+
+            if (input.districtSlug) {
+                trackingsWhere.AND.push({
+                    OR: [
+                        {
+                            district: {
+                                slug: {
+                                    in: input.districtSlug,
+                                }
+                            }
+                        },
+                        {
+                            districtId: null,
+                        }
+                    ]
+                })
+            }
+
+            if (!input.districtSlug) {
+                trackingsWhere.AND.push({
+                    districtId: null,
+                })
+            }
+
+            if (input.citySlug) {
+                trackingsWhere.AND.push({
+                    OR: [
+                        {
+                            city: {
+                                slug: {
+                                    in: input.citySlug,
+                                }
+                            }
+                        },
+                        {
+                            cityId: null,
+                        }
+                    ]
+                })
+            }
+
+            if (!input.citySlug) {
+                trackingsWhere.AND.push({
+                    cityId: null,
+                })
+            }
+
+            if (input.regionSlug) {
+                trackingsWhere.AND.push({
+                    OR: [
+                        {
+                            region: {
+                                slug: {
+                                    in: input.regionSlug,
+                                }
+                            }
+                        },
+                        {
+                            regionId: null,
+                        }
+                    ]
+                })
+            }
+
+            if (!input.regionSlug) {
+                trackingsWhere.AND.push({
+                    regionId: null,
+                })
+            }
+
+            if (input.complexId) {
+                trackingsWhere.AND.push({
+                    OR: [
+                        {
+                            complex: {
+                                id: {
+                                    in: input.complexId,
+                                }
+                            }
+                        },
+                        {
+                            complexId: null,
+                        }
+                    ]
+                })
+            }
+
+            if (!input.complexId) {
+                trackingsWhere.AND.push({
+                    complexId: null,
+                })
+            }
+
             if (input.priceMin && input.priceMax) {
                 trackingsWhere.AND.push({
                     OR: [
@@ -238,42 +340,6 @@ export const findAllTrackingsHandler = async (ctx: InnerTRPCContext, input: find
                 })
             }
 
-        } else {
-            trackingsWhere.AND.push({
-                propertyType: input.propertyTypeSlug ? {
-                    slug: {
-                        in: input.propertyTypeSlug,
-                    }
-                } : undefined,
-                priceMin: input.priceMin,
-                priceMax: input.priceMax,
-                roomsMin: input.roomsMin,
-                roomsMax: input.roomsMax,
-                commission: input.commission,
-                agent: {
-                    userId: input.userId,
-                },
-                district: input.districtSlug ? {
-                    slug: {
-                        in: input.districtSlug,
-                    }
-                } : undefined,
-                city: input.citySlug ? {
-                    slug: {
-                        in: input.citySlug,
-                    }
-                } : undefined,
-                region: input.regionSlug ? {
-                    slug: {
-                        in: input.regionSlug,
-                    }
-                } : undefined,
-                complex: input.complexId ? {
-                    id: {
-                        in: input.complexId,
-                    }
-                } : undefined,
-            });
         }
 
         const findAllTrackingsArgs = Prisma.validator<Prisma.TrackingDefaultArgs>()({

@@ -8,10 +8,9 @@ import { findAllTrackingsHandler } from "./trackings";
 import { findAgentHandler, findAllAgentsHandler } from "./agents";
 import TelegramBot from "node-telegram-bot-api";
 import { env } from "~/env.mjs";
-import { cellRangeValue, formatDateToDateString, getCommissionLabel, getComplexName } from "~/utils/table";
-import { getNameFromDict, propertyTypeDict } from "~/utils/dictionaries";
-import { findAllApartmentLocationsHandler, findAllDistrictsHandler, findAllVillaLocationsHandler } from "./locationDict";
-import { validatePropertyTypeAnyValue } from "~/utils/entities";
+import { cellRangeValue, formatDateToDateStringMarkdown, getCommissionLabel } from "~/utils/table";
+import { mapDictById, mapDictByName, mapDictBySlug } from "~/utils/dictionaries";
+import { findDeclarationHandler } from "./declarations";
 
 export const createVerificationTokenHandler = async (ctx: InnerTRPCContext, input: createVerificationTokenInput) => {
     try {
@@ -106,23 +105,27 @@ export const createNotificationInfoHandler = async (ctx: InnerTRPCContext, input
 
 export const sendNotificationsHandler = async (ctx: InnerTRPCContext, input: sendNotificationsInput) => {
     try {
+        const declaration = await findDeclarationHandler(ctx, {
+            declarationId: input.declarationId,
+        });
+
+        const { district, city, region, propertyType, complex, priceMin, priceMax, commission, roomsMin, roomsMax, checkinDate, checkoutDate } = declaration.data ?? {};
         const trackings = await findAllTrackingsHandler(ctx, {
-            district: input.district,
-            city: input.city,
-            region: input.region,
-            propertyType: validatePropertyTypeAnyValue(input.propertyType),
-            villaLocation: input.villaLocation,
-            apartmentLocation: input.apartmentLocation,
-            priceMin: input.priceMin,
-            priceMax: input.priceMax,
-            roomsMin: input.roomsMin,
-            roomsMax: input.roomsMax,
-            commission: input.commission,
+            districtSlug: district?.map(mapDictBySlug),
+            citySlug: city?.map(mapDictBySlug),
+            regionSlug: region?.map(mapDictBySlug),
+            propertyTypeSlug: propertyType?.map(mapDictBySlug),
+            complexId: complex?.map(mapDictById),
+            priceMin,
+            priceMax,
+            roomsMin,
+            roomsMax,
+            commission,
             byDeclaration: true,
         });
         const agentIds = trackings.data[1].map(tracking => tracking.agentId);
 
-        const [agents, userAgent, districts, villaLocations, apartmentLocations] = await Promise.all([
+        const [agents, userAgent] = await Promise.all([
             findAllAgentsHandler(ctx, {
                 page: null,
                 agentStatusType: null,
@@ -131,9 +134,6 @@ export const sendNotificationsHandler = async (ctx: InnerTRPCContext, input: sen
             findAgentHandler(ctx, {
                 agentId: input.userId,
             }),
-            findAllDistrictsHandler(ctx),
-            findAllVillaLocationsHandler(ctx),
-            findAllApartmentLocationsHandler(ctx),
         ]);
 
         const telegramIds = agents.data[1].map(agent => agent.notificationInfo?.telegramId).filter(Boolean) as string[];
@@ -142,35 +142,26 @@ export const sendNotificationsHandler = async (ctx: InnerTRPCContext, input: sen
         const agentContacts = (lineLink?: string | null, telegramLink?: string | null, whatsappLink?: string | null, viberLink?: string | null): string => {
             return `${lineLink ? createMarkdownLink('Line', lineLink) : ''} ${telegramLink ? createMarkdownLink('TG', telegramLink) : ''} ${whatsappLink ? createMarkdownLink('Whatsapp', whatsappLink) : ''} ${viberLink ? createMarkdownLink('Viber', viberLink) : ''}`
         }
-        const propertyTypeWithNull = validatePropertyTypeAnyValue(input.propertyType);
 
         const bot = new TelegramBot(env.TELEGRAM_BOT_SECRET);
         const notificationPromises = telegramIds.map(id => bot.sendMessage(
             id,
             `New request that fits one of your trackings was added\\.
             
-location: *${getNameFromDict(
-                input.district,
-                districts?.data,
-            )}*
-complex name: *${getComplexName(
-                input.villaLocation,
-                input.apartmentLocation,
-                villaLocations?.data,
-                apartmentLocations?.data,
-            )}*
-property type: *${propertyTypeWithNull ? propertyTypeDict[propertyTypeWithNull] : 'Any'}*
-price: *${cellRangeValue(input.priceMin, input.priceMax)}*
-commission: *${getCommissionLabel(input.commission)}*
+location: *${district ? district.map(mapDictByName).join(', ') || '—' : '—'}*
+complex name: *${complex ? complex.map(mapDictByName).join(', ') || '—' : '—'}*
+property type: *${propertyType?.length ? propertyType.map(mapDictByName).join(', ') : 'Any'}*
+price: *${cellRangeValue(priceMin ?? null, priceMax ?? null)}*
+commission: *${typeof commission === 'number' ? getCommissionLabel(commission) : ''}*
 dates of stay: *${cellRangeValue(
-                input.checkinDate
-                    ? formatDateToDateString(input.checkinDate)
+                checkinDate
+                    ? formatDateToDateStringMarkdown(checkinDate)
                     : null,
-                input.checkoutDate
-                    ? formatDateToDateString(input.checkoutDate)
+                checkoutDate
+                    ? formatDateToDateStringMarkdown(checkoutDate)
                     : null,
             )}*
-rooms: *${cellRangeValue(input.roomsMin, input.roomsMax)}*
+rooms: *${cellRangeValue(roomsMin ?? null, roomsMax ?? null)}*
 agent name: *${userAgent.data?.firstName ?? ''} ${userAgent.data?.lastName ?? ''}*
 contacts: ${agentContacts(lineLink, telegramLink, whatsappLink, viberLink)}`,
             {

@@ -15,6 +15,11 @@ export const findAllDeclarationsSchema = object({
 });
 export type findAllDeclarationsInput = TypeOf<typeof findAllDeclarationsSchema>;
 
+export const findDeclarationSchema = object({
+    declarationId: z.string(),
+});
+export type findDeclarationInput = TypeOf<typeof findDeclarationSchema>;
+
 export const createDeclarationSchema = object({
     userId: z.string(),
     districtSlug: z.array(z.string()).or(z.null()),
