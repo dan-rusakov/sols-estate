@@ -4,7 +4,6 @@ import {
   FormControl,
   InputLabel,
   ListItemText,
-  ListSubheader,
   MenuItem,
   Select,
   type SelectChangeEvent,
@@ -22,15 +21,8 @@ interface CreateDeclarationPropertyTypeProps {
 export default function CreateDeclarationPropertyType(
   props: CreateDeclarationPropertyTypeProps,
 ) {
-  const {
-    propertyType: selectedPropertyType,
-    setPropertyType,
-    complex: selectedComplex,
-    setComplex,
-  } = props;
+  const { propertyType: selectedPropertyType, setPropertyType } = props;
 
-  const { data: complexes, isLoading: isComplexesLoading } =
-    api.property.getAllComplexes.useQuery();
   const { data: propertyType, isLoading: isPropertyTypeLoading } =
     api.property.getAllPropertyType.useQuery();
 
@@ -46,12 +38,6 @@ export default function CreateDeclarationPropertyType(
     setPropertyType(
       newPropertyType.filter((property) => property !== PropertyTypeAnyValue),
     );
-  };
-
-  const onComplexChange = (event: SelectChangeEvent<string[]>) => {
-    const selectedComplexes = event.target.value as string[];
-
-    setComplex(selectedComplexes);
   };
 
   return (
@@ -97,46 +83,6 @@ export default function CreateDeclarationPropertyType(
               <ListItemText primary={name} />
             </MenuItem>
           ))}
-        </Select>
-      </FormControl>
-      <FormControl className="w-full">
-        <InputLabel id="complex-filter-label">
-          Complex name{" "}
-          {isComplexesLoading && (
-            <div className="ml-3 inline-flex">
-              <CircularProgress size={16} />
-            </div>
-          )}
-        </InputLabel>
-        <Select<string[]>
-          labelId="complex-filter-label"
-          id="complex-filter"
-          value={selectedComplex ?? []}
-          label="Complex name"
-          onChange={onComplexChange}
-          multiple
-          disabled={isComplexesLoading}
-        >
-          <ListSubheader>Villas</ListSubheader>
-          {complexes?.data.map(({ name, id, type }) => {
-            if (type.some(({ type }) => type === "villa")) {
-              return (
-                <MenuItem key={id} value={id}>
-                  {name}
-                </MenuItem>
-              );
-            }
-          })}
-          <ListSubheader>Apartments</ListSubheader>
-          {complexes?.data.map(({ name, id, type }) => {
-            if (type.some(({ type }) => type === "apartment")) {
-              return (
-                <MenuItem key={id} value={id}>
-                  {name}
-                </MenuItem>
-              );
-            }
-          })}
         </Select>
       </FormControl>
     </div>
