@@ -57,7 +57,7 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
   return (
     <div className="pb-6 pt-4">
       <p className="text-md mb-4 font-normal text-neutral-700">
-        Property location
+        Beach / Location
         <InfoTooltip text="Select district, city and region in which you want to track the creation of requests" />
       </p>
       <div className="flex flex-col gap-y-6">

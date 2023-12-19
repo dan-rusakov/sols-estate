@@ -64,7 +64,7 @@ export default function SignIn() {
 
     try {
       setIsLoading(true);
-      await signIn("email", { email });
+      await signIn("email", { email, callbackUrl: "/declarations" });
     } finally {
       setIsLoading(false);
     }

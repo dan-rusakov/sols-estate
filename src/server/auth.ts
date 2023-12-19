@@ -41,11 +41,11 @@ export const authOptions: NextAuthOptions = {
     }),
   },
   pages: {
-    signIn: '/auth/signin',
+    signIn: "/auth/signin",
     // signOut: '/auth/signout',
     //error: '/auth/error', // Error code passed in query string as ?error=
-    verifyRequest: '/auth/verify-request', // (used for check email message)
-    newUser: '/auth/create-agent' // New users will be directed here on first sign in (leave the property out if not of interest)
+    verifyRequest: "/auth/verify-request", // (used for check email message)
+    newUser: "/auth/create-agent", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -55,8 +55,8 @@ export const authOptions: NextAuthOptions = {
         port: process.env.EMAIL_SERVER_PORT,
         auth: {
           user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD
-        }
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
       },
       from: process.env.EMAIL_FROM,
       async sendVerificationRequest({
@@ -74,8 +74,8 @@ export const authOptions: NextAuthOptions = {
           subject: `Log in to ${host}`,
           text: `Log in to ${host}\n${url}\n\n`,
           html: html({ url }),
-        })
-      }
+        });
+      },
     }),
   ],
 };

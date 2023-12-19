@@ -1,4 +1,4 @@
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -47,6 +47,16 @@ export default function Header() {
               Agents
             </Link>
           </li>
+          {!!session && (
+            <li>
+              <Link
+                className="text-base font-medium text-neutral-500"
+                href="/profile"
+              >
+                Profile
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
       {!session && (
@@ -66,12 +76,13 @@ export default function Header() {
           >
             New request
           </Link>
-          <Link
+          <button
             className="rounded-md border border-neutral-900 px-4 py-2 text-center text-base font-medium text-neutral-900 sm:hidden"
-            href="/profile"
+            type="button"
+            onClick={() => void signOut()}
           >
-            Profile
-          </Link>
+            Log out
+          </button>
         </div>
       )}
       <button
@@ -135,7 +146,7 @@ export default function Header() {
             )}
             {!!session && (
               <>
-                <li className="hidden sm:block">
+                <li>
                   <Link
                     className="text-base font-medium text-neutral-500"
                     href="/profile"
@@ -150,6 +161,15 @@ export default function Header() {
                   >
                     New request
                   </Link>
+                </li>
+                <li className="hidden sm:block">
+                  <button
+                    className="mr-4 inline-block rounded-md border border-neutral-900 px-4 py-2 text-center text-base font-medium text-neutral-900"
+                    type="button"
+                    onClick={() => void signOut()}
+                  >
+                    Log out
+                  </button>
                 </li>
               </>
             )}

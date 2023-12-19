@@ -1,7 +1,9 @@
 import {
+  Checkbox,
   CircularProgress,
   FormControl,
   InputLabel,
+  ListItemText,
   MenuItem,
   Select,
   type SelectChangeEvent,
@@ -67,7 +69,7 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
   return (
     <div className="pb-6 pt-4">
       <p className="text-md mb-4 font-normal text-neutral-700">
-        Property location
+        Beach / Location
         <InfoTooltip text="Fill district, city and region fields to specify the location of property. Select many districts if properties can be in different areas" />
       </p>
       <div className="flex flex-col gap-y-6">
@@ -88,10 +90,21 @@ export default function CreateLocation(props: CreateDeclarationLocationProps) {
             onChange={onDistrictChange}
             disabled={isDistrictsLoading}
             multiple
+            renderValue={(selected) =>
+              selected
+                .map(
+                  (slug) =>
+                    districts?.data.find((property) => property.slug === slug)
+                      ?.name,
+                )
+                .filter(Boolean)
+                .join(", ")
+            }
           >
             {districts?.data.map(({ name, slug }) => (
               <MenuItem key={slug} value={slug}>
-                {name}
+                <Checkbox checked={!!district && district.indexOf(slug) > -1} />
+                <ListItemText primary={name} />
               </MenuItem>
             ))}
           </Select>

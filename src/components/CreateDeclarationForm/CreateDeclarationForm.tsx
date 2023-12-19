@@ -27,8 +27,8 @@ export default function CreateDeclarationForm() {
   });
 
   const [district, setDistricts] = useState<string[] | null>(null);
-  const [city, setCity] = useState<string[] | null>(null);
-  const [region, setRegion] = useState<string[] | null>(null);
+  const [city, setCity] = useState<string[] | null>(["phuket"]); // set phuket by default cause its single value in array of options
+  const [region, setRegion] = useState<string[] | null>(["phuket"]); // set phuket by default cause its single value in array of options
   const [propertyType, setPropertyType] = useState<string[]>([
     PropertyTypeAnyValue,
   ]);
@@ -154,6 +154,9 @@ export default function CreateDeclarationForm() {
           required
           hasInfo
         />
+        <Alert variant="outlined" severity="info">
+          Created request will be automatically deleted after 7 days
+        </Alert>
         <Button
           variant="contained"
           type="submit"

@@ -1,7 +1,9 @@
 import {
+  Checkbox,
   CircularProgress,
   FormControl,
   InputLabel,
+  ListItemText,
   MenuItem,
   Select,
   type SelectChangeEvent,
@@ -60,11 +62,22 @@ export default function DeclarationsDistrictFilter() {
         onChange={onDistrictChange}
         onClose={onDistrictClose}
         multiple
+        renderValue={(selected) =>
+          selected
+            .map(
+              (slug) =>
+                districts?.data.find((districts) => districts.slug === slug)
+                  ?.name,
+            )
+            .filter(Boolean)
+            .join(", ")
+        }
         disabled={isLoading}
       >
         {districts?.data.map(({ name, slug }) => (
           <MenuItem key={slug} value={slug}>
-            {name}
+            <Checkbox checked={selectedLocations.indexOf(slug) > -1} />
+            <ListItemText primary={name} />
           </MenuItem>
         ))}
       </Select>

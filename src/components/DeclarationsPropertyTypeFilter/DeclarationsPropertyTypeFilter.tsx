@@ -1,7 +1,9 @@
 import {
+  Checkbox,
   CircularProgress,
   FormControl,
   InputLabel,
+  ListItemText,
   MenuItem,
   Select,
   type SelectChangeEvent,
@@ -65,14 +67,30 @@ export default function DeclarationsPropertyTypeFilter() {
         onChange={onPropertyTypeChange}
         onClose={onPropertyTypeClose}
         multiple
+        renderValue={(selected) =>
+          selected
+            .map((slug) => {
+              if (slug === "any") {
+                return "Any";
+              }
+
+              return propertyTypes?.data.find(
+                (property) => property.slug === slug,
+              )?.name;
+            })
+            .filter(Boolean)
+            .join(", ")
+        }
         disabled={isLoading}
       >
         <MenuItem key={"any"} value={"any"}>
-          Any
+          <Checkbox checked={selectedPropertyType.indexOf("any") > -1} />
+          <ListItemText primary={"Any"} />
         </MenuItem>
         {propertyTypes?.data.map(({ name, slug }) => (
           <MenuItem key={slug} value={slug}>
-            {name}
+            <Checkbox checked={selectedPropertyType.indexOf(slug) > -1} />
+            <ListItemText primary={name} />
           </MenuItem>
         ))}
       </Select>

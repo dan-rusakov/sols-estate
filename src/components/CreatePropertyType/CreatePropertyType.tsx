@@ -1,7 +1,9 @@
 import {
+  Checkbox,
   CircularProgress,
   FormControl,
   InputLabel,
+  ListItemText,
   ListSubheader,
   MenuItem,
   Select,
@@ -70,6 +72,20 @@ export default function CreateDeclarationPropertyType(
           onChange={onPropertyTypeChange}
           disabled={isPropertyTypeLoading}
           label="Property type"
+          renderValue={(selected) =>
+            selected
+              .map((slug) => {
+                if (slug === "any") {
+                  return "Any";
+                }
+
+                return propertyType?.data.find(
+                  (property) => property.slug === slug,
+                )?.name;
+              })
+              .filter(Boolean)
+              .join(", ")
+          }
           multiple
         >
           <MenuItem key={PropertyTypeAnyValue} value={PropertyTypeAnyValue}>
@@ -77,7 +93,8 @@ export default function CreateDeclarationPropertyType(
           </MenuItem>
           {propertyType?.data.map(({ name, slug }) => (
             <MenuItem key={slug} value={slug}>
-              {name}
+              <Checkbox checked={selectedPropertyType.indexOf(slug) > -1} />
+              <ListItemText primary={name} />
             </MenuItem>
           ))}
         </Select>
