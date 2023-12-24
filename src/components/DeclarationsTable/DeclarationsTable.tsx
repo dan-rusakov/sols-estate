@@ -84,15 +84,15 @@ export default function DeclarationsTable() {
     {
       field: DeclarationsParamsKey.location,
       headerName: "Location",
-      width: 180,
+      width: 140,
     },
     {
       field: "complex_name",
       headerName: "Complex name",
-      width: 240,
+      width: 140,
     },
-    { field: "propertyType", headerName: "Property type", width: 160 },
-    { field: "prices", headerName: "Price", width: 150 },
+    { field: "propertyType", headerName: "Property type", width: 140 },
+    { field: "prices", headerName: "Price", width: 140 },
     {
       field: "commission",
       headerName: "Commission",
@@ -100,7 +100,7 @@ export default function DeclarationsTable() {
     },
     { field: "livingDates", headerName: "Dates of stay", width: 190 },
     { field: "rooms", headerName: "Rooms amount", width: 120 },
-    { field: "agentName", headerName: "Agent", width: 160 },
+    { field: "agentName", headerName: "Agent", width: 140 },
     {
       field: "contactLinks",
       headerName: "Contacts",
